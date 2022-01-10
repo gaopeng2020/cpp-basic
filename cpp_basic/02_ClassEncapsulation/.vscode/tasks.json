@@ -1,0 +1,44 @@
+//Cmake task
+{
+    "version": "2.0.0",
+        "options": {
+            "cwd": "${workspaceFolder}/build"
+        },
+        
+        "tasks": [
+            {
+                "type": "shell",
+                "label": "cmake",
+                "command": "cmake",
+                "args": [
+                    ".."
+                ]
+            },
+            {
+                "type": "shell",
+                "label": "make",
+                "command": "make",
+                "args": [
+                ]
+            },
+            {
+                // "type": "cppbuild",
+                "label": "cmake_General_Build_Task",
+                "dependsOrder": "sequence",
+                "dependsOn":[
+                    "cmake",
+                    "make"
+                ],
+                "problemMatcher": [
+                    "$gcc"
+                ],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "detail": "调试器生成的任务。"
+            }
+        ]
+        
+        }
+    
