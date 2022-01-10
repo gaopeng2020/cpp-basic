@@ -416,9 +416,8 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
+# Makefile
 install_manifest.txt
-compile_commands.json
 compile_commands.json
 cmake_install.cmake
 CTestTestfile.cmake
