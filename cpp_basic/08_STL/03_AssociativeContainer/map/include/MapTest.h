@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 #include <map>
+#include <typeinfo>
 using namespace std;
 
 /* 关联式容器存储的是“键值对”，考虑到“键值对”并不是普通类型数据，C++ STL 标准库提供了 pair 类模板，其专门用来将 2 个普通元素 
@@ -65,12 +66,24 @@ size();//返回元素中元素的数目
 empty() 若容器为空，则返回 true；否则 false。
 max_size()	返回 map 容器所能容纳键值对的最大个数，不同的操作系统，其返回值亦不相同。
  */
+void constructTest();
 
-void addElementsTest();
+map<string, uint8_t> addElementsTest();
 
-void iteratorTest();
+void iteratorTest(const map<string, uint8_t> &);
 
-void accessDeleteTest();
+void accessDeleteTest(map<string, uint8_t> &);
 
 template <typename T, typename U>
-void printTest(string mapName, map<T, U> &list);
+void printTest(string mapName, map<T, U> &map)
+{
+    for (auto it = map.begin(); it != map.end(); ++it)
+        if (typeid(U) == typeid(uint8_t))
+            cout << mapName << " [ key = " << it->first << ", value = " << unsigned(it->second) << " ]" << endl;
+        else
+            cout << mapName << " [ key = " << it->first << ", value = " << it->second << " ]" << endl;
+}
+
+/* multimap 容器具有和 map 相同的特性，即 multimap 容器也用于存储 pair<const K, T> 类型的键值对（其中 K 表示键的类型，T 表示值的类型），
+其中各个键值对的键的值不能做修改；并且，该容器也会自行根据键的大小对存储的所有键值对做排序操作。和 map 容器的区别在于，
+multimap 容器中可以同时存储多（≥2）个键相同的键值对。和 map 容器一样，实现 multimap 容器的类模板也定义在<map>头文件 */
