@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-project(BasicKnowledge)
+# string(REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CURRENT_FOLDER_ABSOLUTE})
+# set (TARGET_NAME ${CURRENT_FOLDER})
+# project(${CURRENT_FOLDER})
+project(01_BasicKnowledge)
 
 #定义C++版本
 add_definitions(-std=c++17)
