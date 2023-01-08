@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+Makefile
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -496,3 +497,5 @@ dkms.conf
 # Compiled Static libraries
 *.lai
 
+cpp_basic/01_BasicKnowledge/build/Makefile
+cpp_basic/01_BasicKnowledge/build/Makefile
