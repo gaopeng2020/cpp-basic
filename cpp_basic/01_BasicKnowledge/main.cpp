@@ -7,5 +7,6 @@ int main(int argc, char const *argv[])
 	// getlineSemantic();
 	stringDefinition();
 	// vectorSemantic();
+
     return 0;
 }

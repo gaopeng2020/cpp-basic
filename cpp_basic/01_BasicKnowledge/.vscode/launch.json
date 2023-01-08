@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C++ Launch (GDB)",
+            "type": "cppdbg",
+            "request": "launch", // 请求配置类型，可以为launch（启动）或attach（附加）
+            "program": "${workspaceFolder}/build/bin/${workspaceFolderBasename}",
+            "args": [],
+            "targetArchitecture": "x86_64", // 可以为x86, arm, arm64, mips, x64, amd64, x86_64 
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            // "miDebuggerPath": "D:/ProgramFiles/DeveloperKits/mingw/mingw-w64ucrt-10.0.0/bin/gdb.exe",
+            "miDebuggerPath": "/usr/bin/gdb", //Linux configuration
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "cmake_General_Build_Task"
+        }
+    ]
+}

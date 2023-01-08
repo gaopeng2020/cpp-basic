@@ -7,7 +7,7 @@
             "label": "mkdir_build", // task的名字
             "command": "mkdir", // 需要被运行的命令
             "args": [
-                // "-p", //如果已经存在则忽略 linux
+                "-p", //如果已经存在则忽略 linux
                 "build"
             ], // 传递给command的参数
             "options": {
@@ -19,8 +19,8 @@
             "label": "cmake",
             "command": "cmake",
             "args": [
-                "-G", //avalibale for windows
-                "MinGW Makefiles", //avalibale for windows
+                // "-G", //avalibale for windows
+                // "MinGW Makefiles", //avalibale for windows
                 ".."
             ],
             "options": {
