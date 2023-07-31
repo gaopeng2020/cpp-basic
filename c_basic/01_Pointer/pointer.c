@@ -4,45 +4,45 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
-#include<malloc.h>
+#include <malloc.h>
 
-//Ö¸ÕëÊı×éÀàĞÍÉùÃ÷
+// æŒ‡é’ˆæ•°ç»„ç±»å‹å£°æ˜
 typedef int P1[10];
-typedef int(*P2)[10];
+typedef int (*P2)[10];
 
 void simplePointer()
 {
-	/*	Ö¸ÕëÊÇ±äÁ¿£¬ÎŞÂÛÊ²Ã´ÀàĞÍµÄÖ¸ÕëÆä´óĞ¡¶¼ÒÑÒ»ÑùµÄ£»
-		32Î»ÏµÍ³£¬Ö¸Õë´óĞ¡Îª4×Ö½Ú£¬64Î»ÏµÍ³Ö¸Õë´óĞ¡Îª8×Ö½Ú£»
-		Ö¸ÕëÖ¸ÏòÄ³¸ö±äÁ¿µÄÄÚ´æµØÖ·£¬*pÔòÊÇÖ¸ÏòÄÚ´æ£¬Í¨¹ı*p¿ÉÒÔ¸Ä±ä±»Ö¸Ïò±äÁ¿µÄÄÚ´æÖµ*/
+	/*	æŒ‡é’ˆæ˜¯å˜é‡ï¼Œæ— è®ºä»€ä¹ˆç±»å‹çš„æŒ‡é’ˆå…¶å¤§å°éƒ½å·²ä¸€æ ·çš„ï¼›
+		32ä½ç³»ç»Ÿï¼ŒæŒ‡é’ˆå¤§å°ä¸º4å­—èŠ‚ï¼Œ64ä½ç³»ç»ŸæŒ‡é’ˆå¤§å°ä¸º8å­—èŠ‚ï¼›
+		æŒ‡é’ˆæŒ‡å‘æŸä¸ªå˜é‡çš„å†…å­˜åœ°å€ï¼Œ*påˆ™æ˜¯æŒ‡å‘å†…å­˜ï¼Œé€šè¿‡*på¯ä»¥æ”¹å˜è¢«æŒ‡å‘å˜é‡çš„å†…å­˜å€¼*/
 	int a = 10;
-	int* p;
+	int *p;
 	p = &a;
 	*p = 100;
 	printf("a=%d\n", a);
 
-	//¶à¸öÖ¸ÕëÍ¬Ê±Ö¸ÏòÍ¬Ò»¸öÄÚ´æµØÖ·
+	// å¤šä¸ªæŒ‡é’ˆåŒæ—¶æŒ‡å‘åŒä¸€ä¸ªå†…å­˜åœ°å€
 	int t = 10;
-	int* pt = &t;
+	int *pt = &t;
 	*pt = 20;
 
-	int* ptt = &t;
+	int *ptt = &t;
 	*ptt = 30;
 	printf("\n");
 	printf("t=%d\t*pt=%d\t*ptt=%d\n", t, *pt, *ptt);
 }
 
-int* pointerAsFunctionReturnValue(int* a, int* b)
+int *pointerAsFunctionReturnValue(int *a, int *b)
 {
-	//Ëæ»úÉú³ÉÒ»¸ö(x-y)µÄËæ»úÊı:x+rand%(y-x+1)
-	srand((unsigned)time(NULL)); //Ê¹ÓÃµ±Ç°Ê±¼ä¶ÔËæ»úÊı·¢ÉúÆ÷³õÊ¼»¯,ĞèÒªinclude <time.h>
+	// éšæœºç”Ÿæˆä¸€ä¸ª(x-y)çš„éšæœºæ•°:x+rand%(y-x+1)
+	srand((unsigned)time(NULL)); // ä½¿ç”¨å½“å‰æ—¶é—´å¯¹éšæœºæ•°å‘ç”Ÿå™¨åˆå§‹åŒ–,éœ€è¦include <time.h>
 	*b = 100 + rand() % (200 - 100 + 1);
 	*a += 100;
 
-	/*º¯ÊıÔËĞĞ½áÊøºó»áÏú»ÙÔÚËüÄÚ²¿¶¨ÒåµÄËùÓĞ¾Ö²¿Êı¾İ£¬°üÀ¨¾Ö²¿±äÁ¿¡¢¾Ö²¿Êı×éºÍĞÎÊ½²ÎÊı¡£
-	º¯Êı·µ»ØµÄÖ¸ÕëÇë¾¡Á¿²»ÒªÖ¸ÏòÕâĞ©Êı¾İ(¿ÉÒÔÊ¹ÓÃĞÎ²Î)£¬ËüÃÇÔÚºóĞøÊ¹ÓÃ¹ı³ÌÖĞ¿ÉÄÜ»áÒı·¢ÔËĞĞÊ±´íÎó */
-	//int sum = (*a + *b);
-	//return &sum;
+	/*å‡½æ•°è¿è¡Œç»“æŸåä¼šé”€æ¯åœ¨å®ƒå†…éƒ¨å®šä¹‰çš„æ‰€æœ‰å±€éƒ¨æ•°æ®ï¼ŒåŒ…æ‹¬å±€éƒ¨å˜é‡ã€å±€éƒ¨æ•°ç»„å’Œå½¢å¼å‚æ•°ã€‚
+	å‡½æ•°è¿”å›çš„æŒ‡é’ˆè¯·å°½é‡ä¸è¦æŒ‡å‘è¿™äº›æ•°æ®(å¯ä»¥ä½¿ç”¨å½¢å‚)ï¼Œå®ƒä»¬åœ¨åç»­ä½¿ç”¨è¿‡ç¨‹ä¸­å¯èƒ½ä¼šå¼•å‘è¿è¡Œæ—¶é”™è¯¯ */
+	// int sum = (*a + *b);
+	// return &sum;
 
 	*b += *a;
 	return b;
@@ -50,42 +50,44 @@ int* pointerAsFunctionReturnValue(int* a, int* b)
 
 void strPresentation()
 {
-	//×Ö·û´®ÒÔ¡°\0'¡±½áÎ²£¬³ß´çÎª10µÄÊı×é×î¶à´æ·Å9¸ö×Ö·û
-	char names1[] = { 'j', 'a', 'c', 'k', '\0' };
+	// å­—ç¬¦ä¸²ä»¥â€œ\0'â€ç»“å°¾ï¼Œå°ºå¯¸ä¸º10çš„æ•°ç»„æœ€å¤šå­˜æ”¾9ä¸ªå­—ç¬¦
+	char names1[] = {'j', 'a', 'c', 'k', '\0'};
 	printf("name1=%s\n", names1);
 
 	char names2[50] = "jack";
 	printf("name2=%s\n", names2);
 
-	char* names3 = "jack";
+	char *names3 = "jack";
 	printf("name3=%s\n", names3);
 
-	char* str = "ABCD!@#$1234";
+	char *str = "ABCD!@#$1234";
+	printf("str=%s\n", str);
 
-	//malloc(unsigned int size);ÔÚ¶ÑÖĞ·ÖÅä´óĞ¡ÎªsizeµÄ¿Õ¼ä
-	//calloc(unsigned int n, unsigned int size) ÔÚ¶ÑÖĞ·ÖÅän¸ö³¤¶ÈÎªsizeµÄÁ¬Ğø¿Õ¼ä
-	//realloc(void *p, Size_t size)ÔÚ¶ÑÖĞÎªÖ¸ÕëpÖØĞÂ·ÖÅä´óĞ¡ÎªsizeµÄ¿Õ¼ä
-	//char* names4 = (char *)calloc(50, sizeof(char));
-	//names4 ="jack";
-	//printf("name4=%s\n", names4);
-	//free(names4);
+	// malloc(unsigned int size); //åœ¨å †ä¸­åˆ†é…å¤§å°ä¸ºsizeçš„ç©ºé—´
+	// calloc(unsigned int n, unsigned int size);// åœ¨å †ä¸­åˆ†é…nä¸ªé•¿åº¦ä¸ºsizeçš„è¿ç»­ç©ºé—´
+	// realloc(void *p, Size_t size);//åœ¨å †ä¸­ä¸ºæŒ‡é’ˆpé‡æ–°åˆ†é…å¤§å°ä¸ºsizeçš„ç©ºé—´
+
+	char *names4 = (char *)calloc(50, sizeof(char));
+	names4 = "jack";
+	printf("name4=%s\n", names4);
+	free(names4);
 
 	printf("\n");
 }
 
 void ctrlArrayValueByPointer()
 {
-	int* p, array[5], i;
+	int *p, array[5], i;
 	p = &array[0];
-	//p = array;
-	//ÀûÓÃÖ¸ÕëµÄÆ«ÒÆ¶ÔÊı×é¸³Öµ
+	// p = array;
+	// åˆ©ç”¨æŒ‡é’ˆçš„åç§»å¯¹æ•°ç»„èµ‹å€¼
 	for (i = 0; i < sizeof(array) / sizeof(array[0]); i++)
 	{
 		printf("Please input array[%d]\n", i);
 		scanf_s("%d", p + i);
 	}
 
-	//ÀûÓÃÖ¸ÕëµÄÆ«ÒÆ¶ÔÊı×éÈ¡Öµ
+	// åˆ©ç”¨æŒ‡é’ˆçš„åç§»å¯¹æ•°ç»„å–å€¼
 	printf("Array Value is:\n");
 	for (i = 0; i < sizeof(array) / sizeof(array[0]); i++)
 	{
@@ -94,56 +96,57 @@ void ctrlArrayValueByPointer()
 	printf("\n");
 }
 
-// c[] µÈ¼ÛÓÚ*c
-//void intPointer(int c[])
-void getPointerArrayValue(int* c)
+// c[] ç­‰ä»·äº*c
+// void intPointer(int c[])
+void getPointerArrayValue(int *c)
 {
-	int* p[6];
+	int *p[6];
 	int n = sizeof(p) / sizeof(p[0]);
 	int i = 0;
-	//½«Êı×éÔªËØµÄÖµ¸³¸øÖ¸ÕëÊı×é
+	// å°†æ•°ç»„å…ƒç´ çš„å€¼èµ‹ç»™æŒ‡é’ˆæ•°ç»„
 	for (i = 0; i < n; i++)
 	{
-		//Ö¸ÕëÊı×é¸³Öµ·½·¨Ò»£º
-		//&c[i]±íÊ¾c[i]µÄµØÖ·
-		//p[i] = &c[i];
+		// æŒ‡é’ˆæ•°ç»„èµ‹å€¼æ–¹æ³•ä¸€ï¼š
+		//&c[i]è¡¨ç¤ºc[i]çš„åœ°å€
+		// p[i] = &c[i];
 
-		//Ö¸ÕëÊı×é¸³Öµ·½·¨¶ş£º
-		//c±íÊ¾a[0]µÄµØÖ·£¬c+1±íÊ¾a[1]µÄµØÖ·...
+		// æŒ‡é’ˆæ•°ç»„èµ‹å€¼æ–¹æ³•äºŒï¼š
+		// cè¡¨ç¤ºa[0]çš„åœ°å€ï¼Œc+1è¡¨ç¤ºa[1]çš„åœ°å€...
 		p[i] = c + i;
 	}
-	//Ö¸ÕëÊı×é±éÀú£¬È¡Öµ
+	// æŒ‡é’ˆæ•°ç»„éå†ï¼Œå–å€¼
 	for (i = 0; i < n; i++)
 	{
-		printf("Ö¸ÕëÊı×éÈ¡Öµ·½·¨Ò»£º*p[%d]=%d\n", i, *p[i]);
-		//p[i]µÈ¼ÛÓÚ*(p+1)
-		printf("Ö¸ÕëÊı×éÈ¡Öµ·½·¨¶ş£º*p[%d]=%d\n", i, **(p + i));
+		printf("æŒ‡é’ˆæ•°ç»„å–å€¼æ–¹æ³•ä¸€ï¼š*p[%d]=%d\n", i, *p[i]);
+		// p[i]ç­‰ä»·äº*(p+1)
+		printf("æŒ‡é’ˆæ•°ç»„å–å€¼æ–¹æ³•äºŒï¼š*p[%d]=%d\n", i, **(p + i));
 		printf("\n");
 	}
-	free(p);
+	if (p != NULL)
+	{
+		free(p);
+	}
 }
 
-
-//charPointerArray(char* p[])
-void setPointerArrayValue(int n, char** p)
+// charPointerArray(char* p[])
+void setPointerArrayValue(int n, char **p)
 {
-	//int size = sizeof(p) / sizeof(*p);
-	//printf("sizeof(p)=%d\n", sizeof(p));
+	// int size = sizeof(p) / sizeof(*p);
+	// printf("sizeof(p)=%d\n", sizeof(p));
 
 	int i = 0;
 	for (i = 0; i < n; i++)
 	{
-		//p´ú±íµÄÊÇÊı×éµÄÊ×µØÖ·£¬*p´ú±íÔòÖ¸ÏòÊ×µØÖ·µÄÄÚ´æ£¬
-		//printf("%s\t", *(p + i));
-		//p[]µÈ¼ÛÓÚ*p
+		// pä»£è¡¨çš„æ˜¯æ•°ç»„çš„é¦–åœ°å€ï¼Œ*pä»£è¡¨åˆ™æŒ‡å‘é¦–åœ°å€çš„å†…å­˜ï¼Œ
+		// printf("%s\t", *(p + i));
+		// p[]ç­‰ä»·äº*p
 		printf("%s\t", p[i]);
 	}
-
 }
 
 void arrayPointer1Oper(P1 *ptr)
 {
-	printf("==============================================\nÊı×éÖ¸Õë·½Ê½1:\n");
+	printf("==============================================\næ•°ç»„æŒ‡é’ˆæ–¹å¼1:\n");
 	int i = 0;
 	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
 	{
@@ -159,16 +162,16 @@ void arrayPointer1Oper(P1 *ptr)
 
 void arrayPointer2Oper(P2 ptr)
 {
-	printf("Êı×éÖ¸Õë·½Ê½2:\n");
+	printf("æ•°ç»„æŒ‡é’ˆæ–¹å¼2:\n");
 	int i = 0;
-	for (i=0;i<(sizeof(*ptr)/sizeof(int));i++)
+	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
 	{
 		(*ptr)[i] = i;
 	}
 
 	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
 	{
-		printf("*p[%d] = %d ",i,(*ptr)[i]);
+		printf("*p[%d] = %d ", i, (*ptr)[i]);
 	}
 	printf("\n");
 }
@@ -179,7 +182,7 @@ void variable1DimArray(const int *len)
 	{
 		uint8_t len;
 		float array[];
-	}variable1DimArray;
+	} variable1DimArray;
 
 	variable1DimArray *p = (variable1DimArray *)malloc(sizeof(variable1DimArray) + sizeof(float) * (*len));
 	p->len = *len;
@@ -188,7 +191,7 @@ void variable1DimArray(const int *len)
 
 	for (int i = 0; i < p->len; i++)
 	{
-		//±ê×¼CÔÊĞí¸¡µãÊıÊ¹ÓÃºó×º.ºó×ºÎª¡°f¡±»ò¡°F¡±
+		// æ ‡å‡†Cå…è®¸æµ®ç‚¹æ•°ä½¿ç”¨åç¼€.åç¼€ä¸ºâ€œfâ€æˆ–â€œFâ€
 		p->array[i] = i + 1.0f;
 	}
 
@@ -197,32 +200,32 @@ void variable1DimArray(const int *len)
 		printf("%f\n", p->array[i]);
 	}
 
-	if (p!=NULL)
+	if (p != NULL)
 	{
 		free(p);
 	}
 }
 
-void fullyFlexibleVariableArray(const unsigned int* len_Dim1, const unsigned int* len_Dim2)
+void fullyFlexibleVariableArray(const unsigned int *len_Dim1, const unsigned int *len_Dim2)
 {
 	typedef struct VARDIM2ARRAY
 	{
 		unsigned int dim2Len;
-		double* dim2Array[];
-	}varDim2Array;
+		double *dim2Array[];
+	} varDim2Array;
 
 	typedef struct FULLYFLEXIBLEVARIABLEARRAY
 	{
 		unsigned int dim1Len;
-		varDim2Array* dim1Array[];
-	}fullyFlexibleArray;
+		varDim2Array *dim1Array[];
+	} fullyFlexibleArray;
 
-	fullyFlexibleArray* p1 = (fullyFlexibleArray*)malloc(sizeof(fullyFlexibleArray) + sizeof(varDim2Array) * (*len_Dim1));
+	fullyFlexibleArray *p1 = (fullyFlexibleArray *)malloc(sizeof(fullyFlexibleArray) + sizeof(varDim2Array) * (*len_Dim1));
 	p1->dim1Len = *len_Dim1;
 
 	for (unsigned int i = 0; i < p1->dim1Len; i++)
 	{
-		p1->dim1Array[i] = (varDim2Array*)malloc(sizeof(varDim2Array) + sizeof(double) * (*len_Dim2));
+		p1->dim1Array[i] = (varDim2Array *)malloc(sizeof(varDim2Array) + sizeof(double) * (*len_Dim2));
 		p1->dim1Array[i]->dim2Len = *len_Dim2;
 		for (unsigned short j = 0; j < p1->dim1Array[i]->dim2Len; j++)
 		{
@@ -234,159 +237,160 @@ void fullyFlexibleVariableArray(const unsigned int* len_Dim1, const unsigned int
 		printf("\n");
 	}
 
-	//ÊÍ·Å¶ÑÄÚ´æ¿Õ¼ä
+	// é‡Šæ”¾å †å†…å­˜ç©ºé—´
 	for (unsigned int i = 0; i < p1->dim1Len; i++)
 	{
 		if (p1->dim1Array[i] != NULL)
 		{
 			free(p1->dim1Array[i]);
-			//printf("=========ÕıÔÚÊÍ·Ådim2Array memory===========\n");
+			// printf("=========æ­£åœ¨é‡Šæ”¾dim2Array memory===========\n");
 		}
 	}
 	if (p1 != NULL)
 	{
 		free(p1);
-		//printf("=========ÕıÔÚÊÍ·Ådim1Array memory===========\n");
+		// printf("=========æ­£åœ¨é‡Šæ”¾dim1Array memory===========\n");
 	}
-
 }
 
-int functionPointer(int x, int y) {
+int functionPointer(int x, int y)
+{
 	return (x * 10 + y);
 }
 
 int callBackFunction(int x, int y, int (*fp)(int a, int b))
 {
-	
-	return fp(x,y);
+
+	return fp(x, y);
 }
 
-int addition(int x , int y)
+int addition(int x, int y)
 {
 	return x + y;
-} 
-int subtraction(int x, int y) 
+}
+int subtraction(int x, int y)
 {
 	return x - y;
-} 
-int multiplication(int x, int y) 
+}
+int multiplication(int x, int y)
 {
 	return x * y;
-} 
-int division(int x, int y) 
+}
+int division(int x, int y)
 {
 	return x / y;
 }
 
-
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-	//1. ×î¼òµ¥µÄÖ¸Õë
-	//simplePointer();
+	// 1. æœ€ç®€å•çš„æŒ‡é’ˆ
+	printf("Test1 -----------------------------------------------------------------\n");
+	// simplePointer();
 
-
-	//2. Ö¸Õë×÷Îªº¯ÊıÊµ²ÎÒÔ¼°·µ»ØÖµ 
-	//Ò°Ö¸Õë£ºÖ¸ÕëÖ¸ÏòÁËÒ»¸öµØÖ·ÊÇ²»È·¶¨µÄ±äÁ¿£»
-	//´¹ĞüÖ¸Õë£ºÖ¸ÕëÕı³£³õÊ¼»¯£¬ÔøÖ¸ÏòÒ»¸ö¶ÔÏó£¬¸Ã¶ÔÏó±»Ïú»ÙÁË£¬µ«ÊÇÖ¸ÕëÎ´ÖÆ¿Õ£¬ÄÇÃ´¾Í³ÉÁËĞü¿ÕÖ¸Õë¡£
-	//ÉùÃ÷Ö¸ÕëµÄÊ±ºò¾Í¶ÔÆä½øĞĞ³õÊ¼»¯£¬Èç¹ûÔİÊ±²»ÖªµÀ¸Ã³õÊ¼»¯³ÉÊ²Ã´Öµ£¬¾ÍÏÈ°ÑÖ¸ÕëÖÃ¿Õ
-	// ÄÚ´æ±»free»òdeleteºó£¬Ö¸Ïò¸ÃÄÚ´æµÄÖ¸ÕëÂíÉÏÖÃ¿Õ
-	//Ê¹ÓÃmallocº¯ÊıÎªÖ¸ÕëpbÔÚ¶ÑÖĞ¶¯Ì¬·ÖÅäÒ»¿é4×Ö½ÚÄÚ´æ£¬Èô·ÖÅäÊ§°Ü·µ»Ø¿Õ
+	// 2. æŒ‡é’ˆä½œä¸ºå‡½æ•°å®å‚ä»¥åŠè¿”å›å€¼
+	// é‡æŒ‡é’ˆï¼šæŒ‡é’ˆæŒ‡å‘äº†ä¸€ä¸ªåœ°å€æ˜¯ä¸ç¡®å®šçš„å˜é‡ï¼›
+	// å‚æ‚¬æŒ‡é’ˆï¼šæŒ‡é’ˆæ­£å¸¸åˆå§‹åŒ–ï¼Œæ›¾æŒ‡å‘ä¸€ä¸ªå¯¹è±¡ï¼Œè¯¥å¯¹è±¡è¢«é”€æ¯äº†ï¼Œä½†æ˜¯æŒ‡é’ˆæœªç½®ç©ºï¼Œé‚£ä¹ˆå°±æˆäº†æ‚¬ç©ºæŒ‡é’ˆã€‚
+	// å£°æ˜æŒ‡é’ˆçš„æ—¶å€™å°±å¯¹å…¶è¿›è¡Œåˆå§‹åŒ–ï¼Œå¦‚æœæš‚æ—¶ä¸çŸ¥é“è¯¥åˆå§‹åŒ–æˆä»€ä¹ˆå€¼ï¼Œå°±å…ˆæŠŠæŒ‡é’ˆç½®ç©º
+	//  å†…å­˜è¢«freeæˆ–deleteåï¼ŒæŒ‡å‘è¯¥å†…å­˜çš„æŒ‡é’ˆé©¬ä¸Šç½®ç©º
+	// ä½¿ç”¨mallocå‡½æ•°ä¸ºæŒ‡é’ˆpbåœ¨å †ä¸­åŠ¨æ€åˆ†é…ä¸€å—4å­—èŠ‚å†…å­˜ï¼Œè‹¥åˆ†é…å¤±è´¥è¿”å›ç©º
+	printf("Test2 -----------------------------------------------------------------\n");
 	int value = 100;
-	int* ptr = (int*)malloc(sizeof(int));
+	int *ptr = (int *)malloc(sizeof(int));
 	if (ptr != NULL)
 	{
-		//È¡µØÖ·×÷Îªº¯ÊıµÄÊµ²Î£¬ÓëÖ®¶ÔÓÃµÄÊÇÖ¸ÕëĞÎ²Î£¬²Ù×÷Ö¸ÕëÊ±Òà¸Ä±äÁËµ÷ÓÃ´¦±äÁ¿µÄÖµ
-		int* sum = pointerAsFunctionReturnValue(&value, ptr);
-		printf("sum=%d,b=%d\n", *sum, value);
+		// å–åœ°å€ä½œä¸ºå‡½æ•°çš„å®å‚ï¼Œä¸ä¹‹å¯¹ç”¨çš„æ˜¯æŒ‡é’ˆå½¢å‚ï¼Œæ“ä½œæŒ‡é’ˆæ—¶äº¦æ”¹å˜äº†è°ƒç”¨å¤„å˜é‡çš„å€¼
+		int *sum = pointerAsFunctionReturnValue(&value, ptr);
+		printf("Test2: sum=%d,b=%d\n", *sum, value);
 	}
-	free(ptr); //ÊÍ·Å¶ÑÖĞ¶¯Ì¬·ÖÅäµÄ4×Ö½ÚÄÚ´æ
+	free(ptr); // é‡Šæ”¾å †ä¸­åŠ¨æ€åˆ†é…çš„4å­—èŠ‚å†…å­˜
 	ptr = NULL;
 
-
-	////3. ×Ö·û´®µÄÈıÖÖ¶¨Òå·½·¨
+	// 3. å­—ç¬¦ä¸²çš„ä¸‰ç§å®šä¹‰æ–¹æ³•
+	printf("Test3 -----------------------------------------------------------------\n");
 	strPresentation();
 
 	//===========================================================
-	//1. Êı×éÓëÖ¸ÕëµÄ¹ØÏµ:Ö¸ÕëÖ¸ÏòÊı×éÊ×ÔªËØµØÖ·£»p=array»òÕßp=&array[0];
-	//2. Í¨¹ıÖ¸ÕëµÄÆ«ÒÆ¿ÉÒÔÊµÏÖ¶ÔÊı×éÔªËØµÄ¸ü¸Ä£»
-	//3. ½«Êı×éarray[]×÷ÎªÊµ²Î£¬Êµ¼ÊÉÏ´«µİ¹ıÈ¥µÄÊÇÊı×éÊ×ÔªËØµØÖ·£»
-	//4. Òò´Ëº¯ÊıµÄĞÎ²Î×ÔÈ»¿ÉÒÔÓÃÒ»¸öÖ¸Õë±íÊ¾Êı×éÊ×ÔªËØµØÖ·£»
-	//5. Ö¸ÕëÊı×é£¬ËüÊÇÊı×é£¬Êı×éÄÚÃ¿¸öÔªËØ¶¼ÊÇÖ¸Õë£»
+	// 1. æ•°ç»„ä¸æŒ‡é’ˆçš„å…³ç³»:æŒ‡é’ˆæŒ‡å‘æ•°ç»„é¦–å…ƒç´ åœ°å€ï¼›p=arrayæˆ–è€…p=&array[0];
+	// 2. é€šè¿‡æŒ‡é’ˆçš„åç§»å¯ä»¥å®ç°å¯¹æ•°ç»„å…ƒç´ çš„æ›´æ”¹ï¼›
+	// 3. å°†æ•°ç»„array[]ä½œä¸ºå®å‚ï¼Œå®é™…ä¸Šä¼ é€’è¿‡å»çš„æ˜¯æ•°ç»„é¦–å…ƒç´ åœ°å€ï¼›
+	// 4. å› æ­¤å‡½æ•°çš„å½¢å‚è‡ªç„¶å¯ä»¥ç”¨ä¸€ä¸ªæŒ‡é’ˆè¡¨ç¤ºæ•°ç»„é¦–å…ƒç´ åœ°å€ï¼›
+	// 5. æŒ‡é’ˆæ•°ç»„ï¼Œå®ƒæ˜¯æ•°ç»„ï¼Œæ•°ç»„å†…æ¯ä¸ªå…ƒç´ éƒ½æ˜¯æŒ‡é’ˆï¼›
 	//===========================================================*/
 
-	//4. ÀûÓÃÖ¸ÕëÆ«ÒÆÈ¡Êı×éÔªËØµÄÖµ
-	//ctrlArrayValueByPointer();
+	// 4. åˆ©ç”¨æŒ‡é’ˆåç§»å–æ•°ç»„å…ƒç´ çš„å€¼
+	printf("Test4 -----------------------------------------------------------------\n");
+	ctrlArrayValueByPointer();
 
-	//5. Ö¸ÕëÊı×é¸³Öµ
-	//int c[] = { 1,2,3,4,5,6 };
-	//getPointerArrayValue(c);
+	// 5. æŒ‡é’ˆæ•°ç»„èµ‹å€¼
+	int c[] = {1, 2, 3, 4, 5, 6};
+	printf("Test5 -----------------------------------------------------------------\n");
+	getPointerArrayValue(c);
 
-	//Ö¸ÕëÊı×é£¬ËüÊÇÊı×é£¬Ã¿¸öÔªËØ¶¼ÊÇÖ¸Õë
-	//[]±È*ÓÅÏÈ¼¶¸ß,char* p[]ÊÇÒ»¸öÖ¸ÕëÊı×é
+	// æŒ‡é’ˆæ•°ç»„ï¼Œå®ƒæ˜¯æ•°ç»„ï¼Œæ¯ä¸ªå…ƒç´ éƒ½æ˜¯æŒ‡é’ˆ
+	//[]æ¯”*ä¼˜å…ˆçº§é«˜,char* p[]æ˜¯ä¸€ä¸ªæŒ‡é’ˆæ•°ç»„
 
-	//6. Ö¸ÕëÊı×éÈ¡Öµ
-	//char* p[] = { "A1","A2","A3","A4","A5" };
-	//int n = sizeof(p) / sizeof(*p);
-	//setPointerArrayValue(n, p);
+	// 6. æŒ‡é’ˆæ•°ç»„å–å€¼
+	// char* p[] = { "A1","A2","A3","A4","A5" };
+	// int n = sizeof(p) / sizeof(*p);
+	// setPointerArrayValue(n, p);
 
-	//7. Êı×éÖ¸Õë: ËüÊÇÖ¸Õë£¬Ö¸ÏòÒ»¸öÊı×éµÄÖ¸Õë
-	//·½Ê½1£ºÏÈ¶¨ÒåÊı×éÀàĞÍ£¬ÔÙ¶¨ÒåÖ¸Õë±äÁ¿£¨²»³£ÓÃ£©
-	int array[10] = { 0 };
-	//typedef int P1[10]; //AÊı×éÀàĞÍ
-	P1 *ptr1 = &array; //Ö¸Õë±äÁ¿
-	arrayPointer1Oper(ptr1);
+	// 7. æ•°ç»„æŒ‡é’ˆ: å®ƒæ˜¯æŒ‡é’ˆï¼ŒæŒ‡å‘ä¸€ä¸ªæ•°ç»„çš„æŒ‡é’ˆ
+	// æ–¹å¼1ï¼šå…ˆå®šä¹‰æ•°ç»„ç±»å‹ï¼Œå†å®šä¹‰æŒ‡é’ˆå˜é‡ï¼ˆä¸å¸¸ç”¨ï¼‰
+	int array[10] = {0};
+	// typedef int P1[10]; //Aæ•°ç»„ç±»å‹
+	P1 *ptr1 = &array; // æŒ‡é’ˆå˜é‡
+	// arrayPointer1Oper(ptr1);
 
-	//·½Ê½2£ºÏÈ¶¨ÒåÊı×éÖ¸ÕëÀàĞÍ£¬¸ù¾İÀàĞÍ¶¨Òå±äÁ¿
-	//typedef int(*P2)[10]; //ÏÈ¶¨ÒåÊı×éÖ¸ÕëÀàĞÍ
-	//£¨£©ºÍ[]ÓÅÏÈ¼¶Ò»Ñù£¬´Ó×óÍùÓÒ,£¨£©ÄÚÓĞÖ¸Õë£¬ËùÒÔËüÊÇÒ»¸öÖ¸Õë£¬[]ÊÇÊı×é£¬Òò´ËËüÊÇÖ¸ÏòÊı×éµÄÖ¸Õë;
-	// ËüÓĞtypedef£¬ËùÒÔËüÊÇÒ»¸öÊı×éÖ¸ÕëÀàĞÍ
-	P2 ptr2 = &array; //ÔÙ¶¨ÒåÖ¸Õë±äÁ¿
-	arrayPointer2Oper(ptr2);
+	// æ–¹å¼2ï¼šå…ˆå®šä¹‰æ•°ç»„æŒ‡é’ˆç±»å‹ï¼Œæ ¹æ®ç±»å‹å®šä¹‰å˜é‡
+	// typedef int(*P2)[10]; //å…ˆå®šä¹‰æ•°ç»„æŒ‡é’ˆç±»å‹
+	// ï¼ˆï¼‰å’Œ[]ä¼˜å…ˆçº§ä¸€æ ·ï¼Œä»å·¦å¾€å³,ï¼ˆï¼‰å†…æœ‰æŒ‡é’ˆï¼Œæ‰€ä»¥å®ƒæ˜¯ä¸€ä¸ªæŒ‡é’ˆï¼Œ[]æ˜¯æ•°ç»„ï¼Œå› æ­¤å®ƒæ˜¯æŒ‡å‘æ•°ç»„çš„æŒ‡é’ˆ;
+	//  å®ƒæœ‰typedefï¼Œæ‰€ä»¥å®ƒæ˜¯ä¸€ä¸ªæ•°ç»„æŒ‡é’ˆç±»å‹
+	P2 ptr2 = &array; // å†å®šä¹‰æŒ‡é’ˆå˜é‡
+	// arrayPointer2Oper(ptr2);
 
-	//·½Ê½3£ºÖ±½Ó¶¨ÒåÊı×éÖ¸Õë±äÁ¿
-	int i = 0;
-	int(*ptr3)[10];
-	ptr3 = &array;
-	printf("Êı×éÖ¸Õë·½Ê½3:\n");
-	for(i = 0; i < (sizeof(*ptr3)/sizeof(int));i++){
-		(*ptr3)[i] = i*30;
-		printf("*ptr3[%d] = %d ", i, (*ptr3)[i]);
-	}
-	printf("\n");
+	// æ–¹å¼3ï¼šç›´æ¥å®šä¹‰æ•°ç»„æŒ‡é’ˆå˜é‡
+	// int i = 0;
+	// int(*ptr3)[10];
+	// ptr3 = &array;
+	// printf("æ•°ç»„æŒ‡é’ˆæ–¹å¼3:\n");
+	// for (i = 0; i < (sizeof(*ptr3) / sizeof(int)); i++)
+	// {
+	// 	(*ptr3)[i] = i * 30;
+	// 	printf("*ptr3[%d] = %d ", i, (*ptr3)[i]);
+	// }
+	// printf("\n");
 
+	// 8. å‡½æ•°æŒ‡é’ˆï¼Œå®šä¹‰ä¸€ä¸ªæŒ‡é’ˆæŒ‡å‘ä¸€ä¸ªå‡½æ•°ï¼Œæœ‰ä¸‰ç§å®šä¹‰æ–¹å¼
+	// æ–¹å¼ä¸€ï¼šå…ˆå®šä¹‰å‡½æ•°ç±»å‹ï¼Œå†å®šä¹‰å‡½æ•°æŒ‡é’ˆå˜é‡ï¼ˆä¸å¸¸ç”¨ï¼‰
+	// typedef int FUNCTION_POINTER1(int x, int y); // å…ˆå®šä¹‰å‡½æ•°ç±»å‹
+	// FUNCTION_POINTER1 *fp1 = functionPointer;	 // å†å®šä¹‰å‡½æ•°æŒ‡é’ˆå˜é‡
+	// int result = 0;
+	// result = fp1(10, 20);
 
-	//8. º¯ÊıÖ¸Õë£¬¶¨ÒåÒ»¸öÖ¸ÕëÖ¸ÏòÒ»¸öº¯Êı£¬ÓĞÈıÖÖ¶¨Òå·½Ê½
-	//·½Ê½Ò»£ºÏÈ¶¨Òåº¯ÊıÀàĞÍ£¬ÔÙ¶¨Òåº¯ÊıÖ¸Õë±äÁ¿£¨²»³£ÓÃ£©
-	typedef int FUNCTION_POINTER1(int x, int y); //ÏÈ¶¨Òåº¯ÊıÀàĞÍ
-	FUNCTION_POINTER1* fp1 = functionPointer; // ÔÙ¶¨Òåº¯ÊıÖ¸Õë±äÁ¿
-	int result = 0;
-	result = fp1(10, 20);
+	// æ–¹å¼2ï¼šå…ˆå®šä¹‰å‡½æ•°æŒ‡é’ˆç±»å‹ï¼Œæ ¹æ®ç±»å‹å®šä¹‰æŒ‡é’ˆå˜é‡ï¼ˆå¸¸ç”¨ï¼‰
+	// typedef int (*FUNCTION_POINTER2)(int x, int y);
+	// FUNCTION_POINTER2 fp2 = functionPointer;
+	// result = fp2(20, 20);
 
-	//·½Ê½2£ºÏÈ¶¨Òåº¯ÊıÖ¸ÕëÀàĞÍ£¬¸ù¾İÀàĞÍ¶¨ÒåÖ¸Õë±äÁ¿£¨³£ÓÃ£©
-	typedef int (*FUNCTION_POINTER2)(int x, int y);
-	FUNCTION_POINTER2 fp2 = functionPointer;
-	result = fp2(20, 20);
+	// æ–¹å¼2ï¼šç›´æ¥å®šä¹‰å‡½æ•°æŒ‡é’ˆï¼ˆå¸¸ç”¨ï¼‰
+	// int (*fp3)(int x, int y) = functionPointer;
 
-	//·½Ê½2£ºÖ±½Ó¶¨Òåº¯ÊıÖ¸Õë£¨³£ÓÃ£©
-	int (*fp3)(int x, int y) = functionPointer;
+	// å‡½æ•°æŒ‡é’ˆçš„ä¸€ä¸ªä½œç”¨ï¼šå›è°ƒå‡½æ•°ï¼ˆå°†å‡½æ•°çš„å®ç°å’Œè°ƒç”¨åˆ†ç¦»ï¼‰
+	// printf("###########################################\n");
+	// result = callBackFunction(30, 20, fp3);
+	// printf("result = %d\n", result);
 
-	//º¯ÊıÖ¸ÕëµÄÒ»¸ö×÷ÓÃ£º»Øµ÷º¯Êı£¨½«º¯ÊıµÄÊµÏÖºÍµ÷ÓÃ·ÖÀë£©
-	printf("###########################################\n");
-	result = callBackFunction(30, 20, fp3);
-	printf("result = %d\n", result);
-
-
-	//º¯ÊıÖ¸ÕëÊı×é£ºÊı×éÀïÃæ´æ·ÅµÄÊÇº¯ÊıÖ¸Õë
-	//int x=0, y=0;
-	//char operator[2];
-	//char *buf[] = {"+","-","*","/"};
-	//int (*calculator[4])(int x, int y) = {addition,subtraction ,multiplication,division};
-	////scanf_s("%d%s%d", &x, operator,2, &y);//(ÕâÖÖ·½Ê½»ñÈ¡µÄ½á¹ûÓĞÎÊÌâ)
+	// å‡½æ•°æŒ‡é’ˆæ•°ç»„ï¼šæ•°ç»„é‡Œé¢å­˜æ”¾çš„æ˜¯å‡½æ•°æŒ‡é’ˆ
+	// int x=0, y=0;
+	// char operator[2];
+	// char *buf[] = {"+","-","*","/"};
+	// int (*calculator[4])(int x, int y) = {addition,subtraction ,multiplication,division};
+	////scanf_s("%d%s%d", &x, operator,2, &y);//(è¿™ç§æ–¹å¼è·å–çš„ç»“æœæœ‰é—®é¢˜)
 	////printf("x = %d, operator = %s,y = %d\n", x, operator,y);
 	////scanf_s("%s",&operator,sizeof(operator));
 	////printf("operator = %s\n",operator);
 
-	//while (1) {
+	// while (1) {
 	//	printf("please input x\n");
 	//	scanf_s("%d", &x);
 	//	printf("please input operator\n");
@@ -400,16 +404,14 @@ int main(int argc, char* argv[])
 	//			break;
 	//		}
 	//	}
-	//}
+	// }
 
-	//9. ±ä³¤Ò»Î¬Êı×é
-	int len = 5;
-	variable1DimArray(&len);
+	// 9. å˜é•¿ä¸€ç»´æ•°ç»„
+	// int len = 5;
+	// variable1DimArray(&len);
 
-	unsigned int lenDim1 = 1, lemDim2 = 2;
-	fullyFlexibleVariableArray(&lenDim1, &lemDim2);
+	// unsigned int lenDim1 = 1, lemDim2 = 2;
+	// fullyFlexibleVariableArray(&lenDim1, &lemDim2);
 
 	return 0;
 }
-
-
