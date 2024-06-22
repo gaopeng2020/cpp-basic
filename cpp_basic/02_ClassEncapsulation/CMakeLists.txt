@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5.0)
 
 project(VarString)
+# project(VarString LANGUAGES CXX VERSION "1.0.0")
 
 #定义C++版本
 add_definitions(-std=c++17)
 #定义调试gdb信息
+# set(CMAKE_CXX_COMPILER "D:/ProgramFiles/DeveloperKits/Qt/Tools/mingw1120_64/bin/g++.exe")
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLASS} -O0 -Wall -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLASS} -O3 -Wall")

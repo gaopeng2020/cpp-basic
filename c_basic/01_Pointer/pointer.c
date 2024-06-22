@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,20 +31,20 @@ void simplePointer()
 	printf("t=%d\t*pt=%d\t*ptt=%d\n", t, *pt, *ptt);
 }
 
-int *pointerAsFunctionReturnValue(int *a, int *b)
+int *pointerAsFunctionReturnValue(const int *a, const int *b)
 {
-	// 随机生成一个(x-y)的随机数:x+rand%(y-x+1)
-	srand((unsigned)time(NULL)); // 使用当前时间对随机数发生器初始化,需要include <time.h>
-	*b = 100 + rand() % (200 - 100 + 1);
-	*a += 100;
+	// int *sum = malloc(sizeof(int)); // 在堆中分配大小为size的空间
+	// // 随机生成一个(x-y)的随机数:x+rand%(y-x+1)
+	// srand((unsigned)time(NULL)); // 使用当前时间对随机数发生器初始化,需要include <time.h>
+	// *sum = 100 + rand() % (*a + *b);
 
 	/*函数运行结束后会销毁在它内部定义的所有局部数据，包括局部变量、局部数组和形式参数。
 	函数返回的指针请尽量不要指向这些数据(可以使用形参)，它们在后续使用过程中可能会引发运行时错误 */
-	// int sum = (*a + *b);
-	// return &sum;
+	int sum = (*a) + (*b);
+	return &sum;
 
-	*b += *a;
-	return b;
+	// *b += *a;
+	// return sum;
 }
 
 void strPresentation()
@@ -144,25 +143,9 @@ void setPointerArrayValue(int n, char **p)
 	}
 }
 
-void arrayPointer1Oper(P1 *ptr)
+void arrayPointerTest(P1 *ptr)
 {
 	printf("==============================================\n数组指针方式1:\n");
-	int i = 0;
-	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
-	{
-		(*ptr)[i] = i;
-	}
-
-	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
-	{
-		printf("*p[%d] = %d ", i, (*ptr)[i]);
-	}
-	printf("\n");
-}
-
-void arrayPointer2Oper(P2 ptr)
-{
-	printf("数组指针方式2:\n");
 	int i = 0;
 	for (i = 0; i < (sizeof(*ptr) / sizeof(int)); i++)
 	{
@@ -299,8 +282,11 @@ int main(int argc, char *argv[])
 	if (ptr != NULL)
 	{
 		// 取地址作为函数的实参，与之对用的是指针形参，操作指针时亦改变了调用处变量的值
-		int *sum = pointerAsFunctionReturnValue(&value, ptr);
+		int *sum = NULL;
+		sum = pointerAsFunctionReturnValue(&value, ptr);
 		printf("Test2: sum=%d,b=%d\n", *sum, value);
+		free(sum);
+		sum = NULL;
 	}
 	free(ptr); // 释放堆中动态分配的4字节内存
 	ptr = NULL;
@@ -321,7 +307,7 @@ int main(int argc, char *argv[])
 	printf("Test4 -----------------------------------------------------------------\n");
 	ctrlArrayValueByPointer();
 
-	// 5. 指针数组赋值
+	// 5. 指针数组取值
 	int c[] = {1, 2, 3, 4, 5, 6};
 	printf("Test5 -----------------------------------------------------------------\n");
 	getPointerArrayValue(c);
@@ -330,81 +316,77 @@ int main(int argc, char *argv[])
 	//[]比*优先级高,char* p[]是一个指针数组
 
 	// 6. 指针数组取值
-	// char* p[] = { "A1","A2","A3","A4","A5" };
-	// int n = sizeof(p) / sizeof(*p);
-	// setPointerArrayValue(n, p);
+	char *p[] = {"A1", "A2", "A3", "A4", "A5"};
+	int n = sizeof(p) / sizeof(*p);
+	setPointerArrayValue(n, p);
 
 	// 7. 数组指针: 它是指针，指向一个数组的指针
 	// 方式1：先定义数组类型，再定义指针变量（不常用）
 	int array[10] = {0};
-	// typedef int P1[10]; //A数组类型
-	P1 *ptr1 = &array; // 指针变量
-	// arrayPointer1Oper(ptr1);
+	typedef int P1[sizeof(array) / sizeof(array[0])]; // 数组类型
+	P1 *ptr1 = &array;								  // 指针变量
+	arrayPointerTest(ptr1);
 
 	// 方式2：先定义数组指针类型，根据类型定义变量
-	// typedef int(*P2)[10]; //先定义数组指针类型
+	typedef int(*P2)[sizeof(array) / sizeof(array[0])]; // 先定义数组指针类型
 	// （）和[]优先级一样，从左往右,（）内有指针，所以它是一个指针，[]是数组，因此它是指向数组的指针;
 	//  它有typedef，所以它是一个数组指针类型
 	P2 ptr2 = &array; // 再定义指针变量
-	// arrayPointer2Oper(ptr2);
+	arrayPointerTest(ptr2);
 
-	// 方式3：直接定义数组指针变量
-	// int i = 0;
-	// int(*ptr3)[10];
-	// ptr3 = &array;
-	// printf("数组指针方式3:\n");
-	// for (i = 0; i < (sizeof(*ptr3) / sizeof(int)); i++)
-	// {
-	// 	(*ptr3)[i] = i * 30;
-	// 	printf("*ptr3[%d] = %d ", i, (*ptr3)[i]);
-	// }
-	// printf("\n");
+	// 方式3：直接定义数组指针变量（常用）
+	int(*ptr3)[sizeof(array) / sizeof(array[0])];
+	ptr3 = &array;
+	arrayPointerTest(ptr3);
 
 	// 8. 函数指针，定义一个指针指向一个函数，有三种定义方式
 	// 方式一：先定义函数类型，再定义函数指针变量（不常用）
-	// typedef int FUNCTION_POINTER1(int x, int y); // 先定义函数类型
-	// FUNCTION_POINTER1 *fp1 = functionPointer;	 // 再定义函数指针变量
-	// int result = 0;
-	// result = fp1(10, 20);
+	typedef int FUNCTION_POINTER1(int x, int y); // 先定义函数类型
+	FUNCTION_POINTER1 *fp1 = functionPointer;	 // 再定义函数指针变量
+	int result = 0;
+	result = fp1(10, 20);
 
 	// 方式2：先定义函数指针类型，根据类型定义指针变量（常用）
-	// typedef int (*FUNCTION_POINTER2)(int x, int y);
-	// FUNCTION_POINTER2 fp2 = functionPointer;
-	// result = fp2(20, 20);
+	typedef int (*FUNCTION_POINTER2)(int x, int y);
+	FUNCTION_POINTER2 fp2 = functionPointer;
+	result = fp2(20, 20);
 
-	// 方式2：直接定义函数指针（常用）
-	// int (*fp3)(int x, int y) = functionPointer;
+	// 方式3：直接定义函数指针（常用）
+	int (*fp3)(int x, int y) = functionPointer;
 
 	// 函数指针的一个作用：回调函数（将函数的实现和调用分离）
-	// printf("###########################################\n");
-	// result = callBackFunction(30, 20, fp3);
-	// printf("result = %d\n", result);
+	printf("###########################################\n");
+	result = callBackFunction(30, 20, fp3);
+	printf("result = %d\n", result);
 
 	// 函数指针数组：数组里面存放的是函数指针
-	// int x=0, y=0;
-	// char operator[2];
-	// char *buf[] = {"+","-","*","/"};
-	// int (*calculator[4])(int x, int y) = {addition,subtraction ,multiplication,division};
-	////scanf_s("%d%s%d", &x, operator,2, &y);//(这种方式获取的结果有问题)
-	////printf("x = %d, operator = %s,y = %d\n", x, operator,y);
-	////scanf_s("%s",&operator,sizeof(operator));
-	////printf("operator = %s\n",operator);
+	int x = 0, y = 0,i=0;
+	char operator[2];
+	char *buf[] = {"+", "-", "*", "/"};
+	int (*calculator[4])(int x, int y) = {addition, subtraction, multiplication, division};
+	// scanf_s("%d%s%d", &x, operator,2, &y);//(这种方式获取的结果有问题)
+	// printf("x = %d, operator = %s,y = %d\n", x, operator,y);
+	// scanf_s("%s",&operator,sizeof(operator));
+	// printf("operator = %s\n",operator);
 
-	// while (1) {
-	//	printf("please input x\n");
-	//	scanf_s("%d", &x);
-	//	printf("please input operator\n");
-	//	scanf_s("%s", &operator,sizeof(operator));
-	//	printf("please input y\n");
-	//	scanf_s("%d",&y);
-	//	for (i = 0; i < 4; i++) {
-	//		if (strcmp(buf[i], operator) == 0) {
-	//			printf("result is : %d\n", calculator[i](x, y));
-	//			printf("please input Ctrl+C if you want to eixt!!!\n");
-	//			break;
-	//		}
-	//	}
-	// }
+	while (1)
+	{
+		printf("please input x\n");
+		scanf_s("%d", &x);
+		printf("please input operator\n");
+		scanf_s("%s", &operator, sizeof(operator));
+		printf("please input y\n");
+		scanf_s("%d", &y);
+		for (i = 0; i < 4; i++)
+		{
+			if (strcmp(buf[i], operator) == 0)
+			{
+				printf("result is : %d\n", calculator[i](x, y));
+				printf("please input Ctrl+C if you want to eixt!!!\n");
+				break;
+			}
+		}
+	}
 
 	// 9. 变长一维数组
 	// int len = 5;
