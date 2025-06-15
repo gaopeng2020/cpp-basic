@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
 {
 	// 1. 最简单的指针
 	printf("Test1 -----------------------------------------------------------------\n");
-	// simplePointer();
+	 simplePointer();
 
 	// 2. 指针作为函数实参以及返回值
 	// 野指针：指针指向了一个地址是不确定的变量；
@@ -283,6 +283,7 @@ int main(int argc, char *argv[])
 	{
 		// 取地址作为函数的实参，与之对用的是指针形参，操作指针时亦改变了调用处变量的值
 		int *sum = NULL;
+        *ptr = 50;
 		sum = pointerAsFunctionReturnValue(&value, ptr);
 		printf("Test2: sum=%d,b=%d\n", *sum, value);
 		free(sum);

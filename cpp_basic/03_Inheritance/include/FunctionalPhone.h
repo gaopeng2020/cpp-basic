@@ -14,13 +14,13 @@ public:
     FunctionalPhone(const FunctionalPhone &funcPhone);
 
     //功能函数
-    void callPhone();
+    void callPhone() const;
     void sendMessage();
 
     //析构函数
     ~FunctionalPhone();
 
-    long long getPhoneNum();
+    long long getPhoneNum() const;
     void setPhoneNum(long long phoneNum);
     const char *getMessage();
     void setMessage(const char *message);

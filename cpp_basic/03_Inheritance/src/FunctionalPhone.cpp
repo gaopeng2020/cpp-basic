@@ -3,21 +3,21 @@
 FunctionalPhone::FunctionalPhone()
 {
     this->phoneNum = 0;
-    this->message = NULL;
+    this->message = nullptr;
 }
-FunctionalPhone::FunctionalPhone(long long phoneNum, const char *message)
+FunctionalPhone::FunctionalPhone(long long phoneNum, const char *message):phoneNum(phoneNum),message(message)
 {
-    this->phoneNum = phoneNum;
-    this->message = message;
+//    this->phoneNum = phoneNum;
+//    this->message = message;
 }
-FunctionalPhone::FunctionalPhone(const FunctionalPhone &funcPhone)
+FunctionalPhone::FunctionalPhone(const FunctionalPhone &funcPhone):phoneNum(funcPhone.phoneNum),message(funcPhone.message)
 {
-    this->phoneNum = funcPhone.phoneNum;
-    this->message = funcPhone.message;
+//    this->phoneNum = funcPhone.phoneNum;
+//    this->message = funcPhone.message;
 }
 
 //功能函数
-void FunctionalPhone::callPhone()
+void FunctionalPhone::callPhone() const
 {
     std::cout << "拨打电话： " << phoneNum << std::endl;
 }
@@ -37,7 +37,7 @@ FunctionalPhone::~FunctionalPhone()
     //}
 }
 
-long long FunctionalPhone::getPhoneNum()
+long long FunctionalPhone::getPhoneNum() const
 {
     return this->phoneNum;
 }

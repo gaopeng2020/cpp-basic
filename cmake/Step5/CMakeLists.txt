@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # set the project name and version
-project(Tutorial VERSION 1.0)
+project(Tutorial5 VERSION 1.0)
 
 # set(EXECUTABLE_OUTPUT_PATH ./bin) 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin) 

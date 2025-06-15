@@ -5,7 +5,7 @@
 namespace mathfunctions {
 namespace detail {
 // a hack square root calculation using simple operations
-double mysqrt(double x)
+double mysqrt(const double x)
 {
   if (x <= 0) {
     return 0;
@@ -18,7 +18,7 @@ double mysqrt(double x)
     if (result <= 0) {
       result = 0.1;
     }
-    double delta = x - (result * result);
+    const double delta = x - (result * result);
     result = result + 0.5 * delta / result;
     std::cout << "Computing sqrt of " << x << " to be " << result << std::endl;
   }

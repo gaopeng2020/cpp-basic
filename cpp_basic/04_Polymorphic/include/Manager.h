@@ -7,10 +7,10 @@ class Manager : virtual public Employee
 {
 public:
 	Manager();
-	virtual ~Manager();
-	virtual void initialization();
-	virtual void monthSalary();
-	virtual void changeLevel();
+	~Manager() override;
+	void initialization() override;
+	void monthSalary() override;
+	void changeLevel() override;
 	virtual void getBaseSalary();
 
 protected:

@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name and version
-project(Tutorial VERSION 1.0)
+project(Tutorial4 VERSION 1.0)
 
 # specify the C++ standard
 add_library(tutorial_compiler_flags INTERFACE)
@@ -39,10 +39,10 @@ configure_file(TutorialConfig.h.in TutorialConfig.h)
 add_subdirectory(MathFunctions)
 
 # add the executable
-add_executable(Tutorial tutorial.cxx)
+add_executable(${PROJECT_NAME} tutorial.cxx)
 
-target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
+target_link_libraries(${PROJECT_NAME} PUBLIC MathFunctions tutorial_compiler_flags)
 
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-target_include_directories(Tutorial PUBLIC "${PROJECT_BINARY_DIR}")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_BINARY_DIR}")

@@ -5,24 +5,26 @@ void functionalPhoneTest(long long &phoneNum, const char *&message)
 {
     std::cout << "================功能手机测试===============" << std::endl;
     //空参构造函数
-    FunctionalPhone *fp1 = new FunctionalPhone();
+    auto *fp1 = new FunctionalPhone();
     (*fp1).setPhoneNum(phoneNum);
     (*fp1).setMessage(message);
     printf("--------------调用空参构造函数-------------\n");
     printf("%lld\n%s\n", (*fp1).getPhoneNum(), (*fp1).getMessage());
 
     //全参数构造函数
-    FunctionalPhone *fp2 = new FunctionalPhone();
-    fp2 = fp1;
+    auto *fp2 =  fp1;
     printf("--------------调用全参构造函数--------------\n");
-    (*fp1).callPhone();
-    (*fp1).sendMessage();
+    (*fp2).callPhone();
+    (*fp2).sendMessage();
+
+    delete fp2;
+    delete fp1;
 }
 
 void SmartPhoneTest(long long *phoneNum, const char **message, const char **webAddress)
 {
     std::cout << "================智能手机测试===============" << std::endl;
-    SmartPhone *sp1 = new SmartPhone(*phoneNum, *message, *webAddress);
+    auto *sp1 = new SmartPhone(*phoneNum, *message, *webAddress);
     sp1->callPhone();
     sp1->sendMessage();
     sp1->surInternet();
@@ -47,7 +49,7 @@ void compatibilityTest(long long &phoneNum, const char *&message, const char *&w
     std::cout << "==============类型兼容性测试===============" << std::endl;
     std::cout << "父类指针可以直接指向子类对象" << std::endl;
     FunctionalPhone *fp;
-    SmartPhone *sp = new SmartPhone(phoneNum, message, webAddress);
+    auto *sp = new SmartPhone(phoneNum, message, webAddress);
     fp = sp;
     fp->callPhone();
     fp->sendMessage();

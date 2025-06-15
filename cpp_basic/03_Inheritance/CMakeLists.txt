@@ -1,26 +1,7 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(Inheritance VERSION 0.1.0)
-
-include(CTest)
-enable_testing()
-
-#定义C++版本
-add_definitions(-std=c++11)
-#定义调试gdb信息
-set(CMAKE_BUILD_TYPE "Debug")
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLASS} -O0 -Wall -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLASS} -O3 -Wall")
-
-#设置生成的二进制文件存放位置
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-
-#设置项目信息
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+project(CppBasic.03_Inheritance VERSION 0.1.0)
 
 #向工程添加头文件搜索路径
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #查找root目录下所有的cpp文件，并将其保存在变量ROOT_SRCS中
 aux_source_directory(./ ROOT_SRCS)

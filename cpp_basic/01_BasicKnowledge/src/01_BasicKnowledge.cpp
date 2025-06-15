@@ -84,20 +84,20 @@ void vectorSemantic()
 	}
 	//遍历获取vector元素
 	cout << "方式一" << endl;
-	for (auto i = 0; i < text.size(); i++)
+	for (size_t i = 0; i < std::size(text); i++)
 	{
 		cout << "text[" << i << "] is " << text[i] << endl;
 	}
 	//方式二：通过应用获取vector元素
 	cout << "方式二" << endl;
-	for (auto& r : text)
+	for (auto& item : text)
 	{
-		cout << r << endl;
+		cout << item << endl;
 	}
 	//方式三：通过迭代器获取
 	cout << "方式三" << endl;
-	for (auto bgn = text.begin(), end = text.end(); bgn != end; bgn++)
+	for (auto iterator = text.begin(), end = text.end(); iterator != end; iterator++)
 	{
-		cout << *bgn << endl;
+		cout << *iterator << endl;
 	}
 }

@@ -1,29 +1,12 @@
-cmake_minimum_required(VERSION 3.0.0)
-
-# string(REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CURRENT_FOLDER_ABSOLUTE})
-# set (TARGET_NAME ${CURRENT_FOLDER})
-# project(${CURRENT_FOLDER})
-project(01_BasicKnowledge 
+project(CppBasic.01_BasicKnowledge
         VERSION 1.0.0
         DESCRIPTION "OneFLOW opensource CFD"
         HOMEPAGE_URL "https://github.com/"
         LANGUAGES CXX
 )
 
-#定义C++版本
-add_definitions(-std=c++17)
-#定义调试gdb信息 For Linux
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLASS} -O0 -Wall -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLASS} -O3 -Wall")
-
-set(CMAKE_INSTALL_PREFIX ../install)
-
-#设置生成的二进制文件存放位置
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-
 #向工程添加头文件搜索路径
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #查找root目录下所有的cpp文件，并将其保存在变量ROOT_SRCS中
 aux_source_directory(./ ROOT_SRCS)

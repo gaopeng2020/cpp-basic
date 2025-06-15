@@ -2,9 +2,7 @@
 Manager::Manager() : Employee()
 {
 }
-Manager::~Manager()
-{
-}
+Manager::~Manager()= default;
 void Manager::initialization()
 {
 	cout << "请输入经理姓名" << endl;

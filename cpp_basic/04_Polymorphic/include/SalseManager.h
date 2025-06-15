@@ -9,10 +9,10 @@ class SalseManager :public Salesman,public Manager
 {
 public:
 	SalseManager();
-	~SalseManager();
-	virtual void initialization();
-	virtual void monthSalary();
-	virtual void changeLevel();
-	virtual void getBaseSalary();
+	~SalseManager() override;
+	void initialization() override;
+	void monthSalary() override;
+	void changeLevel() override;
+	void getBaseSalary() override;
 };
 

@@ -1,21 +1,12 @@
-cmake_minimum_required(VERSION 3.5.0)
+#cmake_minimum_required(VERSION 3.5.0)
 
-project(VarString)
-# project(VarString LANGUAGES CXX VERSION "1.0.0")
-
-#定义C++版本
-add_definitions(-std=c++17)
-#定义调试gdb信息
-# set(CMAKE_CXX_COMPILER "D:/ProgramFiles/DeveloperKits/Qt/Tools/mingw1120_64/bin/g++.exe")
-set(CMAKE_BUILD_TYPE "Debug")
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLASS} -O0 -Wall -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLASS} -O3 -Wall")
+project(CppBasic.02_VarString VERSION 0.1.0)
 
 #设置生成的二进制文件存放位置
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+#set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 #向工程添加头文件搜索路径
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #查找root目录下所有的cpp文件，并将其保存在变量ROOT_SRCS中
 aux_source_directory(./ ROOT_SRCS)

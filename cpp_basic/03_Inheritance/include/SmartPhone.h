@@ -34,7 +34,7 @@ public:
 
     ~SmartPhone();
 
-    //Smart Phone new Function
+    //SmartPhone new Function
     void surInternet();
 
     const char *getWebAddress();

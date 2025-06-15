@@ -1,19 +1,17 @@
 #include "VarString.h"
 
 // 无参构造
-VarString::VarString()
-{
-	this->len = 0;
-	this->str = NULL;
+VarString::VarString() {
+    this->len = 0;
+    this->str = nullptr;
 }
 
 // 全参构造函数:内部赋值方式
-VarString::VarString(int len, const char *str)
-{
-	this->len = len;
-	this->str = (char *)malloc(len + 1);
-	// strcpy必须引入<cstring>
-	strcpy(this->str, str);
+VarString::VarString(int len, const char *str) {
+    this->len = len;
+    this->str = (char *) malloc(len + 1);
+    // strcpy必须引入<cstring>
+    strcpy(this->str, str);
 }
 // 全参构造函数: 初始化列表方式.初始化列表的话，构造函数本体实际上不需要有任何操作，因此效率更高
 // VarString::VarString(int len, const char *str) : len(len), str(str) {}
@@ -24,54 +22,45 @@ VarString::VarString(int len, const char *str)
 // 简而言之，当数据成员中有指针时，必须要用深拷贝.
 
 // 深拷贝构造函数，适用于VarString var2 = var2
-VarString::VarString(const VarString &varStr)
-{
-	this->len = varStr.len;
-	this->str = (char *)malloc(len + 1);
-	strcpy(this->str, varStr.str);
+VarString::VarString(const VarString &varStr) {
+    this->len = varStr.len;
+    this->str = (char *) malloc(len + 1);
+    strcpy(this->str, varStr.str);
 }
 
 // 深拷贝构造函数，适用于VarString var2 (var2)
-VarString::VarString(const char *varStr)
-{
-	this->len = strlen(varStr);
-	this->str = (char *)malloc(len + 1);
-	strcpy(this->str, varStr);
+VarString::VarString(const char *varStr) {
+    this->len = static_cast<int> (strlen(varStr));
+    this->str = (char *) malloc(len + 1);
+    strcpy(this->str, varStr);
 }
 
 // 析构函数:析构函数的作用,并不是删除对象,而在对象销毁前完成的一些清理工作
-VarString::~VarString()
-{
-	if (str != NULL)
-	{
-		free(str);
-		len = 0;
-		str = NULL;
-	}
+VarString::~VarString() {
+    if (str != nullptr) {
+        free(str);
+        len = 0;
+        str = nullptr;
+    }
 }
 
-int VarString::getLen()
-{
-	return len;
-}
-void VarString::setLen(int len)
-{
-	this->len = len;
+int VarString::getLen() {
+    return len;
 }
 
-char *VarString::getStr()
-{
-	return str;
+void VarString::setLen(int len) {
+    this->len = len;
 }
-void VarString::setStr(const char *str)
-{
-	if (getLen() == 0)
-	{
-		this->str = (char *)malloc(strlen(str) + 1);
-	}
-	else
-	{
-		this->str = (char *)malloc(getLen() + 1);
-	}
-	strcpy(this->str, str);
+
+char *VarString::getStr() {
+    return str;
+}
+
+void VarString::setStr(const char *str) {
+    if (getLen() == 0) {
+        this->str = (char *) malloc(strlen(str) + 1);
+    } else {
+        this->str = (char *) malloc(getLen() + 1);
+    }
+    strcpy(this->str, str);
 }

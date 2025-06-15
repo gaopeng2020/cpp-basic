@@ -3,8 +3,8 @@
 #include <iostream>
 #include <string>
 
-#include "MathFunctions.h"
 #include "TutorialConfig.h"
+#include "MathFunctions.h"
 
 int main(int argc, char* argv[])
 {

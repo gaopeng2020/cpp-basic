@@ -7,11 +7,11 @@ class Engineer : public Employee
 {
 public:
 	Engineer();
-	virtual ~Engineer();
-	virtual void initialization();
-	virtual void monthSalary();
-	virtual void changeLevel();
-	float getovertimeHours();
+	~Engineer() override;
+	void initialization() override;
+	void monthSalary() override;
+	void changeLevel() override;
+	[[nodiscard]] float getOvertimeHours() const;
 protected:
 	float overtimeHour;
 };

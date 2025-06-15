@@ -7,11 +7,12 @@ class Salesman :virtual public Employee
 {
 public:
 	Salesman();
-	virtual ~Salesman();
-	virtual void initialization();
-	virtual void monthSalary();
-	virtual void changeLevel();
-	double getSaleAmount();
+	~Salesman() override;
+	void initialization() override;
+	void monthSalary() override;
+	void changeLevel() override;
+
+    [[maybe_unused]] double getSaleAmount() const;
 protected:
 	double saleAmount;
 };

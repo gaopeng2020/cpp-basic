@@ -3,9 +3,7 @@ Salesman::Salesman() : Employee()
 {
 	this->saleAmount = 0.0;
 }
-Salesman::~Salesman()
-{
-}
+Salesman::~Salesman()= default;
 void Salesman::initialization()
 {
 	cout << "请输入销售员姓名" << endl;
@@ -58,7 +56,8 @@ void Salesman::changeLevel()
 	Salesman::monthSalary();
 	cout << name << ":新的岗位等级为" << level << endl;
 }
-double Salesman::getSaleAmount()
+
+[[maybe_unused]] double Salesman::getSaleAmount() const
 {
 	return saleAmount;
 }
