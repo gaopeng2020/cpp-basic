@@ -66,8 +66,6 @@ stof（字符串，起始位置），将 n 进制的字符串转化为float
 stod（字符串，起始位置），将 n 进制的字符串转化为double
 stold（字符串，起始位置），将 n 进制的字符串转化为long double */
 
-
-
 void constructTest();
 
 void addElementsTest();

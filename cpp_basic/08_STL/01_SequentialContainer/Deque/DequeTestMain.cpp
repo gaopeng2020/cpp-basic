@@ -7,7 +7,7 @@ int main(int argc, char const *argv[])
 
     iteratorTest(deq);
 
-    accessDeleteTest(deq);
+    removeElementTest(deq);
 
     return 0;
 }

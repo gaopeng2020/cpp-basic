@@ -1,14 +1,13 @@
 #include <ListTest.h>
 
-int main(int argc, char const *argv[])
-{
-    // constructTest();
+int main(int argc, char const *argv[]) {
+    constructTest();
 
-    // addElementsTest();
+    addElementsTest();
 
-    accessDeleteTest();
+    iteratorTest();
 
-    // iteratorTest();
+    removeElementTest();
 
     return 0;
 }

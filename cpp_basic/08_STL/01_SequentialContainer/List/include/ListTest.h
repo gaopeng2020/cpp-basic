@@ -72,10 +72,10 @@ list<int> addElementsTest();
 
 void iteratorTest();
 
-void accessDeleteTest();
+void removeElementTest();
 
 template <typename T>
-void printTest(string listName, list<T> &list)
+void printTest(const string& listName, list<T> &list)
 {
     int index = 0;
     auto begin = list.begin();

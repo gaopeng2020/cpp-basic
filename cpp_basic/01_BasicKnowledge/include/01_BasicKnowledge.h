@@ -6,10 +6,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 void cinCoutTest();
 void getlineSemantic();
 void vectorSemantic();
 void stringDefinition();
+void shared_ptr_test();
+void unique_ptr_test();
 
 // TODO: 在此处引用程序需要的其他标头。

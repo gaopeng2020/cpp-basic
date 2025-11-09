@@ -2,8 +2,8 @@
 
 void constructTest()
 {
-    string str1;
-    str1 = "通过一个空字符串构造。";
+    cout<<"================String Construct Test================"<<endl;
+    string str1 = "通过一个空字符串构造。";
     cout << str1 << endl;
 
     string str2(str1);
@@ -20,14 +20,18 @@ void constructTest()
 
     string str5(10, 's');
     cout << str5 << endl;
+
+    string  str6{"ABCDEFG123456"};
+    cout << str6 << endl;
 }
 
 void addElementsTest()
 {
+    cout<<"================String Insert Test================"<<endl;
     string str1 = "string& operator=(const char* s);//char*类型字符串 赋值给当前的字符串";
     cout << "str1 = " << str1 << endl;
 
-    string str2 = str1;
+    const string& str2 = str1;
 
     cout<<str1.compare(str2)<<endl;
     if (str1==str2)
@@ -36,18 +40,20 @@ void addElementsTest()
     }
 
     string str3;
+    //把字符串s赋值给当前的字符串,从什么地方开始
     str3.assign(str2, 33);
     cout << "str3 = " << str3 << endl;
 
-    cout << str3[0] << endl;
-    cout << str3.at(2) << endl;
+    cout <<"str3[0]="<< str3[0] << endl;
+    cout <<"str3.at(2)= "<< str3.at(2) << endl;
 
     str3.insert(str3.length(), str2);
-    cout << "str3 = " << str3 << endl;
+    cout << "str3 after insert str2 = " << str3 << endl;
 }
 
 void subStringTest()
 {
+    cout<<"================Substring Test================"<<endl;
     string str = "String.find() Test";
     size_t findPos = str.find("find");
     if (findPos != string::npos)
@@ -55,18 +61,19 @@ void subStringTest()
         cout << "findPos = " << findPos << endl;
         cout << "findPosAfter = " << str.substr(findPos) << endl;
 
-        cout << "findPosBefore = " << str.substr(0,findPos-1)<<endl;
+        cout << "findPosBefore = " << str.substr(0,findPos)<<endl;
     }
 }
 
 void stringParse(){
-    string stri = "0xFF";
-    int i = stoi(stri,0,16);
+    cout<<"================String Parse Test================"<<endl;
+    string str_hex = "0xFF";
+    int i = stoi(str_hex, 0, 16);
     cout<<"i = "<<i<<endl;
 
     string strd = "3.141592653587932";
-    long double ld = stold(strd);
-    cout <<"long double ld = "<<ld<<endl;
+    auto ld = stold(strd);
+    cout <<strd<<" string 3 double = "<<ld<<endl;
 
     string str = to_string(ld);
     cout<<"str = "<<str<<endl;

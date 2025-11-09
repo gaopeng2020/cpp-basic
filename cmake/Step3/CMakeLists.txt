@@ -1,40 +1,16 @@
-cmake_minimum_required(VERSION 3.10)
-
-# set the project name and version
-project(Tutorial3 VERSION 1.0)
-
-# TODO 4: Replace the following code by:
-# * Creating an interface library called tutorial_compiler_flags
-#   Hint: use add_library() with the INTERFACE signature
-# * Add compiler feature cxx_std_11 to tutorial_compiler_flags
-#   Hint: Use target_compile_features()
-
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file(TutorialConfig.h.in TutorialConfig.h)
-
-# TODO 2: Remove EXTRA_INCLUDES list
-
-# add the MathFunctions library
-add_subdirectory(MathFunctions)
-# list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/MathFunctions")
+project(CmakeTutorials.Tutorial3 VERSION 1.0)
 
 # add the executable
 add_executable(${PROJECT_NAME} tutorial.cxx)
 
-# TODO 5: Link Tutorial to tutorial_compiler_flags
+# add the MathFunctions library
+add_subdirectory(MathFunctions)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC MathFunctions)
+target_link_libraries(${PROJECT_NAME} PRIVATE Tutorial3.MathFunctions)
 
-# TODO 3: Remove use of EXTRA_INCLUDES
-
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-target_include_directories(Tutorial PUBLIC
-                           "${PROJECT_BINARY_DIR}"
-                        #    ${EXTRA_INCLUDES}
-                           )
+target_include_directories(${PROJECT_NAME} PRIVATE
+        "${CMAKE_BINARY_DIR}"
+        #    ${LIB_HEADER_INCLUDES} 这里不需要包含MathFunctions library header的原因是：
+        #    在子目录的cmakelist中为MathFunctions添加头文件时使用了PUBLIC，会自动递给链接到 MathFunctions 的目标
+        #    target_include_directories(MathFunctions PUBLIC ...)
+)

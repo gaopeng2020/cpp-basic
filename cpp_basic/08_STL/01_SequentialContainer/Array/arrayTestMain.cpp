@@ -1,10 +1,9 @@
-#pragma once
 #include "arrayTest.h"
-int main(int argc, char const *argv[])
-{
+
+int main(int argc, char const *argv[]) {
     constructTest();
-    // addElementsTest();
-    // iteratorTest();
-    // accessTest();
+    addElementsTest();
+    iteratorTest();
+    removeElementTest();
     return 0;
 }

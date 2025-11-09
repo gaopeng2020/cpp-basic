@@ -1,11 +1,13 @@
 #include "DequeTest.h"
-void constructTest()
-{
+
+void constructTest() {
     //1. 创建一个没有任何元素的空 deque 容器：
     deque<int> deq1;
+    printTest("deq2", deq1);
 
     //2. 创建一个具有 n 个元素的 deque 容器，其中每个元素都采用对应类型的默认值：
     deque<float> deq2(20);
+    printTest("deq2", deq2);
 
     //3. 创建一个具有 n 个元素的 deque 容器，并为每个元素都指定初始值
     deque<double> deq3(30, 0.0L);
@@ -23,8 +25,7 @@ void constructTest()
     printTest("deq6", deq6);
 }
 
-deque<int> addElementsTest()
-{
+deque<int> addElementsTest() {
     deque<int> deq;
     deq.assign(5, 2);
     deq.push_back(1);
@@ -46,43 +47,37 @@ deque<int> addElementsTest()
     deq.insert(deq.end(), lst.begin(), lst.end());
     deq.insert(deq.end(), {15, 16, 17, 18, 19, 20, 20, 20});
 
-    array<int, 5> arry{11, 12, 13, 14, 15};
-    for (size_t i = 0; i < arry.size(); i++)
-    {
-        deq.emplace_back(arry.at(i));
+    array<int, 5> ary{11, 12, 13, 14, 15};
+    for (int &item: ary) {
+        deq.emplace_back(item);
     }
 
     //assign会覆盖原有的元素
-    // deq.assign(arry.begin(), arry.end());
+    // deq.assign(ary.begin(), ary.end());
 
     return deq;
 }
 
-void iteratorTest(deque<int> &deq)
-{
+void iteratorTest(deque<int> &deq) {
     cout << "=======deq iterator test start=======" << endl;
-    for (deque<int>::iterator it = deq.begin(); it != deq.end(); ++it)
-    {
+    for (auto it = deq.begin(); it != deq.end(); ++it) {
         cout << *it << endl;
     }
     cout << "========deq iterator test end========" << endl;
 
     cout << "========deq reverse_iterator test end========" << endl;
-    for (deque<int>::reverse_iterator it = deq.rend() + 1; it >= deq.rbegin(); --it)
-    {
+    for (auto it = deq.rend() + 1; it >= deq.rbegin(); --it) {
         cout << *it << endl;
     }
     cout << "=======deq reverse_iterator test end=======" << endl;
 }
 
-void accessDeleteTest(deque<int> &deq)
-{
+void removeElementTest(deque<int> &deq) {
     deq.pop_front();
     deq.pop_back();
     // sort(deq.begin(), deq.end(), less<int>());
-    sort(deq.begin(), deq.end(), [](const int &l, const int &r)
-         { return l < r; });
-    deque<int>::iterator uniq = unique(deq.begin(), deq.end());
+    sort(deq.begin(), deq.end(), [](const int &l, const int &r) { return l < r; });
+    auto uniq = unique(deq.begin(), deq.end());
     deq.erase(uniq, deq.end());
 
     cout << "deq.at(5) = " << deq.at(5) << endl;

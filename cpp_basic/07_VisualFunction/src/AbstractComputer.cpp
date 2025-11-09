@@ -7,15 +7,16 @@
 class AbstractComputer
 {
 private:
-    AbstractCPU *cpu;
-    AbstractGPU *gpu;
-    AbstractRAM *ram;
-    AbstractROM *rom;
-    AbstractPCB *pcb;
+    AbstractCPU *cpu{};
+    AbstractGPU *gpu{};
+    AbstractRAM *ram{};
+    AbstractROM *rom{};
+    AbstractPCB *pcb{};
 
 public:
-    AbstractComputer() {}
-    AbstractComputer(AbstractCPU *cpu, AbstractGPU *gpu, AbstractRAM *ram, AbstractROM *rom, AbstractPCB *pcb)
+    AbstractComputer() = default;
+
+    [[maybe_unused]] AbstractComputer(AbstractCPU *cpu, AbstractGPU *gpu, AbstractRAM *ram, AbstractROM *rom, AbstractPCB *pcb)
     {
         this->cpu = cpu;
         this->gpu = gpu;
@@ -23,7 +24,7 @@ public:
         this->ram = ram;
         this->pcb = pcb;
     }
-    ~AbstractComputer() {}
+    ~AbstractComputer() = default;
     void work()
     {
         this->cpu->calculate();
@@ -32,53 +33,53 @@ public:
         this->rom->rom();
         this->pcb->pcb();
     }
-    AbstractCPU *GetCpu() const
+    [[nodiscard]] AbstractCPU *GetCpu() const
     {
         return cpu;
     }
 
-    void SetCpu(AbstractCPU *cpu)
+    void SetCpu(AbstractCPU *abstractCpu)
     {
-        cpu = cpu;
+        this->cpu = abstractCpu;
     }
 
-    AbstractGPU *GetGpu() const
+    [[nodiscard]] AbstractGPU *GetGpu() const
     {
         return gpu;
     }
 
-    void SetGpu(AbstractGPU *gpu)
+    void SetGpu(AbstractGPU *abstractGpu)
     {
-        gpu = gpu;
+        this->gpu = abstractGpu;
     }
 
-    AbstractRAM *GetRam() const
+    [[nodiscard]] AbstractRAM *GetRam() const
     {
         return ram;
     }
 
-    void SetRam(AbstractRAM *ram)
+    void SetRam(AbstractRAM *abstractRam)
     {
-        ram = ram;
+        this->ram = abstractRam;
     }
 
-    AbstractROM *GetRom() const
+    [[nodiscard]] AbstractROM *GetRom() const
     {
         return rom;
     }
 
-    void SetRom(AbstractROM *rom)
+    void SetRom(AbstractROM *abstractRom)
     {
-        rom = rom;
+        this->rom = abstractRom;
     }
 
-    AbstractPCB *GetPcb() const
+    [[nodiscard]] AbstractPCB *GetPcb() const
     {
         return pcb;
     }
 
-    void SetPcb(AbstractPCB *pcb)
+    void SetPcb(AbstractPCB *abstractPcb)
     {
-        pcb = pcb;
+        this->pcb = abstractPcb;
     }
 };

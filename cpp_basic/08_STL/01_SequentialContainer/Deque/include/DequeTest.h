@@ -1,4 +1,4 @@
-/* 当需要向序列两端频繁的添加或删除元素时，应首选 deque 容器
+/* double-ended queue 的缩写，又称双端队列容器, 队列的底层实现方式可以是数组（静态队列）也可以是链表（动态队列）当需要向序列两端频繁的添加或删除元素时，应首选 deque 容器
 deque 容器和 vecotr 容器有很多相似之处，比如：
     deque 容器也擅长在序列尾部添加或删除元素（时间复杂度为O(1)），而不擅长在序列中间添加或删除元素。
     deque 容器也可以根据需要修改自身的容量和大小。
@@ -60,10 +60,10 @@ deque<int> addElementsTest();
 
 void iteratorTest(deque<int> &deq);
 
-void accessDeleteTest(deque<int> &deq);
+void removeElementTest(deque<int> &deq);
 
 template <typename T>
-void printTest(string name, deque<T> &deq)
+void printTest(const string& name, deque<T> &deq)
 {
     int index = 0;
     auto begin = deq.begin();

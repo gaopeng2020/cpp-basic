@@ -1,34 +1,28 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.31)
+project(CmakeTutorials.Tutorial6)
 
-# set the project name and version
-project(Tutorial6 VERSION 1.0)
+set(CMAKE_CXX_STANDARD 20)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE "Release")
+# 设置查找路径
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/../install")
+find_package(CalculatorLib REQUIRED)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file(TutorialConfig.h.in TutorialConfig.h)
+add_executable(${PROJECT_NAME} main.cpp)
 
-# specify search path for find_package
-set(PACKAGE_NAME "lib-math-functions")
-#set(${PACKAGE_NAME}_DIR ${PROJECT_SOURCE_DIR}/../Step5/cmake-install/lib/cmake/${PACKAGE_NAME}/)
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/../Step5/cmake-install")
-find_package(${PACKAGE_NAME} REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE CalculatorLib::CalculatorLib)
 
-message(STATUS "${PACKAGE_NAME}_LIBRARIES = ${${PACKAGE_NAME}_LIBRARIES}")
-message(STATUS "${PACKAGE_NAME}_INCLUDE_DIRS = ${${PACKAGE_NAME}_INCLUDE_DIRS}")
+# Windows下需要自动复制DLL到可执行文件目录,否则运行时找不到动态链接库
+if (WIN32)
+    # 直接通过目标属性获取动态库位置 如果库为Release则需要修改为IMPORTED_LOCATION_RELEASE
+    get_target_property(DLL_PATH CalculatorLib::CalculatorLib IMPORTED_LOCATION_DEBUG)
+    if (NOT DLL_PATH)
+        get_target_property(DLL_PATH CalculatorLib::CalculatorLib IMPORTED_LOCATION)
+    endif ()
+    message(STATUS "DLL_PATH = " ${DLL_PATH})
 
-# add the executable
-add_executable(${PROJECT_NAME} tutorial.cxx)
-target_include_directories(${PROJECT_NAME} PRIVATE
-        ${PROJECT_BINARY_DIR}
-#        ${${PACKAGE_NAME}_INCLUDE_DIRS}
-)
-
-# add link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${${PACKAGE_NAME}_LIBRARIES})
-
-GET_TARGET_PROPERTY(TARGET_INCLUDE_DIRS ${PROJECT_NAME} INCLUDE_DIRECTORIES)
-MESSAGE(STATUS "Target include directories:${TARGET_INCLUDE_DIRS}")
+    # 执行复制
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${DLL_PATH}" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            COMMENT "Copying CalculatorLib.dll to output directory"
+    )
+endif ()

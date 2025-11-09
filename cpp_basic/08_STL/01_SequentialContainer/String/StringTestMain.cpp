@@ -1,10 +1,9 @@
 #include <StringTest.h>
 
-int main(int argc, char const *argv[])
-{
-    // constructTest();
+int main(int argc, char const *argv[]) {
+    constructTest();
     addElementsTest();
-    // subStringTest();
+    subStringTest();
     stringParse();
     return 0;
 }

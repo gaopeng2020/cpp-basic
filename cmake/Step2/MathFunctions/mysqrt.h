@@ -1,9 +1,6 @@
 #pragma once
-
-namespace mathfunctions
-{
-    namespace detail
-    {
-        double mysqrt(double x);
-    }
+#include <iostream>
+namespace mathfunctions::detail {
+    double mysqrt(double x);
 }
+

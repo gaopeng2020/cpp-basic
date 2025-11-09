@@ -1,14 +1,10 @@
-#pragma once
-#include "VectorTest.h"
+#include "MapTest.h"
 
-int main(int argc, char const *argv[])
-{
-    // constructTest();
-
-    // addElementsTest();
-
+int main(int argc, char const *argv[]) {
+    pairConstructTest();
+    constructTest();
+    addElementsTest();
     iteratorTest();
-
-    accessDeleteTest();
+    removeElementTest();
     return 0;
 }

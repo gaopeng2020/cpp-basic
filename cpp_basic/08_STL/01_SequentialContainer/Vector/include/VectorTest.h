@@ -47,28 +47,30 @@ swap()	交换两个容器的所有元素。
 emplace()	在指定的位置直接生成一个元素。
 emplace_back()	在序列尾部生成一个元素。 */
 
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <array>
 #include <string>
+#include <cstdint>
+#include <algorithm>
+
 using namespace std;
 
 void constructTest();
 
 void addElementsTest();
 
-void insertElementTesr();
-
 void iteratorTest();
 
-void accessDeleteTest();
+void removeElementTest();
 
-template <typename T>
-void printTest(string vectName, vector<T> &vect){
-  {
-  for (size_t i = 0; i < vect.size(); i++)
-  {
-    cout <<vectName+"["<<i<<"] = "<< vect.at(i) << endl;
-  }
-}
+template<typename T>
+void printTest(const string &vectName, vector<T> &vect) {
+    {
+        for (size_t i = 0; i < vect.size(); i++) {
+            cout << vectName + "[" << i << "] = " << vect.at(i) << endl;
+        }
+    }
 }
