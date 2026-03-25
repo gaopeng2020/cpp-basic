@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Comment CommentText="模板方法概述：&#xD;&#xA;在基类中定义一个算法的骨架（稳定部分），而将一些步（变化部分）骤延迟到子类中。Template Method使得子类可以不改变（复用）一个算法的结构即可重定义（override重写）该算法的某些特定步骤。">
+    <Position X="6.5" Y="1.75" Height="1.125" Width="3.325" />
+  </Comment>
+  <Class Name="LibClass">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAIAAAAAAAEAgAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LibClass.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppClass">
+    <Position X="3.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AppClass.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

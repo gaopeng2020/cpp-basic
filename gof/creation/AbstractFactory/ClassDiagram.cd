@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="IPhone" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPhone.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IWatch" Collapsed="true">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>IWatch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IComputer" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IComputer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApplePhone" Collapsed="true">
+    <Position X="8.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>ApplePhone.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiaoMiPhone" Collapsed="true">
+    <Position X="6.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAACAAAAAAAAAAAEAAAAAACAA=</HashCode>
+      <FileName>XiaoMiPhone.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppleComputer" Collapsed="true">
+    <Position X="1.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AppleComputer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiaoMiComputer" Collapsed="true">
+    <Position X="3.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>XiaoMiComputer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppleWatch" Collapsed="true">
+    <Position X="13.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAA=</HashCode>
+      <FileName>AppleWatch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiaoMiWatch" Collapsed="true">
+    <Position X="11" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>XiaoMiWatch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IProductFactory" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAACAAAAAAAAAAAAAAAAACAAAAAAAAAE=</HashCode>
+      <FileName>IProductFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppleProductFactory" Collapsed="true">
+    <Position X="1.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAACAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>AppleProductFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiaoMIProductFactory" Collapsed="true">
+    <Position X="3.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAACAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>XiaoMIProductFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AbstractFactoryClientApp" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAgAAAAIAAAABAAEAAAAAAwAAACIAAAAAA=</HashCode>
+      <FileName>AbstractFactoryClientApp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

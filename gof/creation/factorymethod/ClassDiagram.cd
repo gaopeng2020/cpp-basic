@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="工厂方法概述：&#xD;&#xA;定义一个用于创建对象的接口（IPizzaFactory）,让子类决定实例化哪一个类，工厂方法使得一个类的实例化延迟到子类">
+    <Position X="6.483" Y="1.383" Height="1.117" Width="2.292" />
+  </Comment>
+  <Class Name="IPizza">
+    <Position X="1.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAABEAAAAAAAAAAAAAgAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPizza.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IPizzaFactory">
+    <Position X="6.25" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>IPizzaFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CheesePizza">
+    <Position X="0.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAABEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CheesePizza.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CheesePizzaFactory">
+    <Position X="5.25" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>CheesePizzaFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FactoryMethodApp">
+    <Position X="3.75" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACgAAQAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>FactoryMethodApp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PepperPizza">
+    <Position X="2.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAABEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PepperPizza.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PepperPizzaFactory">
+    <Position X="7.5" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>PepperPizzaFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
