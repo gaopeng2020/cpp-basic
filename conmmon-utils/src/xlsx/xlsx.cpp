@@ -9,6 +9,7 @@
 #include <filesystem>
 
 namespace common_utils{
+
     bool Xlsx::openXlDocument(OpenXLSX::XLDocument& doc, const std::string& path) {
         //判断文件是否存在
         if (path.empty() || !std::filesystem::exists(path) || path.substr(path.length() - 5) != ".xlsx") {

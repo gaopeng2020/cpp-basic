@@ -338,5 +338,17 @@ namespace common_utils{
          * @endcode
          */
         static std::pair<int, int> cellAddressToNum(const std::string& addr);
+
+    private:
+        // C语言关键字集合（C11标准）,C++17 支持内联静态成员，直接在头文件中初始化
+        inline static const std::unordered_set<std::string> C_KEYWORDS = {
+            "auto", "break", "case", "char", "const", "continue", "default", "do",
+            "double", "else", "enum", "extern", "float", "for", "goto", "if",
+            "inline", "int", "long", "register", "restrict", "return", "short",
+            "signed", "sizeof", "static", "struct", "switch", "typedef", "union",
+            "unsigned", "void", "volatile", "while", "_Alignas", "_Alignof",
+            "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary", "_Noreturn",
+            "_Static_assert", "_Thread_local"
+        };
     };
 } // namespace common_utils

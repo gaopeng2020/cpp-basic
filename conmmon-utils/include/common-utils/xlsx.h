@@ -20,7 +20,34 @@ namespace common_utils{
      * */
     class Xlsx{
     public:
-        // ... existing code ...
+        /**
+         * @brief 打开 Excel 文档文件
+         *
+         * 该函数用于验证并打开指定路径的 Excel 文件（.xlsx 格式）。
+         * 执行以下检查：
+         * 1. 文件路径不能为空
+         * 2. 文件必须存在于文件系统中
+         * 3. 文件扩展名必须是 .xlsx
+         * 4. 文件必须能够成功打开（未损坏、未加密）
+         *
+         * @param doc [out] XLDocument 对象引用，用于存储打开的文档
+         * @param path [in] Excel 文件路径
+         * @return bool 操作是否成功
+         *         - true: 文件成功打开
+         *         - false: 文件无效、不存在、损坏或加密
+         *
+         * @note 如果验证失败，会通过 glog 记录错误日志
+         *       支持的 Excel 版本：Excel 2007 及以上（.xlsx 格式）
+         *
+         * @code{.cpp}
+         * OpenXLSX::XLDocument doc;
+         * bool success = Xlsx::openXlDocument(doc, "data.xlsx");
+         * if (success) {
+         *     // 使用 doc 进行后续操作
+         * }
+         * @endcode
+         */
+        static bool openXlDocument(OpenXLSX::XLDocument& doc, const std::string& path);
         /**
          * @brief 检查指定单元格是否为合并单元格
          *
