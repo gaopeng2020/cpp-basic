@@ -37,7 +37,7 @@ namespace common_utils{
     std::string Core::stringTrim(const std::string& str) {
         if (str.empty()) return "";
         const size_t start = str.find_first_not_of(" \t\n\r");
-        if (start == std::string::npos) return "";  // 全是空白字符
+        if (start == std::string::npos) return ""; // 全是空白字符
 
         const size_t end = str.find_last_not_of(" \t\n\r");
         std::string substr = str.substr(start, end - start + 1);
@@ -151,6 +151,34 @@ namespace common_utils{
         return homeEnv ? homeEnv : "";
     }
 
+    /*
+     *默认的紧凑格式20250115-1430 "%Y%m%d-%H%M"
+     *常规格式2025-01-15-14-30："%Y-%m-%d-%H-%M"
+     *中文格式2025 年 01 月 15 日 14 时 30 分 "%Y年%m月%d日 %H时%M分"
+     */
+    std::string Core::getCurrentTimestamp(const std::string& format, const bool ms) {
+        // 获取从纪元（1970-01-01）到现在的秒数（time_t 类型）
+        const std::time_t now = std::time(nullptr);
+        const std::tm* localTime = std::localtime(&now);
+
+        char buffer[64];
+        std::strftime(buffer, sizeof(buffer), format.c_str(), localTime);
+
+        if (!ms) {
+            return std::string(buffer);
+        } else {
+            // std::chrono::system_clock理论上可以获取到纳秒，通过std::chrono::duration_cast转换成毫秒
+            const auto now_ms = std::chrono::system_clock::now();
+            const auto ms1 = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now_ms.time_since_epoch()).count() % 1000; //模运算，获取毫秒数（1s=1000ms）
+
+            // 在末尾添加毫秒，std::setfill('0') 用于设置填充字符，通常与 std::setw() 配合使用，当输出内容宽度不足时，用 '0' 填充剩余空间。
+            std::ostringstream oss;
+            oss << buffer << "." << std::setfill('0') << std::setw(4) << ms1;
+            return oss.str();
+        }
+    }
+
     std::string Core::getLastOpenDir(const std::string& newPath) {
         // 获取 exe 所在路径 exePath，以及用户主目录 home
         std::string exeDir = getExeDirectory();
@@ -199,7 +227,7 @@ namespace common_utils{
     std::string Core::doublePrecision(const double d, const int precision) {
         if (precision > std::numeric_limits<double>::max_digits10) {
             LOG(ERROR) << "Invalid precision: " << precision
-                       << ", maximum allowed is " << std::numeric_limits<double>::max_digits10;
+                << ", maximum allowed is " << std::numeric_limits<double>::max_digits10;
             return "";
         }
         std::ostringstream oss;
@@ -244,9 +272,9 @@ namespace common_utils{
     }
 
     std::string Core::numToCellAddress(const int row, int col) {
-        if (row < 1 || row>=1048576 || col < 1 || col >= 16384) {
+        if (row < 1 || row >= 1048576 || col < 1 || col >= 16384) {
             LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
-                          "and the input is: row= " << row << ", column= " << col;
+                "and the input is: row= " << row << ", column= " << col;
             return "";
         }
 
@@ -262,5 +290,4 @@ namespace common_utils{
         std::ranges::reverse(result);
         return result + std::to_string(row);
     }
-
-}// namespace common_utils
+} // namespace common_utils

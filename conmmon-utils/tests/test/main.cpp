@@ -56,7 +56,7 @@ void readArxmlTest() {
     tinyxml2::XMLDocument doc;
 
     if (!Xml::openXmlDocument(doc, path)) return;
-    const auto arPkgs = Xml::getArPackages(doc);
+    const auto arPkgs = Xml::findArPackages(doc);
 
     const auto comPkg = Xml::findArPackage(arPkgs, "Communication");
     const auto frame = Xml::findElement(comPkg, "ECU1_PhyReq","CAN-FRAME" );

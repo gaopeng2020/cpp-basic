@@ -186,7 +186,7 @@ namespace common_utils{
          * - Windows: 使用 GetModuleFileNameA API
          * - Linux/Unix: 读取 /proc/self/exe 符号链接
          *
-         * @return std::string 可执行文件的完整路径
+         * @return std::string 可执行文件所在目录的完整路径
          *
          * @note 如果获取失败（如缓冲区不足、权限问题等），则返回空字符串
          *
@@ -213,6 +213,22 @@ namespace common_utils{
          */
         static std::string getUserHome();
 
+        /**
+         * @brief 获取当前时间戳并格式化为字符串
+         *
+         * 根据指定的格式字符串获取当前系统时间，并可选择是否包含毫秒部分。
+         *
+         * @param format 时间格式化字符串，默认为 "%Y%m%d-%H%M"（如：20260402-1430）
+         *               支持标准 strftime 格式占位符，如 %Y(年)、%m(月)、%d(日)、%H(时)、%M(分)、%S(秒) 等
+         * @param ms 是否包含毫秒，默认为 false。为 true 时在返回值末尾添加 .xxx 毫秒部分
+         * @return std::string 格式化后的当前时间戳字符串
+         *
+         * @example
+         * getCurrentTimestamp() -> "20260402-1430"
+         * getCurrentTimestamp("%Y-%m-%d %H:%M:%S") -> "2026-04-02 14:30:25"
+         * getCurrentTimestamp("%Y%m%d-%H%M%S", true) -> "20260402-143025.123"
+         */
+        static std::string getCurrentTimestamp(const std::string& format = "%Y%m%d-%H%M", bool ms = false);
         /**
          * @brief 将 double 类型数值转换为指定精度的字符串表示
          *
@@ -294,7 +310,6 @@ namespace common_utils{
          * cellAddressToNum("AA10") -> {10, 27}
          */
         static std::pair<int, int> cellAddressToNum(const std::string& addr);
-
 
     private:
         // C语言关键字集合（C11标准）,C++17 支持内联静态成员，直接在头文件中初始化

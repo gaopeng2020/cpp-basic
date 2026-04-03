@@ -1,5 +1,5 @@
 # 使用绝对路径
-set(SOURCE_PATH "D:\\Documents\\gitlab\\Test\\conmmon-utils")
+set(SOURCE_PATH "D:\\Documents\\gitlab\\cpp-basic\\conmmon-utils")
 
 # 配置 CMake
 vcpkg_cmake_configure(
