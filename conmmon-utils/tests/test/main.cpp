@@ -51,18 +51,69 @@ void readXlsxTest() {
     }
 }
 
-void readArxmlTest() {
+void readArxmlTest(tinyxml2::XMLDocument& doc) {
     const std::string path = "C:/Users/gaopeng/Desktop/MPD/ECU1.arxml";
-    tinyxml2::XMLDocument doc;
-
     if (!Xml::openXmlDocument(doc, path)) return;
     const auto arPkgs = Xml::findArPackages(doc);
 
     const auto comPkg = Xml::findArPackage(arPkgs, "Communication");
-    const auto frame = Xml::findElement(comPkg, "ECU1_PhyReq","CAN-FRAME" );
-    const auto mapping = Xml::findElement(frame, "NPdu_ECU1_PhyReq","PDU-TO-FRAME-MAPPING");
+    const auto frame = Xml::findElement(comPkg, "ECU1_PhyReq", "CAN-FRAME");
+    const auto mapping = Xml::findElement(frame, "NPdu_ECU1_PhyReq", "PDU-TO-FRAME-MAPPING");
     const auto pdu_ref = mapping->FirstChildElement("PDU-REF")->Attribute("DEST");
     std::cout << frame->Name() << " 关联的Pdu名称为 " << pdu_ref << std::endl;
+}
+
+void deleteDescription(tinyxml2::XMLDocument& doc) {
+    const std::string& path = "C:/Users/gaopeng/Desktop/MPD/MPD.arxml";
+    if (!Xml::openXmlDocument(doc, path)) return;
+    tinyxml2::XMLElement* arPkgs = Xml::findArPackages(doc);
+    if (!arPkgs) {
+        std::cout << "arPkgs 没找到" << std::endl;
+        Logger::Shutdown();
+        return;
+    }
+
+    auto elements = Xml::findAllArPackages(arPkgs);
+    for (auto element : elements) {
+        if (auto ele = element->FirstChildElement("SHORT-NAME")) {
+            std::cout << ele->GetText() << std::endl;
+        } else {
+            std::cout << "不是有效的AP-PACKAGE: " << element->Name() << "位于" << element->GetLineNum() << std::endl;
+        }
+    }
+    auto current_timestamp = Core::getCurrentTimestamp("%Y-%m-%d:%H-%M-%S", true);
+    LOG(INFO) << "开始时间:" << current_timestamp;
+    std::cout << "开始时间:" << current_timestamp << std::endl;
+    // 删除所有 DESC
+    Xml::removeAllDescriptions(arPkgs, "DESC");
+
+    // 删除所有 LONG-NAME
+    Xml::removeAllDescriptions(arPkgs, "LONG-NAME");
+
+    Xml::saveXmlDocument(doc, path);
+
+    current_timestamp = Core::getCurrentTimestamp("%Y-%m-%d:%H-%M-%S", true);
+    LOG(INFO) << "结束时间:" << current_timestamp;
+    std::cout << "结束时间:" << current_timestamp << std::endl;
+}
+
+void readAllArPackageTest(tinyxml2::XMLDocument& doc) {
+    const std::string& path = "C:/Users/gaopeng/Desktop/MPD/MPD.arxml";
+    if (!Xml::openXmlDocument(doc, path)) return;
+    tinyxml2::XMLElement* arPkgs = Xml::findArPackages(doc);
+    if (!arPkgs) {
+        std::cout << "arPkgs 没找到" << std::endl;
+        Logger::Shutdown();
+        return;
+    }
+
+    for (const auto elements = Xml::findAllArPackages(arPkgs); const auto element : elements) {
+        if (const auto ele = element->FirstChildElement("SHORT-NAME")) {
+            std::cout << ele->GetText() << std::endl;
+        } else {
+            std::cout << "不是有效的AP-PACKAGE: " << element->Name() << "位于" << element->GetLineNum() << std::endl;
+        }
+    }
 }
 
 int main(int argc, char** argv) {
@@ -71,8 +122,11 @@ int main(int argc, char** argv) {
     LOG(INFO) << "开始读取Excel测试";
     // readXlsxTest();
 
+    tinyxml2::XMLDocument doc;
     LOG(INFO) << "开始读取ARXML测试";
-    readArxmlTest();
+    readArxmlTest(doc);
+
+    readAllArPackageTest(doc);
 
     Logger::Shutdown();
     return 0;

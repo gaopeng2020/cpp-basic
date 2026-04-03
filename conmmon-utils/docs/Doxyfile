@@ -4,32 +4,52 @@ OUTPUT_DIRECTORY       = ./
 OUTPUT_LANGUAGE        = Chinese
 UTF8_SUPPORTED         = YES
 
-INPUT                  = ../
+INPUT                  = ../include
 RECURSIVE              = YES
 FILE_PATTERNS          = *.h *.hpp
-
 EXCLUDE_PATTERNS       = build/* .git/* doxygen/* *.cpp *.c
 
+# 注释提取配置
 EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
 HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+HIDE_FRIEND_COMPOUNDS  = NO
+
+# 注释解析配置
 JAVADOC_AUTOBRIEF      = YES
+QT_AUTOBRIEF           = NO
+MULTILINE_CPP_IS_BRIEF = YES
+INHERIT_DOCS           = YES
+SEPARATE_MEMBER_PAGES  = NO
 ALWAYS_DETAILED_SEC    = YES
 
-HTML_EXTRA_STYLESHEET  =
+# HTML 输出配置
+HTML_EXTRA_STYLESHEET  = custom.css
 HTML_OUTPUT            = html
 HTML_COLORSTYLE_HUE    = 0
 HTML_COLORSTYLE_SAT    = 0
 HTML_FONT_SIZE         = 16
+HTML_TIMESTAMP         = YES
 
 GENERATE_HTML          = YES
 GENERATE_TREEVIEW      = YES
 SEARCHENGINE           = YES
 
+# 图表配置
 HAVE_DOT               = NO
 CLASS_GRAPH            = NO
 COLLABORATION_GRAPH    = NO
 
+# 禁用其他格式
 GENERATE_LATEX         = NO
 GENERATE_RTF           = NO
 GENERATE_MAN           = NO
 GENERATE_XML           = NO
+
+# 警告配置（调试用）
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_LOGFILE           = warnings.log
+

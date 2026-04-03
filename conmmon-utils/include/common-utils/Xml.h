@@ -10,6 +10,32 @@
 namespace common_utils{
     /**
      * @brief XML 工具类，提供 XML 文档解析和操作功能
+     *
+     * 该类基于 tinyxml2 库，封装了常用的 XML 文档操作函数，包括：
+     * - XML 文档的加载和保存
+     * - 元素的查找和遍历
+     * - 属性的读取和设置
+     * - 文本内容的获取
+     * - 节点的插入和删除
+     *
+     * @par tinyxml2 常用函数参考表
+     *
+     * | 操作类型 | 方法名 | 说明 |
+     * |----------|--------|------|
+     * | 加载文件 | `doc.LoadFile(path)` | 加载 XML 文件，返回 XML_SUCCESS 表示成功 |
+     * | 保存文件 | `doc.SaveFile(path)` | 将 XML 文档保存到指定路径 |
+     * | 创建元素 | `doc.NewElement(name)` | 创建新元素，需手动插入到文档树 |
+     * | 插入子节点 | `parent->InsertEndChild(child)` | 将子节点插入到父节点末尾 |
+     * | 设置属性 | `elem->SetAttribute(name, value)` | 为元素设置属性值 |
+     * | 读取属性 | `elem->Attribute(name)` | 读取元素属性，返回 const char* |
+     * | 读取数值属性 | `elem->QueryIntAttribute(name, &val)` | 读取整数属性，返回错误码（更安全） |
+     * | 设置文本 | `elem->SetText(text)` | 设置元素的文本内容 |
+     * | 获取文本 | `elem->GetText()` | 获取元素文本，返回 const char* |
+     * | 获取数值文本 | `elem->QueryDoubleText(&val)` | 读取双精度数值文本，返回错误码 |
+     * | 遍历子元素 | `parent->FirstChildElement(name)` | 获取第一个子元素，常配合 NextSiblingElement 使用 |
+     * | 删除子节点 | `parent->DeleteChild(child)` | 从父节点中删除指定子节点 |
+     *
+     * @note 所有方法都是静态方法，可以直接通过类名调用
      */
     class Xml{
     public:

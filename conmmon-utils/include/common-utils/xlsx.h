@@ -6,29 +6,21 @@
 #include <OpenXLSX.hpp>
 
 namespace common_utils{
+    /**
+     * @brief Xlsx 类用于操作 Excel 文件
+     *
+     * 该类提供了一系列函数，用于读取、写入和操作 Excel 文件。
+     * 主要功能包括：
+     * - 检查单元格是否为合并单元格
+     * - 获取单元格所在合并区域的起始和结束地址
+     * - 根据表头名称获取对应的列号
+     * - 获取 Excel 单元格的值并转换为字符串
+     * - 获取指定列从某行开始的最后一行行号
+     * - 获取指定列从某行开始的所有行数据
+     * */
     class Xlsx{
-        //OpenXLSX Reader
     public:
-        /**
-         * @brief 打开 Excel 文档文件
-         *
-         * 该函数用于验证并打开指定路径的 Excel 文件（.xlsx 格式）。
-         * 执行以下检查：
-         * 1. 文件路径不能为空
-         * 2. 文件必须存在于文件系统中
-         * 3. 文件扩展名必须是 .xlsx
-         * 4. 文件必须能够成功打开（未损坏、未加密）
-         *
-         * @param doc XLDocument 对象引用，用于存储打开的文档
-         * @param path 文件路径字符串
-         * @return bool 操作是否成功
-         *         - true: 文件成功打开
-         *         - false: 文件无效、不存在、损坏或加密
-         *
-         * @note 如果验证失败，会通过 glog 记录错误日志
-         *       - 文件路径无效或不存
-        */
-        static bool openXlDocument(OpenXLSX::XLDocument& doc, const std::string& path);
+        // ... existing code ...
         /**
          * @brief 检查指定单元格是否为合并单元格
          *
@@ -42,9 +34,10 @@ namespace common_utils{
          *
          * @note 该函数内部调用 getCellMergedRange() 获取合并区域信息
          *
-         * @example
+         * @code{.cpp}
          * isCellMerged(sheet, 1, 1) -> true (如果 A1 是合并区域的一部分)
          * isCellMerged(sheet, 2, 3) -> false (如果 C2 不是合并区域)
+         * @endcode
          */
         static bool isCellMerged(OpenXLSX::XLWorksheet& sheet, int row, int col);
 
@@ -67,9 +60,10 @@ namespace common_utils{
          *       - 列号：[1, 16384]
          *       如果超出范围，将记录错误日志并返回空 pair
          *
-         * @example
+         * @code{.cpp}
          * getCellMergedRange(sheet, 1, 1) -> {"A1", "E1"} (A1:E1 是合并区域)
          * getCellMergedRange(sheet, 3, 3) -> {"C3", "C3"} (C3 未合并)
+         * @endcode
          */
         static std::pair<std::string, std::string> getCellMergedRange(OpenXLSX::XLWorksheet& sheet,
                                                                       int row, int col);
@@ -88,10 +82,11 @@ namespace common_utils{
          * @note 行号必须在有效范围 [1, 1048576] 内，否则会记录错误日志并返回 -1
          *       比较时使用精确匹配（区分大小写）
          *
-         * @example
+         * @code{.cpp}
          * getColumnByHeader(sheet, "姓名") -> 1 (如果 A1 单元格的值为"姓名")
          * getColumnByHeader(sheet, "年龄", 1) -> 2 (如果 B1 单元格的值为"年龄")
          * getColumnByHeader(sheet, "不存在") -> -1
+         * @endcode
          */
         static int getColumnByHeader(const OpenXLSX::XLWorksheet& sheet, const std::string& headerName, int row = 1);
 
@@ -110,11 +105,12 @@ namespace common_utils{
          *        - < 0: 自动去除末尾多余的零
          * @return std::string 单元格值的字符串表示
          *
-         * @example
+         * @code{.cpp}
          * getCellValue(cell) -> "Hello" (字符串单元格)
          * getCellValue(cell) -> "3.14" (浮点数单元格，自动精度)
          * getCellValue(cell, 2) -> "3.14" (浮点数单元格，保留 2 位小数)
          * getCellValue(cell) -> "100" (整数单元格)
+         * @endcode
          */
         static std::string getCellValue(const OpenXLSX::XLCell& cell, int precision = -1);
 
@@ -136,9 +132,10 @@ namespace common_utils{
          *       - 列号：[1, 16384]
          *       如果超出范围，将记录错误日志并返回输入的列号
          *
-         * @example
+         * @code{.cpp}
          * getLastRowNum(sheet, 1, 1) -> 5 (A1:A5 是连续的数据区域)
          * getLastRowNum(sheet, 2, 3) -> 2 (C2 是独立单元格)
+         * @endcode
          */
         static int getLastRowNum(OpenXLSX::XLWorksheet& sheet, int row, int col);
 
@@ -160,9 +157,10 @@ namespace common_utils{
          *       - 列号：[1, 16384]
          *       如果超出范围，将记录错误日志并返回输入的列号
          *
-         * @example
+         * @code{.cpp}
          * getLastColumnNum(sheet, 1, 1) -> 5 (A1:E1 是连续的数据区域)
          * getLastColumnNum(sheet, 2, 3) -> 2 (C2 是独立单元格)
+         * @endcode
          */
         static int getLastColumnNum(OpenXLSX::XLWorksheet& sheet, int row, int col);
     };

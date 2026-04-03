@@ -9,8 +9,22 @@
 #include <map>
 
 namespace common_utils{
+    /**
+        * @brief 核心工具类，提供一些常用的工具函数
+        *
+        * 该类提供了一系列静态工具函数，主要用于：
+        * - 字符串处理（格式化、修剪、分割等）
+        * - 文件解析（INI 配置文件解析）
+        * - 数据验证（C 变量名验证、数字格式验证）
+        * - 系统路径操作（获取可执行文件目录、用户主目录等）
+        * - 时间戳生成和格式化
+        * - Excel 单元格地址转换
+        *
+        * @note 所有方法都是静态方法，可以直接通过类名调用
+        */
     class Core{
     public:
+        // ... existing code ...
         /**
          * @brief 移除字符串中的所有空白字符（空格、制表符、换行符等）
          *
@@ -26,9 +40,10 @@ namespace common_utils{
          *
          * @note 如果输入为空字符串，则返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * stringFormat("Hello World") -> "HelloWorld"
          * stringFormat("a\tb\nc") -> "abc"
+         * @endcode
          */
         static std::string stringFormat(const std::string& str);
 
@@ -47,11 +62,13 @@ namespace common_utils{
          *
          * @note 如果输入为空字符串或全为空白字符，则返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * stringTrim("  hello world  ") -> "hello world"
          * stringTrim("\t\nabc def\r\n") -> "abc def"
+         * @endcode
          */
         static std::string stringTrim(const std::string& str);
+
         /**
          * @brief 按指定分隔符分割字符串
          *
@@ -65,12 +82,14 @@ namespace common_utils{
          * @note 如果输入字符串为空或只包含分隔符，则返回空列表
          *       连续的分隔符会被视为一个分隔符处理（跳过空 token）
          *
-         * @example
+         * @code{.cpp}
          * splitString("a,b,c", ',') -> {"a", "b", "c"}
          * splitString("hello world", ' ') -> {"hello", "world"}
          * splitString(",,a,,b,,", ',') -> {"a", "b"}
+         * @endcode
          */
         static std::list<std::string> splitString(const std::string& str, char delimiter);
+
         /**
          * @brief 解析 INI 配置文件
          *
@@ -89,21 +108,19 @@ namespace common_utils{
          *       不带节的配置项直接以 "key" 形式存储
          *       所有键值都会自动去除首尾空白字符
          *
-         * @example
-         * 配置文件内容：
-         * [database]
-         * host = localhost
-         * port = 3306
-         *
-         * [app]
-         * name = MyApp
-         *
-         * 解析结果：
+         * @code{.cpp}
+         * // 配置文件内容：
+         * // [database]
+         * // host = localhost
+         * // port = 3306
+         * // [app]
+         * // name = MyApp
          * parseIniFile("config.ini") -> {
          *   "database.host": "localhost",
          *   "database.port": "3306",
          *   "app.name": "MyApp"
          * }
+         * @endcode
          */
         static std::map<std::string, std::string> parseIniFile(const std::string& filePath);
 
@@ -123,11 +140,12 @@ namespace common_utils{
          *
          * @note 该函数要求变量名首字母必须大写
          *
-         * @example
+         * @code{.cpp}
          * isValidCVariableName("MyVar") -> true
          * isValidCVariableName("myVar") -> false (首字母小写)
          * isValidCVariableName("int") -> false (关键字)
          * isValidCVariableName("9Test") -> false (数字开头)
+         * @endcode
          */
         static bool isValidCVariableName(const std::string& name, int length = 32);
 
@@ -144,12 +162,13 @@ namespace common_utils{
          *
          * @note 该函数会自动去除字符串首尾的空格后再进行匹配
          *
-         * @example
+         * @code{.cpp}
          * isNumber("123") -> true
          * isNumber("-3.14") -> true
          * isNumber("1e10") -> true
          * isNumber("abc") -> false
          * isNumber("  123  ") -> true
+         * @endcode
          */
         static bool isNumber(const std::string& str);
 
@@ -172,10 +191,11 @@ namespace common_utils{
          * @note 如果出现错误（如路径无效、权限不足等），则返回用户主目录
          *       返回的路径会去除首尾空白字符
          *
-         * @example
+         * @code{.cpp}
          * getLastOpenDir("") -> 读取上次的目录，若无记录则返回用户主目录
          * getLastOpenDir("C:/Users/test/file.txt") -> 保存并返回 "C:/Users/test"
          * getLastOpenDir("D:/Projects") -> 保存并返回 "D:/Projects"
+         * @endcode
          */
         static std::string getLastOpenDir(const std::string& newPath = "");
 
@@ -190,9 +210,10 @@ namespace common_utils{
          *
          * @note 如果获取失败（如缓冲区不足、权限问题等），则返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * getExeDirectory() -> "C:\\Program Files\\MyApp" (Windows)
          * getExeDirectory() -> "/usr/bin" (Linux)
+         * @endcode
          */
         static std::string getExeDirectory();
 
@@ -207,9 +228,10 @@ namespace common_utils{
          *
          * @note 如果环境变量未设置，则返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * getUserHome() -> "C:\\Users\\username" (Windows)
          * getUserHome() -> "/home/username" (Linux)
+         * @endcode
          */
         static std::string getUserHome();
 
@@ -223,12 +245,14 @@ namespace common_utils{
          * @param ms 是否包含毫秒，默认为 false。为 true 时在返回值末尾添加 .xxx 毫秒部分
          * @return std::string 格式化后的当前时间戳字符串
          *
-         * @example
+         * @code{.cpp}
          * getCurrentTimestamp() -> "20260402-1430"
          * getCurrentTimestamp("%Y-%m-%d %H:%M:%S") -> "2026-04-02 14:30:25"
          * getCurrentTimestamp("%Y%m%d-%H%M%S", true) -> "20260402-143025.123"
+         * @endcode
          */
         static std::string getCurrentTimestamp(const std::string& format = "%Y%m%d-%H%M", bool ms = false);
+
         /**
          * @brief 将 double 类型数值转换为指定精度的字符串表示
          *
@@ -248,11 +272,12 @@ namespace common_utils{
          *
          * @note 如果 precision 超过 double 类型的最大精度限制（max_digits10），则返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * doublePrecision(3.14159, 2) -> "3.14"
          * doublePrecision(2.5000) -> "2.5"
          * doublePrecision(100.0) -> "100"
          * doublePrecision(1.23e-4) -> "0.000123"
+         * @endcode
          */
         static std::string doublePrecision(double d, int precision = -1);
 
@@ -265,11 +290,12 @@ namespace common_utils{
          * @param col 列字母标识字符串（不区分大小写）
          * @return int 对应的列数字
          *
-         * @example
+         * @code{.cpp}
          * columnToNumber("A") -> 1
          * columnToNumber("Z") -> 26
          * columnToNumber("AA") -> 27
          * columnToNumber("AB") -> 28
+         * @endcode
          */
         static int columnToNumber(const std::string& col);
 
@@ -287,10 +313,11 @@ namespace common_utils{
          *       - 列号：[1, 16384]
          *       如果超出范围，将记录错误日志并返回空字符串
          *
-         * @example
+         * @code{.cpp}
          * numToCellAddress(1, 1) -> "A1"
          * numToCellAddress(2, 2) -> "B2"
          * numToCellAddress(10, 27) -> "AA10"
+         * @endcode
          */
         static std::string numToCellAddress(int row, int col);
 
@@ -304,23 +331,12 @@ namespace common_utils{
          *
          * @note 函数会分别提取地址中的字母部分（列）和数字部分（行）
          *
-         * @example
+         * @code{.cpp}
          * cellAddressToNum("A1") -> {1, 1}
          * cellAddressToNum("B2") -> {2, 2}
          * cellAddressToNum("AA10") -> {10, 27}
+         * @endcode
          */
         static std::pair<int, int> cellAddressToNum(const std::string& addr);
-
-    private:
-        // C语言关键字集合（C11标准）,C++17 支持内联静态成员，直接在头文件中初始化
-        inline static const std::unordered_set<std::string> C_KEYWORDS = {
-            "auto", "break", "case", "char", "const", "continue", "default", "do",
-            "double", "else", "enum", "extern", "float", "for", "goto", "if",
-            "inline", "int", "long", "register", "restrict", "return", "short",
-            "signed", "sizeof", "static", "struct", "switch", "typedef", "union",
-            "unsigned", "void", "volatile", "while", "_Alignas", "_Alignof",
-            "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary", "_Noreturn",
-            "_Static_assert", "_Thread_local"
-        };
     };
 } // namespace common_utils

@@ -1,0 +1,358 @@
+/* GitHub 暗色主题 - Doxygen 自定义样式 */
+
+/* 全局样式 */
+body, table, div, p, dl {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #c9d1d9;
+    background-color: #0d1117;
+}
+
+/* 导航栏样式 */
+#top {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 10px 20px;
+}
+
+#titlearea {
+    padding-bottom: 10px;
+}
+
+#projectname {
+    color: #58a6ff;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+    color: #c9d1d9;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    line-height: 1.25;
+}
+
+h1 {
+    font-size: 2em;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.3em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+/* 链接样式 */
+a {
+    color: #58a6ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 代码块样式 - 普通代码块浅色背景 */
+div.fragment {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+div.line {
+    color: #c9d1d9;
+    min-height: 15px;
+}
+
+/* 示例代码块 - GitHub 风格 */
+dl.section example,
+div.code {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto;
+}
+
+/* 语法高亮 - GitHub Dark 配色 */
+span.keyword {
+    color: #ff7b72;
+}
+
+span.keywordtype {
+    color: #ffa657;
+}
+
+span.keywordflow {
+    color: #ff7b72;
+}
+
+span.stringliteral {
+    color: #a5d6ff;
+}
+
+span.comment {
+    color: #8b949e;
+    font-style: italic;
+}
+
+span.preprocessor {
+    color: #79c0ff;
+}
+
+span.number {
+    color: #79c0ff;
+}
+
+span.charliteral {
+    color: #a5d6ff;
+}
+
+/* 类和方法的容器样式 */
+div.memproto {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px 6px 0 0;
+    padding: 12px 16px;
+    color: #c9d1d9;
+}
+
+div.memdoc {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 16px;
+}
+
+div.memitem {
+    margin-bottom: 24px;
+}
+
+/* 表格样式 - GitHub 风格 */
+table.markdownTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+table.markdownTable th {
+    background: #161b22;
+    color: #c9d1d9;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid #30363d;
+}
+
+table.markdownTable td {
+    padding: 12px 16px;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+}
+
+table.markdownTable tr:nth-child(2n) {
+    background: #161b22;
+}
+
+table.markdownTable tr:hover {
+    background: #21262d;
+}
+
+/* 参数列表样式 */
+dl.params {
+    background: #161b22;
+    border-left: 3px solid #58a6ff;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+}
+
+dl.params dt {
+    font-weight: 600;
+    color: #58a6ff;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+
+dl.params dd {
+    margin-bottom: 8px;
+    color: #8b949e;
+}
+
+/* 返回值样式 */
+dl.return {
+    background: #161b22;
+    border-left: 3px solid #3fb950;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+}
+
+dl.return dt {
+    font-weight: 600;
+    color: #3fb950;
+}
+
+dl.return dd {
+    color: #8b949e;
+}
+
+/* 注意事项样式 */
+dl.note {
+    background: #161b22;
+    border-left: 3px solid #d29922;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+    color: #f0883e;
+}
+
+dl.note dt {
+    font-weight: 600;
+}
+
+/* 警告样式 */
+dl.warning {
+    background: #161b22;
+    border-left: 3px solid #f85149;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+    color: #ff7b72;
+}
+
+/* 侧边栏树形菜单样式 */
+#nav-tree {
+    background: #161b22;
+    border-right: 1px solid #30363d;
+}
+
+#nav-tree .item {
+    color: #8b949e;
+    padding: 6px 12px;
+}
+
+#nav-tree .item:hover {
+    background: #21262d;
+}
+
+#nav-tree .selected {
+    background: #1f6feb;
+    color: #ffffff;
+}
+
+#nav-tree a {
+    color: #8b949e;
+}
+
+#nav-tree a:hover {
+    color: #c9d1d9;
+}
+
+#nav-tree .arrow {
+    color: #8b949e;
+}
+
+/* 内容区域背景 */
+div.contents {
+    background: #0d1117;
+    padding: 24px;
+    margin: 20px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+}
+
+/* 分隔线样式 */
+hr {
+    border: none;
+    border-top: 1px solid #30363d;
+    margin: 24px 0;
+}
+
+/* 搜索框样式 */
+#MSearchBox {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+#MSearchField {
+    background: transparent;
+    color: #c9d1d9;
+    border: none;
+}
+
+#MSearchSelect {
+    filter: invert(1);
+}
+
+/* 内联代码样式 */
+code {
+    background: rgba(110, 118, 129, 0.4);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 85%;
+    color: #c9d1d9;
+}
+
+/* 粗体样式 */
+strong {
+    color: #c9d1d9;
+    font-weight: 600;
+}
+
+/* 列表样式 */
+ul, ol {
+    padding-left: 2em;
+    color: #c9d1d9;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+/* 引用块样式 */
+blockquote {
+    background: #161b22;
+    border-left: 4px solid #30363d;
+    padding: 16px;
+    margin: 16px 0;
+    color: #8b949e;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    div.contents {
+        padding: 16px;
+        margin: 10px;
+    }
+
+    table.markdownTable {
+        font-size: 13px;
+    }
+
+    table.markdownTable th,
+    table.markdownTable td {
+        padding: 8px 12px;
+    }
+}

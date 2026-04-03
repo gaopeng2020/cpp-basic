@@ -51,17 +51,19 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+*.log
 *.x64
-*.build
-*.install
-*.output
+build
+install
+.output
 *.vs
 *.sln
 *.filters
 *.user
-*.Debug
-*.Release
-*.cmake-build-debug
-*.cmake-build-release
+Debug
+Release
+cmake-build-debug
+cmake-build-release
+html
 *.idea
 *.sln
