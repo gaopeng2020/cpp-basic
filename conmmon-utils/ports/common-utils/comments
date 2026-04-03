@@ -1,0 +1,23 @@
+# 创建port步骤
+1.创建portfile.cmake，仅需修改SOURCE_PATH，使用绝对路
+2.创建vcpkg.json,修改名称，描述以及依赖
+3.创建usae，按实际情况修改
+4.在根目录下创建LICENSE
+5. 安装：如没有依赖或者依赖也是vcpkg提供的则直接安装，进入项目根目录下打开powershell：
+    vcpkg install common-utils --overlay-ports=ports/common-utils --triplet=x64-mingw-dynamic --debug
+6. 移除安装: 
+    vcpkg remove common-utils:x64-mingw-dynamic --recurse
+
+    注意：重新按照前最好清理下缓存，防止变更不生效
+    # 清理 vcpkg 二进制缓存
+    Remove-Item -Recurse -Force $env:LOCALAPPDATA\vcpkg\archives\*
+
+# 其他注意事项
+vcpkg 不会自动生成libTargets-debug.cmake,会导致其他引用该库的项目在debug模式下无法运行；
+1.先手动install到一个非vcpkg安装目录，比如项目根目录下的install文件夹
+2.然后在${_IMPORT_PREFIX}后增加/debug，如下所示
+set_target_properties(common-utils::common-utils PROPERTIES
+  IMPORTED_IMPLIB_DEBUG "${_IMPORT_PREFIX}/debug/lib/libcommon-utils.dll.a"
+  IMPORTED_LOCATION_DEBUG "${_IMPORT_PREFIX}/debug/bin/libcommon-utils.dll"
+)
+3.最后将libTargets-debug.cmake复制到vcpkg\installed\x64-mingw-dynamic\share\lib目录下

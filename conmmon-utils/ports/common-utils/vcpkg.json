@@ -1,0 +1,14 @@
+{
+  "name": "common-utils",
+  "version": "1.0.0",
+  "description": "Common utilities library for String and Xlsx operations",
+  "homepage": "https://github.com/gaopeng2020/common-utils",
+  "license": "MIT",
+  "dependencies": [
+    "glog",
+    "openxlsx",
+    "tinyxml2",
+    "vcpkg-cmake",
+    "vcpkg-cmake-config"
+  ]
+}

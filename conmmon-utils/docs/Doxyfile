@@ -1,0 +1,35 @@
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = "工具类文档"
+OUTPUT_DIRECTORY       = ./
+OUTPUT_LANGUAGE        = Chinese
+UTF8_SUPPORTED         = YES
+
+INPUT                  = ../
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h *.hpp
+
+EXCLUDE_PATTERNS       = build/* .git/* doxygen/* *.cpp *.c
+
+EXTRACT_ALL            = YES
+HIDE_UNDOC_MEMBERS     = NO
+JAVADOC_AUTOBRIEF      = YES
+ALWAYS_DETAILED_SEC    = YES
+
+HTML_EXTRA_STYLESHEET  =
+HTML_OUTPUT            = html
+HTML_COLORSTYLE_HUE    = 0
+HTML_COLORSTYLE_SAT    = 0
+HTML_FONT_SIZE         = 16
+
+GENERATE_HTML          = YES
+GENERATE_TREEVIEW      = YES
+SEARCHENGINE           = YES
+
+HAVE_DOT               = NO
+CLASS_GRAPH            = NO
+COLLABORATION_GRAPH    = NO
+
+GENERATE_LATEX         = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO

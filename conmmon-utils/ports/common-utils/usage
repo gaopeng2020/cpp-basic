@@ -1,0 +1,13 @@
+common-utils provides common utility functions for string and Xlsx operations.
+
+To use in your CMake project:
+
+    find_package(common-utils CONFIG REQUIRED)
+    target_link_libraries(your-target PRIVATE common-utils::common-utils )
+
+Example usage:
+
+    #include <common-utils/core.h>
+    #include <common-utils/xlsx.h>
+    using namespace common_utils;
+    std::string formatted = Core.stringFormat("  hello world  ");
