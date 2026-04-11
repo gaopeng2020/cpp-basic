@@ -5,7 +5,7 @@
 #include "common-utils/core.h"
 #include "common-utils/xlsx.h"
 #include "common-utils/xml.h"
-#include "logger.h"
+// #include "logger.h"
 
 #include <common-utils/Log.hpp>
 
@@ -100,7 +100,8 @@ void readXlsxTest() {
     for (int t = 0; t < 2; t++) {
         for (int c = 1; c < wb.worksheetCount(); c++) {
             ws = wb.worksheet(c);
-            LOG(INFO) << "工作表名称: " << ws.name() << " column count = " << ws.columnCount();
+            // LOG(INFO) << "工作表名称: " << ws.name() << " column count = " << ws.columnCount();
+            error( App, "工作表名称: " << ws.name() << " column count = " << ws.columnCount());
             for (int i = 1; i <= ws.rowCount(); i++) {
                 for (int j = 1; j <= ws.columnCount(); j++) {
                     auto cell_assignable = ws.cell(i, j);
@@ -110,11 +111,15 @@ void readXlsxTest() {
                     const int last_row_num = Xlsx::getLastRowNum(ws, i, j);
                     const int last_clo_num = Xlsx::getLastColumnNum(ws, i, j);
                     if (Xlsx::isCellMerged(ws, i, j)) {
-                        LOG(INFO) << address << "= " << cell_value << ", was merged,last row num= " << last_row_num
-                                  << ",last col num= " << last_clo_num;
+                        // LOG(INFO) << address << "= " << cell_value << ", was merged,last row num= " << last_row_num
+                        //           << ",last col num= " << last_clo_num;
+                        error(App,address << "= " << cell_value << ", was merged,last row num= " << last_row_num
+                                  << ",last col num= " << last_clo_num);
                     } else {
-                        LOG(INFO) << address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
-                                  << ",last col num= " << last_clo_num;
+                        // LOG(INFO) << address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
+                        //           << ",last col num= " << last_clo_num;
+                        error(App,address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
+                                  << ",last col num= " << last_clo_num);
                     }
                 }
             }
@@ -140,7 +145,7 @@ void deleteDescription(tinyxml2::XMLDocument& doc) {
     tinyxml2::XMLElement* arPkgs = Xml::findArPackages(doc);
     if (!arPkgs) {
         std::cout << "arPkgs 没找到" << std::endl;
-        Logger::Shutdown();
+        // Logger::Shutdown();
         return;
     }
 
@@ -153,7 +158,7 @@ void deleteDescription(tinyxml2::XMLDocument& doc) {
         }
     }
     auto current_timestamp = Core::getCurrentTimestamp("%Y-%m-%d:%H-%M-%S", true);
-    LOG(INFO) << "开始时间:" << current_timestamp;
+    // LOG(INFO) << "开始时间:" << current_timestamp;
     std::cout << "开始时间:" << current_timestamp << std::endl;
     // 删除所有 DESC
     Xml::removeAllDescriptions(arPkgs, "DESC");
@@ -164,7 +169,7 @@ void deleteDescription(tinyxml2::XMLDocument& doc) {
     Xml::saveXmlDocument(doc, path);
 
     current_timestamp = Core::getCurrentTimestamp("%Y-%m-%d:%H-%M-%S", true);
-    LOG(INFO) << "结束时间:" << current_timestamp;
+    // LOG(INFO) << "结束时间:" << current_timestamp;
     std::cout << "结束时间:" << current_timestamp << std::endl;
 }
 
@@ -174,7 +179,7 @@ void readAllArPackageTest(tinyxml2::XMLDocument& doc) {
     tinyxml2::XMLElement* arPkgs = Xml::findArPackages(doc);
     if (!arPkgs) {
         std::cout << "arPkgs 没找到" << std::endl;
-        Logger::Shutdown();
+        // Logger::Shutdown();
         return;
     }
 

@@ -10,7 +10,8 @@ target_include_directories(common-utils-xlsx PRIVATE
 )
 
 target_link_libraries(common-utils-xlsx PRIVATE
-        glog::glog
+#        glog::glog
         OpenXLSX::OpenXLSX
         common-utils-core
+        common-utils-log
 )

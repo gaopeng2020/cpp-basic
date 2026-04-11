@@ -5,7 +5,6 @@
   "homepage": "https://github.com/gaopeng2020/common-utils",
   "license": "MIT",
   "dependencies": [
-    "glog",
     "openxlsx",
     "tinyxml2",
     "vcpkg-cmake",
