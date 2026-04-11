@@ -1,9 +1,81 @@
+#include <chrono>
 #include <iostream>
-#include "logger.h"
+#include <memory>
+#include <thread>
 #include "common-utils/core.h"
 #include "common-utils/xlsx.h"
 #include "common-utils/xml.h"
-using namespace common_utils;
+#include "logger.h"
+
+#include <common-utils/Log.hpp>
+
+using namespace common_utils::core;
+using namespace common_utils::xlsx;
+using namespace common_utils::xml;
+using namespace common_utils::log;
+
+void test_basic_logging() {
+    std::cout << "\n=== 测试1: 基本日志输出 ===" << std::endl;
+
+    error(App, "这是一条错误日志");
+    warning(App, "这是一条警告日志");
+    info(App, "这是一条信息日志");
+    debug(App, "这是一条调试日志");
+}
+
+void test_context_reporting() {
+    std::cout << "\n=== 测试2: 上下文信息（文件名/函数名）===" << std::endl;
+
+    Log::report_filenames(true);
+    Log::report_functions(true);
+
+    warning(Context, "启用文件名和函数名报告");
+    error(Context, "错误日志包含完整上下文");
+}
+
+void test_multithread_logging() {
+    std::cout << "\n=== 测试3: 多线程日志 ===" << std::endl;
+
+    auto thread_func = [](const int id) {
+        for (int i = 0; i < 1000; ++i) {
+            debug(Thread2, "线程 " << id << " - 消息 " << i);
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        }
+    };
+
+    std::thread t1(thread_func, 1);
+    std::thread t2(thread_func, 2);
+    std::thread t3(thread_func, 3);
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    Log::flush();
+    std::cout << "所有线程日志完成" << std::endl;
+}
+
+void test_verbosity_levels() {
+    std::cout << "\n=== 测试4: 不同 verbosity 级别 ===" << std::endl;
+
+    Log::set_verbosity(Log::Error);
+    std::cout << "Verbosity = Error:" << std::endl;
+    info(Level, "这条不会显示");
+    warning(Level, "这条不会显示");
+    error(Level, "错误会显示");
+
+    Log::set_verbosity(Log::Warning);
+    std::cout << "\nVerbosity = Warning:" << std::endl;
+    info(Level, "这条不会显示");
+    warning(Level, "警告会显示");
+    error(Level, "错误会显示");
+
+    Log::set_verbosity(Log::Info);
+    std::cout << "\nVerbosity = Info:" << std::endl;
+    info(Level, "信息会显示");
+    warning(Level, "警告会显示");
+    error(Level, "错误会显示");
+}
 
 void readXlsxTest() {
     // 1. 打开 Excel 文件
@@ -24,8 +96,7 @@ void readXlsxTest() {
     // const auto value = Xlsx::getCellValue(cell);
     // LOG(INFO) << cellAddr << "= " << value;
 
-
-    //全部读取
+    // 全部读取
     for (int t = 0; t < 2; t++) {
         for (int c = 1; c < wb.worksheetCount(); c++) {
             ws = wb.worksheet(c);
@@ -40,10 +111,10 @@ void readXlsxTest() {
                     const int last_clo_num = Xlsx::getLastColumnNum(ws, i, j);
                     if (Xlsx::isCellMerged(ws, i, j)) {
                         LOG(INFO) << address << "= " << cell_value << ", was merged,last row num= " << last_row_num
-                            << ",last col num= " << last_clo_num;
+                                  << ",last col num= " << last_clo_num;
                     } else {
                         LOG(INFO) << address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
-                            << ",last col num= " << last_clo_num;
+                                  << ",last col num= " << last_clo_num;
                     }
                 }
             }
@@ -117,17 +188,38 @@ void readAllArPackageTest(tinyxml2::XMLDocument& doc) {
 }
 
 int main(int argc, char** argv) {
-    Logger::Init(argv[0], false, google::GLOG_INFO, 1, 5);
+    //------------------------------------------------------xml读取测试------------------------------------------------
+    // Logger::Init(argv[0], false, google::GLOG_INFO, 1, 5);
+    //
+    // LOG(INFO) << "开始读取Excel测试";
+    // // readXlsxTest();
+    //
+    // tinyxml2::XMLDocument doc;
+    // LOG(INFO) << "开始读取ARXML测试";
+    // readArxmlTest(doc);
+    //
+    // readAllArPackageTest(doc);
+    //
+    // Logger::Shutdown();
 
-    LOG(INFO) << "开始读取Excel测试";
-    // readXlsxTest();
+    //------------------------------------------------------自定义log测试------------------------------------------------
+    Log::init(argv[0], Log::Info, true, true, 5, 1);
 
-    tinyxml2::XMLDocument doc;
-    LOG(INFO) << "开始读取ARXML测试";
-    readArxmlTest(doc);
+    std::cout << "========================================" << std::endl;
+    std::cout << "   异步日志系统完整测试" << std::endl;
+    std::cout << "========================================" << std::endl;
+    Log::set_verbosity(Log::Debug);
+    test_basic_logging();
+    test_context_reporting();
+    test_multithread_logging();
+    test_verbosity_levels();
 
-    readAllArPackageTest(doc);
+    // Log::flush();
+    std::cout << "\n========================================" << std::endl;
+    std::cout << "   所有测试完成！" << std::endl;
+    std::cout << "========================================" << std::endl;
 
-    Logger::Shutdown();
+    Log::shutdown();
+
     return 0;
 }

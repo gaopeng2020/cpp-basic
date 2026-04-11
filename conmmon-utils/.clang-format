@@ -1,0 +1,101 @@
+---
+Language: Cpp
+# 基础风格：Google
+#BasedOnStyle: Google
+# 大括号样式：自定义
+BreakBeforeBraces: Custom
+# 访问修饰符偏移量（private/public/protected 的缩进）
+AccessModifierOffset: -4
+# 连续赋值语句对齐
+AlignConsecutiveAssignments: false
+# 连续声明语句对齐
+AlignConsecutiveDeclarations: false
+# 操作数对齐
+AlignOperands: false
+# 尾部注释对齐
+AlignTrailingComments: false
+# 允许简短的 if 语句写在单行
+AllowShortIfStatementsOnASingleLine: true
+# 允许简短的循环语句写在单行
+AllowShortLoopsOnASingleLine: true
+# 允许简短的代码块写在单行（仅空块）
+AllowShortBlocksOnASingleLine: Empty
+# 模板声明总是换行
+AlwaysBreakTemplateDeclarations: Yes
+# 缩进case标签
+IndentCaseLabels: true
+
+# 大括号换行规则
+BraceWrapping:
+  AfterCaseLabel: false      # case 标签后不换行
+  AfterClass: false          # 类定义后不换行
+  AfterControlStatement: false  # 控制语句后不换行
+  AfterEnum: false           # 枚举后不换行
+  AfterFunction: false       # 函数定义后不换行
+  AfterNamespace: false      # 命名空间后不换行
+  AfterStruct: false         # 结构体后不换行
+  AfterUnion: false          # 联合体后不换行
+  AfterExternBlock: false    # extern 块后不换行
+  BeforeCatch: false         # catch 前不换行
+  BeforeElse: false          # else 前不换行
+  BeforeLambdaBody: false    # lambda 体前不换行
+  SplitEmptyFunction: false  # 空函数不拆分
+  SplitEmptyRecord: false    # 空记录不拆分
+  SplitEmptyNamespace: false # 空命名空间不拆分
+# 允许简短的 case 标签写在单行
+AllowShortCaseLabelsOnASingleLine: false
+# 构造函数初始化列表换行位置：冒号后
+BreakConstructorInitializers: AfterColon
+# 构造函数初始化列表逗号前不换行
+BreakConstructorInitializersBeforeComma: false
+# 每行最大列数
+ColumnLimit: 130
+# 紧凑命名空间（不嵌套缩进）
+CompactNamespaces: false
+# 构造函数初始化列表每个成员是否独占一行
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+# include 头文件分类和排序规则
+IncludeCategories:
+  - Regex: '^<.*'    # 系统头文件（尖括号）
+    Priority: 1
+  - Regex: '^".*'    # 项目头文件（双引号）
+    Priority: 2
+  - Regex: '.*'      # 其他头文件
+    Priority: 3
+# 主头文件匹配规则（用于测试文件）
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+# 缩进宽度
+IndentWidth: 4
+# 文件末尾插入新行
+InsertNewlineAtEOF: true
+# 宏块开始标记
+MacroBlockBegin: ''
+# 宏块结束标记
+MacroBlockEnd: ''
+# 最大连续空行数
+MaxEmptyLinesToKeep: 1
+# 命名空间缩进：无
+NamespaceIndentation: None
+# 预处理指令缩进方式：AfterHash=#后缩进，BeforeHash=#前缩进
+IndentPPDirectives: AfterHash
+# 预处理指令缩进级别（-1=使用IndentWidth）
+PPIndentWidth: -1
+# 指针对齐方式：左对齐（int* ptr）
+PointerAlignment: Left
+# 空括号内不加空格
+SpaceInEmptyParentheses: false
+# 尖括号内不加空格
+SpacesInAngles: false
+# 条件语句中不加空格
+SpacesInConditionalStatement: false
+# C 风格强制类型转换括号内不加空格
+SpacesInCStyleCastParentheses: false
+# 圆括号内不加空格
+SpacesInParentheses: false
+# 允许排序#include
+SortIncludes: true
+# 允许排序 using 声明顺序
+SortUsingDeclarations: false
+# Tab 宽度
+TabWidth: 4
+...

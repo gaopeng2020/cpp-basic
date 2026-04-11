@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.20)
 # ===================================== 用户配置区 =====================================
 # 使用前请修改以下变量
 
@@ -64,12 +64,14 @@ add_library(${PROJECT_NAME} ${LIB_TYPE})
 add_subdirectory(src/core)
 add_subdirectory(src/xlsx)
 add_subdirectory(src/xml)
+add_subdirectory(src/log)
 
 # 设置模块源码(适合有子模块的库)
 target_sources(${PROJECT_NAME} PRIVATE
         $<TARGET_OBJECTS:common-utils-core>
-        $<TARGET_OBJECTS:common-utils-xml>
         $<TARGET_OBJECTS:common-utils-xlsx>
+        $<TARGET_OBJECTS:common-utils-xml>
+        $<TARGET_OBJECTS:common-utils-log>
 )
 
 # ========== 3. 生成跨平台的导出头文件（仅动态库需要） ==========

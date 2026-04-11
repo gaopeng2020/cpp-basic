@@ -1,6 +1,16 @@
 # 设置错误处理策略
 $ErrorActionPreference = "Stop"
 
+# 配置 MinGW 环境变量
+$mingwPath = "D:\ProgramFiles\JetBrains\CLion-2026.1\bin\mingw\bin"
+if (Test-Path $mingwPath) {
+    $env:PATH = "$mingwPath;$env:PATH"
+    Write-Host "MinGW 路径已添加到环境变量: $mingwPath" -ForegroundColor Green
+} else {
+    Write-Host "警告: MinGW 路径不存在: $mingwPath" -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "=== 开始重新安装 common-utils ===" -ForegroundColor Cyan
 
 # 步骤 1: 移除已安装的包

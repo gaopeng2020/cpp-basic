@@ -5,7 +5,7 @@
 #pragma once
 #include <OpenXLSX.hpp>
 
-namespace common_utils{
+namespace common_utils::xlsx{
     /**
      * @brief Xlsx 类用于操作 Excel 文件
      *

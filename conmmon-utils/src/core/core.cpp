@@ -12,7 +12,7 @@
 #include <windows.h>
 #endif
 
-namespace common_utils{
+namespace common_utils::core{
     std::string Core::stringFormat(const std::string& str) {
         if (str.empty()) return "";
         // 第一步：先替换字面量的 "\n"、"\t"、"\r"（来自配置文件或代码中的字符串字面量）
@@ -290,4 +290,4 @@ namespace common_utils{
         std::ranges::reverse(result);
         return result + std::to_string(row);
     }
-} // namespace common_utils
+} // namespace common_utils::core

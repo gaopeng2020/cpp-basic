@@ -8,14 +8,18 @@
 6. 移除安装: 
     vcpkg remove common-utils:x64-mingw-dynamic --recurse
 
-    注意：重新按照前最好清理下缓存，防止变更不生效
+    注意：重新安装前最好清理下缓存，防止变更不生效
     # 清理 vcpkg 二进制缓存
     Remove-Item -Recurse -Force $env:LOCALAPPDATA\vcpkg\archives\*
+
+脚本一键安装：.\ports\common-utils\reinstall.ps1
+
+
 
 # 其他注意事项
 vcpkg 不会自动生成libTargets-debug.cmake,会导致其他引用该库的项目在debug模式下无法运行；
 1.先手动install到一个非vcpkg安装目录，比如项目根目录下的install文件夹
-2.然后在${_IMPORT_PREFIX}后增加/debug，如下所示
+2.然后修改set_target_properties，在${_IMPORT_PREFIX}后增加/debug，如下所示
 set_target_properties(common-utils::common-utils PROPERTIES
   IMPORTED_IMPLIB_DEBUG "${_IMPORT_PREFIX}/debug/lib/libcommon-utils.dll.a"
   IMPORTED_LOCATION_DEBUG "${_IMPORT_PREFIX}/debug/bin/libcommon-utils.dll"
