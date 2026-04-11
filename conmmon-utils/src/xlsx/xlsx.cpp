@@ -4,22 +4,26 @@
 
 #include "common-utils/xlsx.h"
 #include <filesystem>
-#include <glog/logging.h>
+// #include <glog/logging.h>
 #include <regex>
+#include "common-utils/Log.hpp"
 #include "common-utils/core.h"
 
 namespace common_utils::xlsx {
 using namespace common_utils::core;
+using namespace common_utils::log;
 bool Xlsx::openXlDocument(OpenXLSX::XLDocument& doc, const std::string& path) {
     // 判断文件是否存在
     if (path.empty() || !std::filesystem::exists(path) || path.substr(path.length() - 5) != ".xlsx") {
-        LOG(ERROR) << "输入不是一个有效的Excel文件,文件必须以.xlsx结尾";
+        // LOG(ERROR) << "输入不是一个有效的Excel文件,文件必须以.xlsx结尾";
+        error("Xlsx", "输入不是一个有效的Excel文件,文件必须以.xlsx结尾");
         return false;
     }
 
     doc.open(path);
     if (!doc.isOpen()) {
-        LOG(ERROR) << "输入的Excel文件无法打开，请查看文件是否损坏或加密了";
+        // LOG(ERROR) << "输入的Excel文件无法打开，请查看文件是否损坏或加密了";
+        error("Xlsx", "输入的Excel文件无法打开，请查看文件是否损坏或加密了");
         return false;
     }
 
@@ -28,7 +32,8 @@ bool Xlsx::openXlDocument(OpenXLSX::XLDocument& doc, const std::string& path) {
 
 int Xlsx::getColumnByHeader(const OpenXLSX::XLWorksheet& sheet, const std::string& headerName, const int row) {
     if (row < 1 || row > 1048576) {
-        LOG(ERROR) << "rowNumber valid range [1;1048576]，but the input row= " << row;
+        // LOG(ERROR) << "rowNumber valid range [1;1048576]，but the input row= " << row;
+        error("Xlsx", "rowNumber valid range [1;1048576]，but the input row= " << row);
         return -1;
     }
     // 获取工作表的列范围（最大列数）
@@ -58,7 +63,8 @@ int Xlsx::getColumnByHeader(const OpenXLSX::XLWorksheet& sheet, const std::strin
             return col; // 找到匹配，返回列号
         }
     }
-    LOG(ERROR) << headerName << " 在[" << sheet.name() << "]中第(" << row << ")行没找到对应的列";
+    // LOG(ERROR) << headerName << " 在[" << sheet.name() << "]中第(" << row << ")行没找到对应的列";
+    error("Xlsx", headerName + " 在[" + sheet.name() + "]中第(" + std::to_string(row) + ")行没找到对应的列");
     return -1; // 未找到匹配
 }
 
@@ -79,9 +85,13 @@ std::string Xlsx::getCellValue(const OpenXLSX::XLCell& cell, const int precision
 
 int Xlsx::getLastRowNum(OpenXLSX::XLWorksheet& sheet, const int row, const int col) {
     if (row < 1 || row >= 1048576 || col < 1 || col >= 16384) {
-        LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
-                      "and the input is: row= "
-                   << row << ", column= " << col;
+        // LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
+        //               "and the input is: row= "
+        //            << row << ", column= " << col;
+        error("Xlsx",
+              "rowNumber valid range [1;1048576], columnNumber valid range [1;16384] "
+              "and the input is: row="
+                  << row << ", column= " << col);
         return col;
     }
     auto cell = sheet.cell(row, col);
@@ -112,9 +122,12 @@ int Xlsx::getLastRowNum(OpenXLSX::XLWorksheet& sheet, const int row, const int c
 
 int Xlsx::getLastColumnNum(OpenXLSX::XLWorksheet& sheet, const int row, const int col) {
     if (row < 1 || row >= 1048576 || col < 1 || col >= 16384) {
-        LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
-                      "and the input is: row= "
-                   << row << ", column= " << col;
+        // LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
+        //               "and the input is: row= "
+        //            << row << ", column= " << col;
+        error("Xlsx",
+              "rowNumber valid range [1;1048576], columnNumber valid range [1;16384] and the input is: row= "
+                  << row << ", column= " << col);
         return col;
     }
 
@@ -147,9 +160,12 @@ int Xlsx::getLastColumnNum(OpenXLSX::XLWorksheet& sheet, const int row, const in
 
 std::pair<std::string, std::string> Xlsx::getCellMergedRange(OpenXLSX::XLWorksheet& sheet, const int row, const int col) {
     if (row < 1 || row >= 1048576 || col < 1 || col >= 16384) {
-        LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
-                      "and the input is: row= "
-                   << row << ", column= " << col;
+        // LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
+        //               "and the input is: row= "
+        //            << row << ", column= " << col;
+        error("Xlsx",
+      "rowNumber valid range [1;1048576], columnNumber valid range [1;16384] and the input is: row= "
+          << row << ", column= " << col);
         return {};
     }
 

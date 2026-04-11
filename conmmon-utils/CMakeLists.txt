@@ -21,45 +21,31 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 4. 依赖库处理（直接使用 find_package，不再使用复杂的列表循环）
-find_package(glog CONFIG REQUIRED)
+#find_package(glog CONFIG REQUIRED)
 find_package(OpenXLSX CONFIG REQUIRED)
 find_package(tinyxml2 CONFIG REQUIRED)
 
-# 收集依赖目标（用于target_link_libraries）
+# 5. 收集依赖目标（用于target_link_libraries）
 # 注意：如果库提供了 CMake 目标，请使用带命名空间的名称（如 glog::glog）
 set(DEP_TARGETS
-        glog::glog
+        #        glog::glog
         OpenXLSX::OpenXLSX
         tinyxml2::tinyxml2
 )
-# 收集 find_dependency 代码（用于生成 Config.cmake）
+# 6. 收集 find_dependency 代码（用于生成 Config.cmake）
 set(DEP_FIND_CODE "")
-string(APPEND DEP_FIND_CODE "find_dependency(glog REQUIRED)\n")
+#string(APPEND DEP_FIND_CODE "find_dependency(glog REQUIRED)\n")
 string(APPEND DEP_FIND_CODE "find_dependency(OpenXLSX REQUIRED)\n")
 string(APPEND DEP_FIND_CODE "find_dependency(tinyxml2 REQUIRED)\n")
 message(STATUS "Generated DEP_FIND_CODE:\n${DEP_FIND_CODE}")
 
-option(BUILD_GOOGL_TESTS "Build unit tests" OFF)
-option(BUILD_MY_TESTS "Build unit tests" ON)
-
-# ===================================== 以下无需修改 =====================================
-# ========== 1. 设置CMAKE_INSTALL_PREFIX ==========
-#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-#    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Installation directory" FORCE)
-#    message(STATUS "Non-Release mode (${CMAKE_BUILD_TYPE}): set CMAKE_INSTALL_PREFIX to ${CMAKE_INSTALL_PREFIX}")
-#else ()
-#    set(CMAKE_INSTALL_PREFIX "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}" CACHE PATH "Installation directory" FORCE)
-#    message(STATUS "Release mode: set CMAKE_INSTALL_PREFIX using VCPKG_ROOT: ${CMAKE_INSTALL_PREFIX}")
-#endif ()
-
-# ========== 2. 创建库目标 ==========
+# 7. 定义库并关联代码
 #适合没有子模块的库
 #file(GLOB_RECURSE SOURCES "src/*.cpp")
 #add_library(${PROJECT_NAME} ${LIB_TYPE} ${SOURCES})
 
 #适合有子模块的库
 add_library(${PROJECT_NAME} ${LIB_TYPE})
-
 # 添加子模块(适合有子模块的库)
 add_subdirectory(src/core)
 add_subdirectory(src/xlsx)
@@ -74,6 +60,11 @@ target_sources(${PROJECT_NAME} PRIVATE
         $<TARGET_OBJECTS:common-utils-log>
 )
 
+# 8. 是否打开测试用例
+option(BUILD_GOOGL_TESTS "Build unit tests" OFF)
+option(BUILD_MY_TESTS "Build unit tests" ON)
+
+# ===================================== 以下无需修改 =====================================
 # ========== 3. 生成跨平台的导出头文件（仅动态库需要） ==========
 if (LIB_TYPE STREQUAL "SHARED")
     include(GenerateExportHeader)

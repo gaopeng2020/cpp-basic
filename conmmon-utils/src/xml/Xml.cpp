@@ -4,27 +4,31 @@
 
 #include "common-utils/Xml.h"
 #include <filesystem>
-#include <glog/logging.h>
-
+// #include <glog/logging.h>
+#include "common-utils/Log.hpp"
 #include "common-utils/core.h"
 
 namespace common_utils::xml {
 using namespace common_utils::core;
+using namespace common_utils::log;
 bool Xml::openXmlDocument(tinyxml2::XMLDocument& doc, const std::string& path) {
     // 判断文件是否存在
     if (path.empty() || !std::filesystem::exists(path)) {
-        LOG(ERROR) << "文件不存在：" << path;
+        // LOG(ERROR) << "文件不存在：" << path;
+        error("Xml", "文件不存在：" << path);
         return false;
     }
 
     // 检查文件扩展名
     if (const std::string ext = path.substr(path.find_last_of(".")); ext != ".xml" && ext != ".arxml" && ext != ".xlsx") {
-        LOG(ERROR) << "输入不是一个有效的 XML 文件，文件必须以.xml/.arxml 结尾";
+        // LOG(ERROR) << "输入不是一个有效的 XML 文件，文件必须以.xml/.arxml 结尾";
+        error("Xml", "输入不是一个有效的 XML 文件，文件必须以.xml/.arxml 结尾");
         return false;
     }
 
     if (doc.LoadFile(path.c_str()) != tinyxml2::XML_SUCCESS) {
-        LOG(ERROR) << "输入的 XML 文件无法打开，请查看文件是否损坏或加密了";
+        // LOG(ERROR) << "输入的 XML 文件无法打开，请查看文件是否损坏或加密了";
+        error("Xml", "输入的 XML 文件无法打开，请查看文件是否损坏或加密了");
         return false;
     }
 
@@ -45,7 +49,8 @@ void Xml::saveXmlDocument(tinyxml2::XMLDocument& doc, const std::string& path) {
 
     // 这种保存方法会格式化文档
     if (doc.SaveFile(modifiedPath.c_str()) == tinyxml2::XML_SUCCESS) {
-        LOG(INFO) << "XML 已保存到：" << modifiedPath;
+        // LOG(INFO) << "XML 已保存到：" << modifiedPath;
+        info("Xml", "XML 已保存到：" << modifiedPath);
     }
 }
 
@@ -56,7 +61,8 @@ tinyxml2::XMLElement* Xml::findArPackages(tinyxml2::XMLDocument& doc) {
 // 根据名称查找 AR-PACKAGE
 tinyxml2::XMLElement* Xml::findArPackage(tinyxml2::XMLElement* arPackages, const std::string& shortName) {
     if (!arPackages) {
-        LOG(ERROR) << "输入的AR-PACKAGES为空指针";
+        // LOG(ERROR) << "输入的AR-PACKAGES为空指针";
+        error("Xml", "输入的AR-PACKAGES为空指针");
         return nullptr;
     }
     for (auto ar_pkg = arPackages->FirstChildElement(); ar_pkg; ar_pkg = ar_pkg->NextSiblingElement()) {
@@ -79,7 +85,8 @@ tinyxml2::XMLElement* Xml::findArPackage(tinyxml2::XMLElement* arPackages, const
 std::vector<tinyxml2::XMLElement*> Xml::findAllArPackages(tinyxml2::XMLElement*& ar_packages) {
     std::vector<tinyxml2::XMLElement*> vec;
     if (!ar_packages) {
-        LOG(ERROR) << "输入的AR-PACKAGES为空指针";
+        // LOG(ERROR) << "输入的AR-PACKAGES为空指针";
+        error("Xml", "输入的AR-PACKAGES为空指针");
         return vec;
     }
     for (auto ar_pkg = ar_packages->FirstChildElement(); ar_pkg; ar_pkg = ar_pkg->NextSiblingElement()) {
@@ -99,7 +106,8 @@ std::vector<tinyxml2::XMLElement*> Xml::findAllArPackages(tinyxml2::XMLElement*&
 
 tinyxml2::XMLElement* Xml::findElement(tinyxml2::XMLElement* arPkg, const std::string& name, const std::string& type) {
     if (!arPkg) {
-        LOG(ERROR) << "输入的AR-PACKAGE为空指针";
+        // LOG(ERROR) << "输入的AR-PACKAGE为空指针";
+        error("Xml", "输入的AR-PACKAGE为空指针");
         return nullptr;
     }
     // std::cout << "--------element type: " << arPkg->Name() << ", 位于：" << arPkg->GetLineNum() << std::endl;
@@ -121,14 +129,16 @@ tinyxml2::XMLElement* Xml::findElement(tinyxml2::XMLElement* arPkg, const std::s
 
 void Xml::removeAllDescriptions(tinyxml2::XMLElement* arPkgs, const std::string& tag) {
     if (!arPkgs) {
-        LOG(ERROR) << "输入的AR-PACKAGE为空指针";
+        // LOG(ERROR) << "输入的AR-PACKAGE为空指针";
+        error("Xml", "输入的AR-PACKAGE为空指针");
         return;
     }
 
     // 1. 删除当前元素的所有指定标签的子元素（可能有多个）
     while (const auto child = arPkgs->FirstChildElement(tag.c_str())) {
         arPkgs->DeleteChild(child);
-        LOG(INFO) << "已删除元素 " << arPkgs->Name() << " 的 " << tag << " (第" << arPkgs->GetLineNum() << "行)";
+        // LOG(INFO) << "已删除元素 " << arPkgs->Name() << " 的 " << tag << " (第" << arPkgs->GetLineNum() << "行)";
+        info("Xml", "已删除元素 " << arPkgs->Name() << " 的 " << tag << " (第" << arPkgs->GetLineNum() << "行)");
     }
 
     // 2. 深度优先遍历所有子元素
