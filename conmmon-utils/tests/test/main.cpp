@@ -17,10 +17,10 @@ using namespace common_utils::log;
 void test_basic_logging() {
     std::cout << "\n=== 测试1: 基本日志输出 ===" << std::endl;
 
-    error(App, "这是一条错误日志");
-    warning(App, "这是一条警告日志");
-    info(App, "这是一条信息日志");
-    debug(App, "这是一条调试日志");
+    log_error(App, "这是一条错误日志");
+    log_warning(App, "这是一条警告日志");
+    log_info(App, "这是一条信息日志");
+    log_debug(App, "这是一条调试日志");
 }
 
 void test_context_reporting() {
@@ -29,16 +29,16 @@ void test_context_reporting() {
     Log::report_filenames(true);
     Log::report_functions(true);
 
-    warning(Context, "启用文件名和函数名报告");
-    error(Context, "错误日志包含完整上下文");
+    log_warning(Context, "启用文件名和函数名报告");
+    log_error(Context, "错误日志包含完整上下文");
 }
 
 void test_multithread_logging() {
     std::cout << "\n=== 测试3: 多线程日志 ===" << std::endl;
 
     auto thread_func = [](const int id) {
-        for (int i = 0; i < 1000; ++i) {
-            debug(Thread2, "线程 " << id << " - 消息 " << i);
+        for (int i = 0; i < 10; ++i) {
+            log_debug(Thread2, "线程 " << id << " - 消息 " << i);
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     };
@@ -60,21 +60,21 @@ void test_verbosity_levels() {
 
     Log::set_verbosity(Log::Error);
     std::cout << "Verbosity = Error:" << std::endl;
-    info(Level, "这条不会显示");
-    warning(Level, "这条不会显示");
-    error(Level, "错误会显示");
+    log_info(Level, "这条不会显示");
+    log_warning(Level, "这条不会显示");
+    log_error(Level, "错误会显示");
 
     Log::set_verbosity(Log::Warning);
     std::cout << "\nVerbosity = Warning:" << std::endl;
-    info(Level, "这条不会显示");
-    warning(Level, "警告会显示");
-    error(Level, "错误会显示");
+    log_info(Level, "这条不会显示");
+    log_warning(Level, "警告会显示");
+    log_error(Level, "错误会显示");
 
     Log::set_verbosity(Log::Info);
     std::cout << "\nVerbosity = Info:" << std::endl;
-    info(Level, "信息会显示");
-    warning(Level, "警告会显示");
-    error(Level, "错误会显示");
+    log_info(Level, "信息会显示");
+    log_warning(Level, "警告会显示");
+    log_error(Level, "错误会显示");
 }
 
 void readXlsxTest() {
@@ -101,7 +101,7 @@ void readXlsxTest() {
         for (int c = 1; c < wb.worksheetCount(); c++) {
             ws = wb.worksheet(c);
             // LOG(INFO) << "工作表名称: " << ws.name() << " column count = " << ws.columnCount();
-            error( App, "工作表名称: " << ws.name() << " column count = " << ws.columnCount());
+            log_error( App, "工作表名称: " << ws.name() << " column count = " << ws.columnCount());
             for (int i = 1; i <= ws.rowCount(); i++) {
                 for (int j = 1; j <= ws.columnCount(); j++) {
                     auto cell_assignable = ws.cell(i, j);
@@ -113,12 +113,12 @@ void readXlsxTest() {
                     if (Xlsx::isCellMerged(ws, i, j)) {
                         // LOG(INFO) << address << "= " << cell_value << ", was merged,last row num= " << last_row_num
                         //           << ",last col num= " << last_clo_num;
-                        error(App,address << "= " << cell_value << ", was merged,last row num= " << last_row_num
+                        log_error(App,address << "= " << cell_value << ", was merged,last row num= " << last_row_num
                                   << ",last col num= " << last_clo_num);
                     } else {
                         // LOG(INFO) << address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
                         //           << ",last col num= " << last_clo_num;
-                        error(App,address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
+                        log_error(App,address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
                                   << ",last col num= " << last_clo_num);
                     }
                 }

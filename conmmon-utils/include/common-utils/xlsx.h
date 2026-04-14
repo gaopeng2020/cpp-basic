@@ -36,7 +36,7 @@ namespace common_utils::xlsx{
          *         - true: 文件成功打开
          *         - false: 文件无效、不存在、损坏或加密
          *
-         * @note 如果验证失败，会通过 glog 记录错误日志
+         * @note 如果验证失败，会通过 log 记录错误日志
          *       支持的 Excel 版本：Excel 2007 及以上（.xlsx 格式）
          *
          * @code{.cpp}

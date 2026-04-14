@@ -105,8 +105,7 @@ void Log::shutdown() {
     std::cout << "  Logging System Shutdown\n";
     std::cout << "================================================================\n\n";
 
-    instance.flush();
-
+    flush();
     {
         std::unique_lock guard(instance.cv_mutex_);
         instance.logging_ = false;

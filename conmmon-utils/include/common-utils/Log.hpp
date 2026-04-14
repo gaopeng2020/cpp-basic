@@ -22,10 +22,10 @@ namespace common_utils::log {
  * - LOG_NO_INFO
  */
 
-#define debug(cat, msg) LOG_DEBUG_IMPL_(cat, msg)
-#define info(cat, msg) LOG_INFO_IMPL_(cat, msg)
-#define warning(cat, msg) LOG_WARNING_IMPL_(cat, msg)
-#define error(cat, msg) LOG_ERROR_IMPL_(cat, msg)
+#define log_debug(cat, msg) LOG_DEBUG_IMPL_(cat, msg)
+#define log_info(cat, msg) LOG_INFO_IMPL_(cat, msg)
+#define log_warning(cat, msg) LOG_WARNING_IMPL_(cat, msg)
+#define log_error(cat, msg) LOG_ERROR_IMPL_(cat, msg)
 
 // 不能直接include LogConsumer.hpp会造成循环依赖，告诉编译器："有这个类，定义在后面"
 class LogConsumer;
@@ -232,7 +232,7 @@ inline std::ostream& operator<<(std::ostream& output, const Log::Kind& kind) {
 }
 
 #if defined(WIN32)
-#    define __func__ __FUNCTION__
+#    define _func_ __FUNCTION__
 #endif
 
 #define HAVE_LOG_NO_ERROR 0

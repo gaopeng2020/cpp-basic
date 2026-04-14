@@ -1,6 +1,7 @@
 #include "common-utils/FileConsumer.hpp"
 #include <chrono>
 #include <ctime>
+#include <filesystem>
 #include <iostream>
 #include <sys/stat.h>
 
@@ -15,6 +16,12 @@ FileConsumer::FileConsumer(const std::string& filename, const Log::LogInfo& log_
     max_file_size_mb_(log_info.max_file_size_mb),
     append_(append),
     flush_interval_sec_(log_info.flush_interval_sec) {
+    // 先判断log文件夹是否存在，不存在则创建，并将filename存放在log文件夹
+    const auto logDir = std::filesystem::path("log");
+    std::error_code ec;
+    std::filesystem::create_directories(logDir, ec);
+    log_file_ = (logDir / filename).string();
+
     ofs_.open(log_file_, append_ ? std::ios::app : std::ios::trunc);
     if (!ofs_.is_open()) {
         std::cerr << "Failed to open log file: " << filename << std::endl;
@@ -75,12 +82,12 @@ void FileConsumer::rotate_log_file() {
 
     ofs_.flush();
 
-    struct stat file_stat;
+    struct stat file_stat{};
     if (stat(log_file_.c_str(), &file_stat) != 0) {
         return;
     }
 
-    const size_t file_size_bytes = static_cast<size_t>(file_stat.st_size);
+    const auto file_size_bytes = static_cast<size_t>(file_stat.st_size);
     if (const size_t max_size_bytes = max_file_size_mb_ * 1024 * 1024; file_size_bytes >= max_size_bytes) {
         ofs_.close();
 

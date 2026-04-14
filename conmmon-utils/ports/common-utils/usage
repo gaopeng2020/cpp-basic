@@ -9,5 +9,5 @@ Example usage:
 
     #include <common-utils/core.h>
     #include <common-utils/xlsx.h>
-    using namespace common_utils;
+    using namespace common-utils::core;
     std::string formatted = Core.stringFormat("  hello world  ");

@@ -21,20 +21,17 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 4. 依赖库处理（直接使用 find_package，不再使用复杂的列表循环）
-#find_package(glog CONFIG REQUIRED)
 find_package(OpenXLSX CONFIG REQUIRED)
 find_package(tinyxml2 CONFIG REQUIRED)
 
 # 5. 收集依赖目标（用于target_link_libraries）
-# 注意：如果库提供了 CMake 目标，请使用带命名空间的名称（如 glog::glog）
+# 注意：如果库提供了 CMake 目标，请使用带命名空间的名称（如 tinyxml2::tinyxml2）
 set(DEP_TARGETS
-        #        glog::glog
         OpenXLSX::OpenXLSX
         tinyxml2::tinyxml2
 )
 # 6. 收集 find_dependency 代码（用于生成 Config.cmake）
 set(DEP_FIND_CODE "")
-#string(APPEND DEP_FIND_CODE "find_dependency(glog REQUIRED)\n")
 string(APPEND DEP_FIND_CODE "find_dependency(OpenXLSX REQUIRED)\n")
 string(APPEND DEP_FIND_CODE "find_dependency(tinyxml2 REQUIRED)\n")
 message(STATUS "Generated DEP_FIND_CODE:\n${DEP_FIND_CODE}")
@@ -109,6 +106,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_NAME}
         FILES_MATCHING PATTERN "*.h"
+                       PATTERN "*.hpp"
 )
 #安装导出头文件
 if (LIB_TYPE STREQUAL "SHARED")

@@ -23,11 +23,11 @@ void LogConsumer::print_context(std::ostream& stream, const Log::Entry& entry, c
         stream << C_B_BLUE;
     }
     if (entry.context.filename) {
-        stream << entry.context.filename;
+        stream<< " - " << entry.context.filename;
         stream << ":" << entry.context.line;
     }
     if (entry.context.function) {
-        stream << ": ";
+        stream << " : ";
         if (color) {
             stream << C_CYAN;
         }

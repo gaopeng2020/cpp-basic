@@ -10,7 +10,6 @@ target_include_directories(common-utils-xml PRIVATE
 )
 
 target_link_libraries(common-utils-xml PRIVATE
-        #        glog::glog
         tinyxml2::tinyxml2
         common-utils-core
         common-utils-log

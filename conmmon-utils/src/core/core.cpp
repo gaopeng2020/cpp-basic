@@ -3,7 +3,6 @@
 //
 
 #include "common-utils/core.h"
-// #include <glog/logging.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -66,7 +65,7 @@ std::map<std::string, std::string> Core::parseIniFile(const std::string& filePat
 
     if (!file.is_open()) {
         // LOG(ERROR) << "Cannot open config file: " << filePath;
-        error(Core, "Cannot open config file: " + filePath);
+        log_error(Core, "Cannot open config file: " + filePath);
         return config;
     }
 
@@ -228,7 +227,7 @@ std::string Core::getLastOpenDir(const std::string& newPath) {
 std::string Core::doublePrecision(const double d, const int precision) {
     if (precision > std::numeric_limits<double>::max_digits10) {
         // LOG(ERROR) << "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10;
-        error("Core", "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10);
+        log_error("Core", "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10);
         return "";
     }
     std::ostringstream oss;
@@ -279,7 +278,7 @@ std::string Core::numToCellAddress(const int row, int col) {
         // LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
         //               "and the input is: row= "
         //            << row << ", column= " << col;
-        error("Core", "rowNumber valid range [1;1048576], "
+        log_error("Core", "rowNumber valid range [1;1048576], "
                       "columnNumber validrange [1;16384] and the input is: row="<< row << ", column= " << col);
         return "";
     }

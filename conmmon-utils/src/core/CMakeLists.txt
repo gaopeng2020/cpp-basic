@@ -10,6 +10,5 @@ target_include_directories(common-utils-core PRIVATE
 )
 
 target_link_libraries(common-utils-core PRIVATE
-#        glog::glog
         common-utils-log
 )
