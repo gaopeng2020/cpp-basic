@@ -12,7 +12,9 @@
     # 清理 vcpkg 二进制缓存
     Remove-Item -Recurse -Force $env:LOCALAPPDATA\vcpkg\archives\*
 
-脚本一键安装：.\ports\common-utils\reinstall.ps1
+脚本一键安装：
+    .\ports\common-utils\reinstall_dynamic.ps1
+    .\ports\common-utils\reinstall_static.ps1
 
 
 

@@ -5,15 +5,17 @@ cmake_minimum_required(VERSION 3.20)
 # 1. 库的名称前缀（例如 Calculator -> Calculator）
 set(LIB_NAME common-utils)
 
-# 2. 库类型：SHARED（动态库）或 STATIC（静态库）
-set(LIB_TYPE SHARED CACHE STRING "库类型（SHARED动态库/STATIC静态库）")
-if (NOT LIB_TYPE STREQUAL "SHARED" AND NOT LIB_TYPE STREQUAL "STATIC")
-    message(FATAL_ERROR "LIB_TYPE must be SHARED or STATIC")
-endif ()
+# 2. 库类型：SHARED（ON）或 STATIC（OFF）
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 # 3. vcpkg 的 triplet 设置（根据您的工具链选择）
-#    常用值：x64-windows (MSVC)、x64-mingw-dynamic (MinGW动态)、x64-mingw-static (MinGW静态)
-set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic" CACHE STRING "vcpkg triplet")
+#  常用值：x64-windows (MSVC)、x64-linux 、x64-mingw-dynamic 、x64-mingw-static
+if (BUILD_SHARED_LIBS)
+    set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic")
+else ()
+    set(VCPKG_TARGET_TRIPLET "x64-mingw-static")
+endif ()
+message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
 #定义Project，一般也无需修改
 project(${LIB_NAME} VERSION 1.0.0 LANGUAGES C CXX)
@@ -37,12 +39,18 @@ string(APPEND DEP_FIND_CODE "find_dependency(tinyxml2 REQUIRED)\n")
 message(STATUS "Generated DEP_FIND_CODE:\n${DEP_FIND_CODE}")
 
 # 7. 定义库并关联代码
-#适合没有子模块的库
 #file(GLOB_RECURSE SOURCES "src/*.cpp")
-#add_library(${PROJECT_NAME} ${LIB_TYPE} ${SOURCES})
+if (BUILD_SHARED_LIBS)
+    #适合没有子模块的库
+    #    add_library(${PROJECT_NAME} SHARED ${SOURCES})
+    #适合有子模块的库
+    add_library(${PROJECT_NAME} SHARED)
+else ()
+    #    add_library(${PROJECT_NAME} STATIC ${SOURCES})
+    #适合有子模块的库
+    add_library(${PROJECT_NAME} STATIC)
+endif ()
 
-#适合有子模块的库
-add_library(${PROJECT_NAME} ${LIB_TYPE})
 # 添加子模块(适合有子模块的库)
 add_subdirectory(src/core)
 add_subdirectory(src/xlsx)
@@ -63,7 +71,7 @@ option(BUILD_MY_TESTS "Build unit tests" ON)
 
 # ===================================== 以下无需修改 =====================================
 # ========== 3. 生成跨平台的导出头文件（仅动态库需要） ==========
-if (LIB_TYPE STREQUAL "SHARED")
+if (BUILD_SHARED_LIBS)
     include(GenerateExportHeader)
     set(EXPORT_HEADER "${CMAKE_CURRENT_BINARY_DIR}/include/${LIB_NAME}/${LIB_NAME}Export.h")
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/${LIB_NAME}")
@@ -74,7 +82,7 @@ if (LIB_TYPE STREQUAL "SHARED")
     )
 endif ()
 
-# ========== 4. 链接依赖库 ==========
+# ========== 4. 链接依赖库 + 静态模式强制 -static ==========
 if (DEP_TARGETS)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${DEP_TARGETS})
 endif ()
@@ -90,7 +98,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 set_target_properties(${PROJECT_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
-        WINDOWS_EXPORT_ALL_SYMBOLS $<IF:$<STREQUAL:${LIB_TYPE},SHARED>,ON,OFF>
+        WINDOWS_EXPORT_ALL_SYMBOLS $<IF:$<BOOL:${BUILD_SHARED_LIBS}>,ON,OFF>
 )
 
 # ========== 7. 安装bin/lib以及头文件 ==========
@@ -106,10 +114,10 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${LIB_NAME}/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_NAME}
         FILES_MATCHING PATTERN "*.h"
-                       PATTERN "*.hpp"
+        PATTERN "*.hpp"
 )
 #安装导出头文件
-if (LIB_TYPE STREQUAL "SHARED")
+if (BUILD_SHARED_LIBS)
     install(FILES ${EXPORT_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_NAME})
 endif ()
 
@@ -152,7 +160,7 @@ install(EXPORT ${PROJECT_NAME}Targets
 
 # ========== 9. MSVC运行时库配置 ==========
 if (MSVC)
-    if (LIB_TYPE STREQUAL "SHARED")
+    if (BUILD_SHARED_LIBS)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     else ()
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC runtime for static lib")

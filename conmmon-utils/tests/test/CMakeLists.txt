@@ -9,4 +9,3 @@ target_link_libraries(${PROJECT_NAME}-test PRIVATE
 target_include_directories(${PROJECT_NAME}-test PRIVATE
         ${CMAKE_SOURCE_DIR}/include
 )
-
