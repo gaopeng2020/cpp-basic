@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <unordered_set>
+#include "common-utils/common-utilsExport.h"
 
 namespace common_utils::core {
 /**
@@ -22,7 +23,7 @@ namespace common_utils::core {
  *
  * @note 所有方法都是静态方法，可以直接通过类名调用
  */
-class Core {
+class COMMON_UTILS_EXPORT  Core {
 public:
     // ... existing code ...
     /**
@@ -68,6 +69,27 @@ public:
      * @endcode
      */
     static std::string stringTrim(const std::string& str);
+
+    /**
+     * @brief 替换字符串中的指定子串
+     *
+     * 在输入字符串中查找所有出现的指定子串，并将其替换为新的字符串。
+     * 该函数会处理所有匹配的位置，返回替换后的完整字符串。
+     *
+     * @param str 输入的原始字符串
+     * @param o 待查找的子串
+     * @param n 用于替换的新字符串
+     * @return std::string 替换后的字符串
+     *
+     * @note 如果输入为空字符串，则返回空字符串
+     *       该函数会替换所有匹配的子串，而非仅替换第一个
+     *
+     * @code{.cpp}
+     * replace("hello world", "world", "C++") -> "hello C++"
+     * replace("aaa", "a", "b") -> "bbb"
+     * @endcode
+     */
+    static std::string stringReplace(const std::string& str, const std::string& o, const std::string& n);
 
     /**
      * @brief 按指定分隔符分割字符串

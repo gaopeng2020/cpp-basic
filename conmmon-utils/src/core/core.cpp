@@ -46,7 +46,15 @@ std::string Core::stringTrim(const std::string& str) {
     // 既然 start != npos，说明有非空白字符，那么 end 也必然 != npos
     return substr;
 }
-
+std::string Core::stringReplace(const std::string& str, const std::string& o, const std::string& n) {
+    size_t pos = 0;
+    std::string tmp = str;
+    while ((pos = str.find(o, pos)) != std::string::npos) {
+        tmp.replace(pos, strlen(o.c_str()), n);
+        pos += 1;
+    }
+    return tmp;
+}
 std::list<std::string> Core::splitString(const std::string& str, const char delimiter) {
     std::list<std::string> result;
     std::istringstream iss(str);
@@ -226,8 +234,10 @@ std::string Core::getLastOpenDir(const std::string& newPath) {
 
 std::string Core::doublePrecision(const double d, const int precision) {
     if (precision > std::numeric_limits<double>::max_digits10) {
-        // LOG(ERROR) << "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10;
-        log_error("Core", "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10);
+        // LOG(ERROR) << "Invalid precision: " << precision << ", maximum allowed is " <<
+        // std::numeric_limits<double>::max_digits10;
+        log_error("Core",
+                  "Invalid precision: " << precision << ", maximum allowed is " << std::numeric_limits<double>::max_digits10);
         return "";
     }
     std::ostringstream oss;
@@ -278,8 +288,10 @@ std::string Core::numToCellAddress(const int row, int col) {
         // LOG(ERROR) << "rowNumber valid range [1;1048576], columnNumber validrange [1;16384]"
         //               "and the input is: row= "
         //            << row << ", column= " << col;
-        log_error("Core", "rowNumber valid range [1;1048576], "
-                      "columnNumber validrange [1;16384] and the input is: row="<< row << ", column= " << col);
+        log_error("Core",
+                  "rowNumber valid range [1;1048576], "
+                  "columnNumber validrange [1;16384] and the input is: row="
+                      << row << ", column= " << col);
         return "";
     }
 

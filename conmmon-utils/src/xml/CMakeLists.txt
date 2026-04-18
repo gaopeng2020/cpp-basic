@@ -7,10 +7,15 @@ target_sources(common-utils-xml PRIVATE
 
 target_include_directories(common-utils-xml PRIVATE
         ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_BINARY_DIR}/include
 )
 
 target_link_libraries(common-utils-xml PRIVATE
         tinyxml2::tinyxml2
-        common-utils-core
-        common-utils-log
+#        common-utils-core
+#        common-utils-log
+)
+#关键：告诉编译器正在导出符号
+target_compile_definitions(common-utils-xml PRIVATE
+        common_utils_EXPORTS
 )

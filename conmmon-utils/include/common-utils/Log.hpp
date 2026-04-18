@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <condition_variable>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -9,6 +10,7 @@
 #include <sstream>
 #include <thread>
 #include <vector>
+#include "common-utils/common-utilsExport.h"
 namespace common_utils::log {
 /**
  * @file Log.hpp
@@ -37,7 +39,7 @@ class LogConsumer;
  * Provides three log levels (Error, Warning, Info) with support for multiple output destinations,
  * category/filename filtering, and automatic thread lifecycle management.
  */
-class Log {
+class COMMON_UTILS_EXPORT Log {
 public:
     /**
      * @enum Kind

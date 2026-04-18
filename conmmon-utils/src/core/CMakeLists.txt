@@ -7,8 +7,12 @@ target_sources(common-utils-core PRIVATE
 
 target_include_directories(common-utils-core PRIVATE
         ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_BINARY_DIR}/include
 )
-
-target_link_libraries(common-utils-core PRIVATE
-        common-utils-log
+#关键：告诉编译器正在导出符号
+target_compile_definitions(common-utils-core PRIVATE
+        common_utils_EXPORTS
 )
+#target_link_libraries(common-utils-core PRIVATE
+#        common-utils-log
+#)

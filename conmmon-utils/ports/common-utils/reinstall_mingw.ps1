@@ -17,7 +17,7 @@ Write-Host "缓存清理完成" -ForegroundColor Green
 
 # 步骤 3: 重新安装
 Write-Host "`n[3/3] 正在安装 common-utils..." -ForegroundColor Yellow
-vcpkg install common-utils --overlay-ports=ports/common-utils --triplet=x64-mingw-dynamic --debug
+vcpkg install common-utils --overlay-ports=ports/common-utils --triplet=x64-mingw-dynamic
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "`n=== 安装成功完成 ===" -ForegroundColor Green

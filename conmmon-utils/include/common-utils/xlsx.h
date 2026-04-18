@@ -4,7 +4,7 @@
 
 #pragma once
 #include <OpenXLSX.hpp>
-
+#include "common-utils/common-utilsExport.h"
 namespace common_utils::xlsx{
     /**
      * @brief Xlsx 类用于操作 Excel 文件
@@ -18,7 +18,7 @@ namespace common_utils::xlsx{
      * - 获取指定列从某行开始的最后一行行号
      * - 获取指定列从某行开始的所有行数据
      * */
-    class Xlsx{
+    class COMMON_UTILS_EXPORT Xlsx{
     public:
         /**
          * @brief 打开 Excel 文档文件

@@ -6,15 +6,11 @@ cmake_minimum_required(VERSION 3.20)
 set(LIB_NAME common-utils)
 
 # 2. 库类型：SHARED（ON）或 STATIC（OFF）
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # 3. vcpkg 的 triplet 设置（根据您的工具链选择）
-#  常用值：x64-windows (MSVC)、x64-linux 、x64-mingw-dynamic 、x64-mingw-static
-if (BUILD_SHARED_LIBS)
-    set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic")
-else ()
-    set(VCPKG_TARGET_TRIPLET "x64-mingw-static")
-endif ()
+#  常用值：x64-windows (MSVC会自动检测到)、x64-linux 、x64-mingw-dynamic(mingw编译器必须显示指定) 、x64-mingw-static
+set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic") #mingw编译器必须显示指定
 message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
 #定义Project，一般也无需修改
@@ -48,7 +44,8 @@ if (BUILD_SHARED_LIBS)
 else ()
     #    add_library(${PROJECT_NAME} STATIC ${SOURCES})
     #适合有子模块的库
-    add_library(${PROJECT_NAME} STATIC)
+    add_library(${PROJECT_NAME} STATIC
+            include/common-utils/Export.h)
 endif ()
 
 # 添加子模块(适合有子模块的库)
@@ -67,7 +64,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 # 8. 是否打开测试用例
 option(BUILD_GOOGL_TESTS "Build unit tests" OFF)
-option(BUILD_MY_TESTS "Build unit tests" ON)
+option(BUILD_MY_TESTS "Build unit tests" OFF)
 
 # ===================================== 以下无需修改 =====================================
 # ========== 3. 生成跨平台的导出头文件（仅动态库需要） ==========
@@ -75,10 +72,18 @@ if (BUILD_SHARED_LIBS)
     include(GenerateExportHeader)
     set(EXPORT_HEADER "${CMAKE_CURRENT_BINARY_DIR}/include/${LIB_NAME}/${LIB_NAME}Export.h")
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/${LIB_NAME}")
-    string(TOUPPER "${LIB_NAME}" UPPER_LIB_NAME)
+
+    # 将连字符替换为下划线
+    string(REPLACE "-" "_" LIB_NAME_UNDERSCORE ${LIB_NAME})  # common_utils
+    string(TOUPPER "${LIB_NAME_UNDERSCORE}" UPPER_LIB_NAME)  # COMMON_UTILS
     generate_export_header(${PROJECT_NAME}
             EXPORT_MACRO_NAME ${UPPER_LIB_NAME}_EXPORT
             EXPORT_FILE_NAME ${EXPORT_HEADER}
+    )
+    message(STATUS "Export header generated at: ${EXPORT_HEADER}")
+    # 动态库导出符号控制
+    target_compile_definitions(${PROJECT_NAME} PUBLIC
+            ${LIB_NAME_UNDERSCORE}_EXPORTS>
     )
 endif ()
 

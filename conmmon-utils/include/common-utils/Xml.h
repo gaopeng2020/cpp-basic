@@ -4,9 +4,9 @@
 
 #pragma once
 #include <string>
+#include <tinyxml2.h>
 #include <vector>
-#include "tinyxml2.h"
-
+#include "common-utils/common-utilsExport.h"
 namespace common_utils::xml {
 /**
  * @brief XML 工具类，提供 XML 文档解析和操作功能
@@ -37,7 +37,7 @@ namespace common_utils::xml {
  *
  * @note 所有方法都是静态方法，可以直接通过类名调用
  */
-class Xml {
+class COMMON_UTILS_EXPORT Xml {
 public:
     /**
      * @brief 打开并解析 XML 文档

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "common-utils/LogConsumer.hpp"
-
+#include <chrono>
 #include <fstream>
+
 namespace common_utils::log {
 /**
  * Log consumer that writes the log events to a file.
