@@ -9,8 +9,8 @@ set(LIB_NAME common-utils)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # 3. vcpkg 的 triplet 设置（根据您的工具链选择）
-#  常用值：x64-windows (MSVC会自动检测到)、x64-linux 、x64-mingw-dynamic(mingw编译器必须显示指定) 、x64-mingw-static
-set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic") #mingw编译器必须显示指定
+#  常用值：x64-windows、x64-linux 、x64-mingw-dynamic、x64-mingw-static
+set(VCPKG_TARGET_TRIPLET "x64-windows")
 message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
 #定义Project，一般也无需修改
