@@ -23,7 +23,7 @@ namespace common_utils::core {
  *
  * @note 所有方法都是静态方法，可以直接通过类名调用
  */
-class COMMON_UTILS_EXPORT  Core {
+class COMMON_UTILS_EXPORT Core {
 public:
     // ... existing code ...
     /**
@@ -158,6 +158,7 @@ public:
      *
      * @param name 待检查的变量名字符串
      * @param length 变量名最大长度限制，默认为 32
+     * @param isCapital 是否要求首字母大写,默认为 true
      * @return bool 如果是有效的 C 语言变量名返回 true，否则返回 false
      *
      * @note 该函数要求变量名首字母必须大写
@@ -169,7 +170,7 @@ public:
      * isValidCVariableName("9Test") -> false (数字开头)
      * @endcode
      */
-    static bool isValidCVariableName(const std::string& name, int length = 32);
+    static bool isValidCVariableName(const std::string& name, int length = 32, bool isCapital = true);
 
     /**
      * @brief 检查字符串是否表示一个有效的数字

@@ -101,7 +101,7 @@ void readXlsxTest() {
         for (int c = 1; c < wb.worksheetCount(); c++) {
             ws = wb.worksheet(c);
             // LOG(INFO) << "工作表名称: " << ws.name() << " column count = " << ws.columnCount();
-            log_error( App, "工作表名称: " << ws.name() << " column count = " << ws.columnCount());
+            log_error(App, "工作表名称: " << ws.name() << " column count = " << ws.columnCount());
             for (int i = 1; i <= ws.rowCount(); i++) {
                 for (int j = 1; j <= ws.columnCount(); j++) {
                     auto cell_assignable = ws.cell(i, j);
@@ -113,13 +113,15 @@ void readXlsxTest() {
                     if (Xlsx::isCellMerged(ws, i, j)) {
                         // LOG(INFO) << address << "= " << cell_value << ", was merged,last row num= " << last_row_num
                         //           << ",last col num= " << last_clo_num;
-                        log_error(App,address << "= " << cell_value << ", was merged,last row num= " << last_row_num
-                                  << ",last col num= " << last_clo_num);
+                        log_error(App,
+                                  address << "= " << cell_value << ", was merged,last row num= " << last_row_num
+                                          << ",last col num= " << last_clo_num);
                     } else {
                         // LOG(INFO) << address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
                         //           << ",last col num= " << last_clo_num;
-                        log_error(App,address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
-                                  << ",last col num= " << last_clo_num);
+                        log_error(App,
+                                  address << "= " << cell_value << ", was not merged,last row num= " << last_row_num
+                                          << ",last col num= " << last_clo_num);
                     }
                 }
             }
@@ -128,15 +130,18 @@ void readXlsxTest() {
 }
 
 void readArxmlTest(tinyxml2::XMLDocument& doc) {
-    const std::string path = "C:/Users/gaopeng/Desktop/MPD/ECU1.arxml";
+    const std::string path = "C:/Users/gaopeng/Desktop/MPD/CGW.arxml";
     if (!Xml::openXmlDocument(doc, path)) return;
     const auto arPkgs = Xml::findArPackages(doc);
 
-    const auto comPkg = Xml::findArPackage(arPkgs, "Communication");
-    const auto frame = Xml::findElement(comPkg, "ECU1_PhyReq", "CAN-FRAME");
-    const auto mapping = Xml::findElement(frame, "NPdu_ECU1_PhyReq", "PDU-TO-FRAME-MAPPING");
-    const auto pdu_ref = mapping->FirstChildElement("PDU-REF")->Attribute("DEST");
-    std::cout << frame->Name() << " 关联的Pdu名称为 " << pdu_ref << std::endl;
+    // const auto comPkg = Xml::findArPackage(arPkgs, "Communication");
+    // const auto frame = Xml::findElement(comPkg, "ECU1_PhyReq", "CAN-FRAME");
+    // const auto mapping = Xml::findElement(frame, "NPdu_ECU1_PhyReq", "PDU-TO-FRAME-MAPPING");
+    // const auto pdu_ref = mapping->FirstChildElement("PDU-REF")->Attribute("DEST");
+    // std::cout << frame->Name() << " 关联的Pdu名称为 " << pdu_ref << std::endl;
+
+    Xml::validElementName(arPkgs, "ApplicationDataTypes",64);
+    Xml::validElementName(arPkgs, "CompuMethods",64);
 }
 
 void deleteDescription(tinyxml2::XMLDocument& doc) {
@@ -193,38 +198,29 @@ void readAllArPackageTest(tinyxml2::XMLDocument& doc) {
 }
 
 int main(int argc, char** argv) {
-    //------------------------------------------------------xml读取测试------------------------------------------------
-    // Logger::Init(argv[0], false, google::GLOG_INFO, 1, 5);
-    //
-    // LOG(INFO) << "开始读取Excel测试";
-    // // readXlsxTest();
-    //
-    // tinyxml2::XMLDocument doc;
-    // LOG(INFO) << "开始读取ARXML测试";
-    // readArxmlTest(doc);
-    //
-    // readAllArPackageTest(doc);
-    //
-    // Logger::Shutdown();
-
     //------------------------------------------------------自定义log测试------------------------------------------------
     Log::init(argv[0], Log::Info, true, true, 5, 1);
-
     std::cout << "========================================" << std::endl;
     std::cout << "   异步日志系统完整测试" << std::endl;
     std::cout << "========================================" << std::endl;
     Log::set_verbosity(Log::Debug);
-    test_basic_logging();
-    test_context_reporting();
-    test_multithread_logging();
-    test_verbosity_levels();
 
-    // Log::flush();
+    // test_basic_logging();
+    // test_context_reporting();
+    // test_multithread_logging();
+    // test_verbosity_levels();
+
+    //------------------------------------------------------xml读取测试------------------------------------------------
+    // readXlsxTest();
+    //
+    tinyxml2::XMLDocument doc;
+    readArxmlTest(doc);
+    // readAllArPackageTest(doc);
+
+    Log::flush();
     std::cout << "\n========================================" << std::endl;
     std::cout << "   所有测试完成！" << std::endl;
     std::cout << "========================================" << std::endl;
-
     Log::shutdown();
-
     return 0;
 }

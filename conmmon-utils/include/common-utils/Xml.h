@@ -89,5 +89,7 @@ public:
      * @param tag [in] 要移除的描述标签名称，默认为 "DESC"
      */
     static void removeAllDescriptions(tinyxml2::XMLElement* arPkgs, const std::string& tag = "DESC");
+
+    static void validElementName(tinyxml2::XMLElement* ar_pkgs, const std::string& type, uint8_t len = 32);
 };
 } // namespace common_utils::xml

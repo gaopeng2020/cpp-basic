@@ -4,6 +4,7 @@
 
 #include "common-utils/Xml.h"
 #include <filesystem>
+#include <format>
 #include "common-utils/Log.hpp"
 #include "common-utils/core.h"
 
@@ -110,7 +111,6 @@ tinyxml2::XMLElement* Xml::findElement(tinyxml2::XMLElement* arPkg, const std::s
         return nullptr;
     }
     // std::cout << "--------element type: " << arPkg->Name() << ", 位于：" << arPkg->GetLineNum() << std::endl;
-
     for (tinyxml2::XMLElement* elem = arPkg->FirstChildElement(); elem; elem = elem->NextSiblingElement()) {
         // XMLElement *attr = elem->FirstChildElement();
         if (elem->GetText() && name == elem->GetText() && elem->Parent()->ToElement()->Name() == type) {
@@ -146,4 +146,62 @@ void Xml::removeAllDescriptions(tinyxml2::XMLElement* arPkgs, const std::string&
         removeAllDescriptions(child, tag);
     }
 }
+
+void Xml::validElementName(tinyxml2::XMLElement* ar_pkgs, const std::string& type, const uint8_t len) {
+    if (!ar_pkgs) {
+        log_error("Xml", "输入的AR-PACKAGE为空指针");
+        return;
+    }
+    auto ar_pkg = Xml::findArPackage(ar_pkgs, type);
+    if (!ar_pkg) {
+        log_error("Xml", std::format(" 没有找到{}类型的AP-PACKAGE，请确认输入是否正确", type));
+        return;
+    }
+    auto elements = ar_pkg->FirstChildElement("ELEMENTS");
+    if (!elements) {
+        log_error("Xml", type << " 下没有找到ELEMENTS节点，请确认输入是否正确");
+        return;
+    }
+    for (tinyxml2::XMLElement* element = elements->FirstChildElement(); element; element = element->NextSiblingElement()) {
+        // 判断元素名称是否符合C变量命名要求
+        if (const auto name_element = element->FirstChildElement("SHORT-NAME");
+            name_element && !Core::isValidCVariableName(name_element->GetText(), len, false)) {
+            const char* name = name_element->GetText();
+            std::string msg = std::format(
+                "{} 名称不符合C变量命名要求(建议大写字母开头，只能包含字母、数字、下划线，长度不超过{}个字符)", name, len);
+            if (std::string(name).length() > len) {
+                msg = std::format("{} (实际长度：{}，位于第{}行)", msg, std::string(name).length(), name_element->GetLineNum());
+            } else {
+                msg = std::format("{} (位于第{}行)", msg, name_element->GetLineNum());
+            }
+            log_info("Xml", msg);
+        }
+        if (type != "CompuMethods") {
+            continue;
+        }
+        // 定义一个lambda，内部采用深度优先遍历，找到<VT>标签后检查Text是否符号C变量命名要求
+        std::function<void(tinyxml2::XMLElement*)> dfs = [&](tinyxml2::XMLElement* node) {
+            if (!node) return;
+            if (const auto vt_node = node->FirstChildElement("VT");
+                vt_node && !Core::isValidCVariableName(vt_node->GetText(), len, false)) {
+                auto text = std::string(vt_node->GetText());
+                std::string error_msg = std::format(
+                    "{} 名称不符合C变量命名要求(建议大写字母开头，只能包含字母、数字、下划线，长度不超过{}个字符)", text, len);
+                if (text.length() > len) {
+                    error_msg = std::format("{} (实际长度：{}，位于第{}行)", error_msg, text.length(), vt_node->GetLineNum());
+                } else {
+                    error_msg = std::format("{} (位于第{}行)", error_msg, vt_node->GetLineNum());
+                }
+                log_info("Xml", error_msg);
+            }
+            // 递归遍历子元素
+            for (tinyxml2::XMLElement* sub_node = node->FirstChildElement(); sub_node;
+                 sub_node = sub_node->NextSiblingElement()) {
+                dfs(sub_node);
+            }
+        };
+        dfs(element);
+    }
+}
+
 } // namespace common_utils::xml

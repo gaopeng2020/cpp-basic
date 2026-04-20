@@ -1,5 +1,5 @@
     enable_testing()
-    find_package(. CONFIG REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
 
     # 收集所有测试源文件
     file(GLOB_RECURSE TEST_SOURCES "*.cpp")

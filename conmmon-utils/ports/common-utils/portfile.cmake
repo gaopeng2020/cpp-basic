@@ -10,6 +10,8 @@ vcpkg_cmake_configure(
         -DCMAKE_INSTALL_INCLUDEDIR=include
         -DCMAKE_INSTALL_LIBDIR=lib
         -DCMAKE_INSTALL_BINDIR=bin
+        -DBUILD_GOOGL_TESTS=OFF
+        -DBUILD_MY_TESTS=OFF
 )
 
 # 构建和安装

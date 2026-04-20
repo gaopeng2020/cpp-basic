@@ -13,8 +13,8 @@
     Remove-Item -Recurse -Force $env:LOCALAPPDATA\vcpkg\archives\*
 
 脚本一键安装：
-    .\ports\common-utils\reinstall_dynamic.ps1
-    .\ports\common-utils\reinstall_static.ps1
+    .\ports\common-utils\reinstall_mingw.ps1
+    .\ports\common-utils\reinstall_msvc.ps1
 
 
 

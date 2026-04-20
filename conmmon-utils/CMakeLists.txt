@@ -10,7 +10,8 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # 3. vcpkg 的 triplet 设置（根据您的工具链选择）
 #  常用值：x64-windows、x64-linux 、x64-mingw-dynamic、x64-mingw-static
-set(VCPKG_TARGET_TRIPLET "x64-windows")
+#set(VCPKG_TARGET_TRIPLET "x64-windows")
+set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic")
 message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
 #定义Project，一般也无需修改
@@ -63,8 +64,10 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # 8. 是否打开测试用例
-option(BUILD_GOOGL_TESTS "Build unit tests" OFF)
-option(BUILD_MY_TESTS "Build unit tests" OFF)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    option(BUILD_GOOGL_TESTS "Build unit tests" ON)
+    option(BUILD_MY_TESTS "Build unit tests" ON)
+endif ()
 
 # ===================================== 以下无需修改 =====================================
 # ========== 3. 生成跨平台的导出头文件（仅动态库需要） ==========

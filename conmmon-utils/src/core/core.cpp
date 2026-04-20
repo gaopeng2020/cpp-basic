@@ -108,7 +108,7 @@ std::map<std::string, std::string> Core::parseIniFile(const std::string& filePat
     return config;
 }
 
-bool Core::isValidCVariableName(const std::string& name, const int length) {
+bool Core::isValidCVariableName(const std::string& name, const int length, const bool isCapital) {
     // 1. 空字符串直接返回false
     if (name.empty()) return false;
 
@@ -119,7 +119,7 @@ bool Core::isValidCVariableName(const std::string& name, const int length) {
     if (name.length() > static_cast<size_t>(length)) return false;
 
     // 4. 正则表达式匹配：首字符必须为大写字母，后续为字母、数字或下划线
-    const std::regex pattern("^[A-Z][a-zA-Z0-9_]*$");
+    const std::regex pattern(isCapital ? "^[A-Z][a-zA-Z0-9_]*$" : "^[a-zA-Z0-9_]*$");
     return std::regex_match(name, pattern);
 }
 
