@@ -12,23 +12,6 @@
 #include <vector>
 #include "common-utils/common-utilsExport.h"
 namespace common_utils::log {
-/**
- * @file Log.hpp
- * @brief Asynchronous logging system with thread-safe queue and configurable consumers.
- */
-
-/**
- * Logging verbosity can be statically disabled by defining:
- * - LOG_NO_ERROR
- * - LOG_NO_WARNING
- * - LOG_NO_INFO
- */
-
-#define log_debug(cat, msg) LOG_DEBUG_IMPL_(cat, msg)
-#define log_info(cat, msg) LOG_INFO_IMPL_(cat, msg)
-#define log_warning(cat, msg) LOG_WARNING_IMPL_(cat, msg)
-#define log_error(cat, msg) LOG_ERROR_IMPL_(cat, msg)
-
 // 不能直接include LogConsumer.hpp会造成循环依赖，告诉编译器："有这个类，定义在后面"
 class LogConsumer;
 
@@ -232,63 +215,90 @@ inline std::ostream& operator<<(std::ostream& output, const Log::Kind& kind) {
     }
     return output;
 }
+} // namespace common_utils::log
+
+#define log_debug(cat, msg) LOG_DEBUG_IMPL_(cat, msg)
+#define log_info(cat, msg) LOG_INFO_IMPL_(cat, msg)
+#define log_warning(cat, msg) LOG_WARNING_IMPL_(cat, msg)
+#define log_error(cat, msg) LOG_ERROR_IMPL_(cat, msg)
+
+/**
+ * Logging verbosity can be statically disabled by defining:
+ * - LOG_NO_ERROR
+ * - LOG_NO_WARNING
+ * - LOG_NO_INFO
+ */
+#ifndef LOG_NO_ERROR
+#    define LOG_NO_ERROR 0
+#endif
+#ifndef LOG_NO_WARNING
+#    define LOG_NO_WARNING 0
+#endif
+#ifndef LOG_NO_INFO
+#    define LOG_NO_INFO 0
+#endif
+#ifndef LOG_NO_DEBUG
+#    define LOG_NO_DEBUG 0
+#endif
 
 #if defined(WIN32)
 #    define _func_ __FUNCTION__
 #endif
 
-#define HAVE_LOG_NO_ERROR 0
-#define HAVE_LOG_NO_WARNING 0
-#define HAVE_LOG_NO_INFO 0
-#define HAVE_LOG_NO_DEBUG 0
-
-#if !HAVE_LOG_NO_ERROR
+#if !LOG_NO_ERROR
 #    define LOG_ERROR_IMPL_(cat, msg)                                                                                            \
         do {                                                                                                                     \
             std::stringstream log_ss_tmp__;                                                                                      \
             log_ss_tmp__ << msg;                                                                                                 \
-            Log::queue_Log(log_ss_tmp__.str(), Log::Context{__FILE__, __LINE__, __func__, #cat}, Log::Kind::Error);              \
+            common_utils::log::Log::queue_Log(log_ss_tmp__.str(),                                                                     \
+                                         common_utils::log::Log::Context{__FILE__, __LINE__, __func__, #cat},                    \
+                                         common_utils::log::Log::Kind::Error);                                                   \
         } while (0)
 #else
 #    define LOG_ERROR_IMPL_(cat, msg)
 #endif
 
-#if !HAVE_LOG_NO_WARNING
+#if !LOG_NO_WARNING
 #    define LOG_WARNING_IMPL_(cat, msg)                                                                                          \
         do {                                                                                                                     \
             if (Log::get_verbosity() >= Log::Kind::Warning) {                                                                    \
                 std::stringstream log_ss_tmp__;                                                                                  \
                 log_ss_tmp__ << msg;                                                                                             \
-                Log::queue_Log(log_ss_tmp__.str(), Log::Context{__FILE__, __LINE__, __func__, #cat}, Log::Kind::Warning);        \
+                common_utils::log::Log::queue_Log(log_ss_tmp__.str(),                                                                 \
+                                             common_utils::log::Log::Context{__FILE__, __LINE__, __func__, #cat},                \
+                                             common_utils::log::Log::Kind::Warning);                                             \
             }                                                                                                                    \
         } while (0)
 #else
 #    define LOG_WARNING_IMPL_(cat, msg)
 #endif
 
-#if !HAVE_LOG_NO_INFO
+#if !LOG_NO_INFO
 #    define LOG_INFO_IMPL_(cat, msg)                                                                                             \
         do {                                                                                                                     \
             if (Log::get_verbosity() >= Log::Kind::Info) {                                                                       \
                 std::stringstream log_ss_tmp__;                                                                                  \
                 log_ss_tmp__ << msg;                                                                                             \
-                Log::queue_Log(log_ss_tmp__.str(), Log::Context{__FILE__, __LINE__, __func__, #cat}, Log::Kind::Info);           \
+                common_utils::log::Log::queue_Log(log_ss_tmp__.str(),                                                                 \
+                                             common_utils::log::Log::Context{__FILE__, __LINE__, __func__, #cat},                \
+                                             common_utils::log::Log::Kind::Info);                                                \
             }                                                                                                                    \
         } while (0)
 #else
 #    define LOG_INFO_IMPL_(cat, msg)
 #endif
 
-#if !HAVE_LOG_NO_DEBUG
+#if !LOG_NO_DEBUG
 #    define LOG_DEBUG_IMPL_(cat, msg)                                                                                            \
         do {                                                                                                                     \
             if (Log::get_verbosity() >= Log::Kind::Debug) {                                                                      \
                 std::stringstream log_ss_tmp__;                                                                                  \
                 log_ss_tmp__ << msg;                                                                                             \
-                Log::queue_Log(log_ss_tmp__.str(), Log::Context{__FILE__, __LINE__, __func__, #cat}, Log::Kind::Debug);          \
+                common_utils::log::Log::queue_Log(log_ss_tmp__.str(),                                                                 \
+                                             common_utils::log::Log::Context{__FILE__, __LINE__, __func__, #cat},                \
+                                             common_utils::log::Log::Kind::Debug);                                               \
             }                                                                                                                    \
         } while (0)
 #else
 #    define LOG_DEBUG_IMPL_(cat, msg)
 #endif
-} // namespace common_utils::log

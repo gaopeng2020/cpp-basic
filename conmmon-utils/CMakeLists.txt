@@ -14,10 +14,11 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic")
 message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
-#定义Project，一般也无需修改
 project(${LIB_NAME} VERSION 1.0.0 LANGUAGES C CXX)
+#强制要求 C++20 支持，如果编译器不支持，CMake会报错并停止配置
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # 4. 依赖库处理（直接使用 find_package，不再使用复杂的列表循环）
 find_package(OpenXLSX CONFIG REQUIRED)
@@ -86,7 +87,7 @@ if (BUILD_SHARED_LIBS)
     message(STATUS "Export header generated at: ${EXPORT_HEADER}")
     # 动态库导出符号控制
     target_compile_definitions(${PROJECT_NAME} PUBLIC
-            ${LIB_NAME_UNDERSCORE}_EXPORTS>
+            ${LIB_NAME_UNDERSCORE}_EXPORTS
     )
 endif ()
 
