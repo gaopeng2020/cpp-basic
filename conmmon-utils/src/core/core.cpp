@@ -46,14 +46,15 @@ std::string Core::stringTrim(const std::string& str) {
     // 既然 start != npos，说明有非空白字符，那么 end 也必然 != npos
     return substr;
 }
-std::string Core::stringReplace(const std::string& str, const std::string& o, const std::string& n) {
+std::string Core::stringReplace(const std::string& str, const std::string& oldStr, const std::string& newStr) {
+    if (oldStr.empty()) return str;  // 防止无限循环
+    std::string result = str;
     size_t pos = 0;
-    std::string tmp = str;
-    while ((pos = str.find(o, pos)) != std::string::npos) {
-        tmp.replace(pos, strlen(o.c_str()), n);
-        pos += 1;
+    while ((pos = result.find(oldStr, pos)) != std::string::npos) {
+        result.replace(pos, oldStr.length(), newStr);
+        pos += newStr.length();  // 跳过新字符串，避免循环替换
     }
-    return tmp;
+    return result;
 }
 std::list<std::string> Core::splitString(const std::string& str, const char delimiter) {
     std::list<std::string> result;

@@ -77,8 +77,8 @@ public:
      * 该函数会处理所有匹配的位置，返回替换后的完整字符串。
      *
      * @param str 输入的原始字符串
-     * @param o 待查找的子串
-     * @param n 用于替换的新字符串
+     * @param oldStr 待查找的子串
+     * @param newStr 用于替换的新字符串
      * @return std::string 替换后的字符串
      *
      * @note 如果输入为空字符串，则返回空字符串
@@ -89,7 +89,7 @@ public:
      * replace("aaa", "a", "b") -> "bbb"
      * @endcode
      */
-    static std::string stringReplace(const std::string& str, const std::string& o, const std::string& n);
+    static std::string stringReplace(const std::string& str, const std::string& oldStr, const std::string& newStr);
 
     /**
      * @brief 按指定分隔符分割字符串
