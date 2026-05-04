@@ -1,4 +1,4 @@
-#include <StringTest.h>
+#include "StringTest.h"
 
 int main(int argc, char const *argv[]) {
     constructTest();

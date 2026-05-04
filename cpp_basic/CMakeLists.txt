@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
-project("CppBasic")
-
-#定义C++版本
-add_definitions(-std=c++17)
-#定义调试gdb信息 For Linux
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLASS} -O0 -Wall -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLASS} -O3 -Wall")
-
-set(CMAKE_INSTALL_PREFIX ../install)
+project("cpp_basic")
 
 # Output Directories.
 #=======================================================================================================================
@@ -28,11 +18,5 @@ add_subdirectory(04_Polymorphic)
 add_subdirectory(05_Template)
 add_subdirectory(06_OperatorOverride)
 add_subdirectory(07_VisualFunction)
-add_subdirectory(08_STL/01_SequentialContainer/Array)
-add_subdirectory(08_STL/01_SequentialContainer/Deque)
-add_subdirectory(08_STL/01_SequentialContainer/List)
-add_subdirectory(08_STL/01_SequentialContainer/String)
-add_subdirectory(08_STL/01_SequentialContainer/Vector)
-add_subdirectory(08_STL/02_AssociativeContainer/map)
-
+add_subdirectory(08_STL)
 add_subdirectory(09_Thread)

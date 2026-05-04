@@ -1,0 +1,16 @@
+project(CmakeTutorials VERSION 1.0.0)
+
+configure_file(CmakeTutorialConfig.h.in TutorialConfig.h)
+
+add_subdirectory(Step1)
+add_subdirectory(Step2)
+add_subdirectory(Step3)
+add_subdirectory(Step4)
+#add_subdirectory(Step5)
+#add_subdirectory(Step6)
+add_subdirectory(Step7)
+add_subdirectory(Step8)
+add_subdirectory(Step9)
+#add_subdirectory(Step10)
+#add_subdirectory(Step11)
+#add_subdirectory(Step12)

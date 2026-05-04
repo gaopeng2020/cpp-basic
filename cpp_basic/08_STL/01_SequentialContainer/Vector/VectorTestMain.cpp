@@ -1,7 +1,7 @@
-#include "MapTest.h"
+#include "VectorTest.h"
 
 int main(int argc, char const *argv[]) {
-    pairConstructTest();
+    // pairConstructTest();
     constructTest();
     addElementsTest();
     iteratorTest();

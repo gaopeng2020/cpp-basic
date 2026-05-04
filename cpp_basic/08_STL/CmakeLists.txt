@@ -1,0 +1,40 @@
+
+add_executable(${PROJECT_NAME}-regex 00_RegexTest/regex_test.cpp)
+
+add_executable(${PROJECT_NAME}-array
+        01_SequentialContainer/Array/arrayTest.cpp
+        01_SequentialContainer/Array/arrayTestMain.cpp
+)
+
+add_executable(${PROJECT_NAME}-deque
+        01_SequentialContainer/Deque/DequeTest.cpp
+        01_SequentialContainer/Deque/DequeTestMain.cpp
+)
+
+add_executable(${PROJECT_NAME}-list
+        01_SequentialContainer/List/ListTest.cpp
+        01_SequentialContainer/List/ListTestMain.cpp
+)
+
+add_executable(${PROJECT_NAME}-string
+        01_SequentialContainer/String/StringTest.cpp
+        01_SequentialContainer/String/StringTestMain.cpp
+)
+
+add_executable(${PROJECT_NAME}-tuple
+        01_SequentialContainer/tuple/TurtleTest.cpp
+)
+
+add_executable(${PROJECT_NAME}-vector
+        01_SequentialContainer/Vector/VectorTest.cpp
+        01_SequentialContainer/Vector/VectorTestMain.cpp
+)
+
+add_executable(${PROJECT_NAME}-map
+       02_AssociativeContainer/map/MapTest.cpp
+       02_AssociativeContainer/map/MapTestMain.cpp
+)
+
+#add_executable(${PROJECT_NAME}-set
+#        02_AssociativeContainer/set/SetTest.cpp
+#)
