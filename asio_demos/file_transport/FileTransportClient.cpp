@@ -8,15 +8,16 @@
 class FileTransportClient {
 public:
     FileTransportClient(asio::io_context& io_context, const std::string& host, const uint16_t port) :
-        io_context_(io_context), download_dir_(std::filesystem::current_path() / "download") {
+        io_context_(io_context),socket_(io_context), download_dir_(std::filesystem::current_path() / "download") {
         asio::ip::tcp::resolver resolver(io_context);
         endpoints_ = resolver.resolve(host, std::to_string(port));
         std::filesystem::create_directories(download_dir_);
     }
 
     void do_connect() {
-        asio::ip::tcp::socket socket_(io_context_);
-        asio::async_connect(socket_, endpoints_, [this, &socket_](const asio::error_code& error, const asio::ip::tcp::endpoint&) {
+        asio::ip::tcp::socket socket(io_context_);
+        std::cout<<"-----------------------start connect to server-----------------------"<<std::endl;
+        asio::async_connect(socket_, endpoints_, [this](const asio::error_code& error, const asio::ip::tcp::endpoint&) {
             if (error) {
                 std::cerr << "[Client] Connect error: " << error.message() << std::endl;
                 return;
@@ -35,6 +36,10 @@ public:
 
 private:
     void set_session_callback() {
+        if (!session_) {
+            std::cerr << "[Client] Session not initialized" << std::endl;
+            return;
+        }
         session_->set_type_send_complete_callback([this](const bool success) {
             if (!success) {
                 std::cerr << "[Client] Failed to send request type" << std::endl;
@@ -148,8 +153,8 @@ private:
     std::function<void(bool success)> on_connected_cb_;
     std::function<void(bool success)> on_disconnected_cb_;*/
 
+    asio::ip::tcp::socket socket_;
     asio::io_context& io_context_;
-    // asio::ip::tcp::socket socket_;
     asio::ip::tcp::resolver::results_type endpoints_;
     std::shared_ptr<FileTransportSession> session_;
     std::filesystem::path download_dir_{};

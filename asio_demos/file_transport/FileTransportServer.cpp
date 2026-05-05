@@ -23,13 +23,14 @@ public:
         acceptor_.async_accept([this](const asio::error_code& error, asio::ip::tcp::socket socket) {
             if (error) std::cerr << "[Server] Accept error: " << error.message() << std::endl;
 
-            const std::string address =
-                socket.remote_endpoint().address().to_string() + ":" + std::to_string(socket.remote_endpoint().port());
-            std::cout << "[Server] Client connected successfully: " << address << std::endl;
-            auto session = std::make_shared<FileTransportSession>(std::move(socket));
-            // sessions_.emplace(address, session);
+            std::cout << "[Server] Client connected successfully: " << socket.remote_endpoint().address() << ":"
+                      << socket.remote_endpoint().port() << std::endl;
+
+            const auto session = std::make_shared<FileTransportSession>(std::move(socket));
             set_session_callback(session);
-            interactive_mode(session);
+            // interactive_mode(session);
+            // 开始接收头部
+            session->receive_header(receive_dir_.string());
 
             start_accept();
         });
@@ -39,40 +40,70 @@ private:
     void set_session_callback(const std::shared_ptr<FileTransportSession>& session) const {
         session->set_type_send_complete_callback([this, session](const bool success) {
             if (!success) {
-                std::cerr << "[Client] Failed to send request type" << std::endl;
+                std::cerr << "[Server] Failed to send request type" << std::endl;
                 return;
             }
-            std::cout << "\n[Client] Sent request successfully: " << *session->get_send_protocol() << std::endl;
-            // 发送成功后进入receive状态
-            interactive_mode(session);
+            std::cout << "\n[Server] Sent request successfully: " << *session->get_send_protocol() << std::endl;
+            // 发送完成后，继续监听下一个请求
+            session->receive_header(receive_dir_.string());
+        });
+
+        session->set_type_receive_complete_callback([this, session](const bool success) {
+            if (!success) {
+                std::cerr << "[Server] Failed to receive type" << std::endl;
+                return;
+            }
+
+            const std::string address = session->get_socket().remote_endpoint().address().to_string() + ":" +
+                std::to_string(session->get_socket().remote_endpoint().port());
+            std::cout << "[Server] Received from " << address << ", and header is :" << *session->get_receive_protocol()
+                      << std::endl;
+
+            if (const std::string& type = session->get_receive_protocol()->type; type == "query") {
+                handle_query(session);
+
+            } else if (type == "upload") {
+                // handle_upload(session);
+
+            } else if (type == "download") {
+                handle_download_request(session);
+
+            } else {
+                const std::string response = "Echo: " + type;
+                std::cout << "[Server] Echoing: " << type << std::endl;
+                session->send_header(response, "");
+            }
         });
 
         session->set_file_receive_complete_callback([this, session](const bool success) {
-            if (success) {
-                std::cout << "\n[Client] File downloaded successfully!" << std::flush << std::endl;
+            if (!success) {
+                std::cerr << "[Server] Failed to receive type" << std::endl;
+                return;
             }
-            interactive_mode(session);
+            // 文件接收完成后，继续监听
+            session->receive_header(receive_dir_.string());
         });
 
-        session->set_file_send_complete_callback([this, session](const bool success) {
+        session->set_file_send_complete_callback([this,session](const bool success) {
             if (success) {
-                std::cout << "\n[Client] File uploaded successfully!" << std::flush << std::endl;
+                std::cout << "\n[Server] File uploaded successfully!" << std::flush << std::endl;
             }
-            interactive_mode(session);
+            // 文件发送完成后，继续监听下一个请求
+            session->receive_header(receive_dir_.string());
         });
 
         session->set_receive_error_callback(
-            [](const std::string& error) { std::cerr << "[Client] Receive error: " << error << std::endl; });
+            [session](const std::string& error) { std::cerr << "[Server] Receive error: " << error << std::endl; });
 
         session->set_send_error_callback(
-            [](const std::string& error) { std::cerr << "[Client] Send error: " << error << std::endl; });
+            [session](const std::string& error) { std::cerr << "[Server] Send error: " << error << std::endl; });
 
-        session->set_send_progress_callback([](const ProgressInfo& info) {
-            std::cout << "\r[Client] Upload progress: " << info.toString() << "   " << std::flush;
+        session->set_send_progress_callback([session](const ProgressInfo& info) {
+            std::cout << "\r[Server] Upload progress: " << info.toString() << "   " << std::flush;
         });
 
-        session->set_receive_progress_callback([](const ProgressInfo& info) {
-            std::cout << "\r[Client] Download progress: " << info.toString() << "   " << std::flush;
+        session->set_receive_progress_callback([session](const ProgressInfo& info) {
+            std::cout << "\r[Server] Download progress: " << info.toString() << "   " << std::flush;
         });
     }
 
@@ -141,8 +172,8 @@ private:
 
     asio::ip::tcp::acceptor acceptor_;
     fs::path receive_dir_;
-    asio::io_context io_context_;
-    std::map<std::string, std::shared_ptr<FileTransportSession>> sessions_;
+    // asio::io_context io_context_;
+    // std::map<std::string, std::shared_ptr<FileTransportSession>> sessions_;
 };
 
 int main(const int argc, char* argv[]) {

@@ -20,7 +20,7 @@ public:
     std::uint64_t file_size;
 
     FileTransportProtocol() : type_len(0), file_name_len(0), file_size(0) {}
-    ~FileTransportProtocol() { rest(); };
+    ~FileTransportProtocol() { reset(); };
 
     [[nodiscard]] size_t get_header_len() const {
         return sizeof(type_len) + type_len + sizeof(file_name_len) + file_name_len + sizeof(file_size);
@@ -73,7 +73,7 @@ public:
             memcpy(&decoded_type_len, buffer + offset, sizeof(decoded_type_len));
             type_len = ntohs(decoded_type_len);
         } else {
-            offset += sizeof(type_len);
+            // offset += sizeof(type_len);
             offset += type_len;
             uint16_t decoded_file_name_len = 0;
             memcpy(&decoded_file_name_len, buffer + offset, sizeof(decoded_file_name_len));
@@ -81,7 +81,7 @@ public:
         }
     }
 
-    void rest() {
+    void reset() {
         type_len = 0;
         type.clear();
         file_name_len = 0;

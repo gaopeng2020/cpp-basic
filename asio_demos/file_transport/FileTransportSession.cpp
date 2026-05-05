@@ -1,5 +1,6 @@
 #include "FileTransportSession.h"
 #include <filesystem>
+#include <iostream>
 
 FileTransportSession::FileTransportSession(asio::ip::tcp::socket socket) :
     socket_(std::move(socket)),
@@ -9,6 +10,9 @@ FileTransportSession::FileTransportSession(asio::ip::tcp::socket socket) :
     receive_protocol_(std::make_shared<FileTransportProtocol>()) {}
 
 void FileTransportSession::send_header(const std::string& type, const std::string& file_path) {
+    // 重置协议对象和缓冲区，避免残留数据
+    send_protocol_->reset();
+
     if (type.empty()) return;
     send_protocol_->type = type;
     send_protocol_->type_len = type.size();
@@ -28,6 +32,7 @@ void FileTransportSession::send_header(const std::string& type, const std::strin
     asio::async_write(socket_, asio::buffer(send_buffer_->data(), offset),
                       [this, file_path, offset, self](const asio::error_code& error, size_t) {
                           if (error) {
+                              std::cerr << "[Session] send header error" << std::endl;
                               report_send_error_callback(error.message());
                               if (ifs_.is_open()) ifs_.close();
                               return;
@@ -54,9 +59,6 @@ void FileTransportSession::send_header(const std::string& type, const std::strin
 }
 
 void FileTransportSession::send_file_truck(const uint16_t offset) {
-    // constexpr size_t BUFFER_SIZE = 16 * 1024; // 16KB 每次传输
-    // auto buffer = std::make_shared<std::vector<char>>(BUFFER_SIZE);
-
     ifs_.read(send_buffer_->data() + offset, BUFFER_SIZE - offset);
     const size_t bytes_read = ifs_.gcount();
 
@@ -73,8 +75,9 @@ void FileTransportSession::send_file_truck(const uint16_t offset) {
     asio::async_write(socket_, asio::buffer(send_buffer_->data() + offset, bytes_read),
                       [this, self](const asio::error_code& error, size_t) {
                           if (error) {
+                              std::cerr << "[Session] send file truck error" << std::endl;
                               report_send_error_callback(error.message());
-                              if (ifs_.is_open()) ifs_.close();
+                              // if (ifs_.is_open()) ifs_.close();
                               return;
                           }
 
@@ -88,29 +91,33 @@ void FileTransportSession::send_file_truck(const uint16_t offset) {
 }
 
 void FileTransportSession::receive_header(const std::string& save_dir) {
-    auto self(shared_from_this());
+    // 重置协议对象和缓冲区，避免残留数据
+    receive_protocol_->reset();
 
+    auto self(shared_from_this());
     // 首先读取 type_len
     asio::async_read(socket_, asio::buffer(receive_buffer_->data(), sizeof(uint16_t)),
                      [this, self, save_dir](const asio::error_code& error, size_t) {
                          if (error) {
+                             std::cerr << "[Session] receive type length error" << std::endl;
                              report_receive_error_callback(error.message());
                              return;
                          }
 
                          receive_protocol_->decode_header_len(receive_buffer_->data(), true);
 
-                         if (receive_protocol_->type_len == 0) {
-                             report_type_receive_complete_callback(false);
-                             return;
-                         }
-
                          // 读取 type 内容 + file_name_len
                          size_t start_pos = sizeof(receive_protocol_->type_len);
                          const size_t read_bytes = receive_protocol_->type_len + sizeof(receive_protocol_->file_name_len);
+                         if (read_bytes == 0) { // 空消息，直接报告完成
+                             report_type_receive_complete_callback(true);
+                             return;
+                         }
+
                          asio::async_read(socket_, asio::buffer(receive_buffer_->data() + start_pos, read_bytes),
                                           [this, self, save_dir, start_pos](const asio::error_code& ec, size_t) {
                                               if (ec) {
+                                                  std::cerr << "[Session] receive type and file name length error" << std::endl;
                                                   report_receive_error_callback(ec.message());
                                                   return;
                                               }
@@ -134,6 +141,9 @@ void FileTransportSession::receive_header(const std::string& save_dir) {
 }
 
 void FileTransportSession::receive_file_name(const std::string& save_dir, const size_t offset) {
+    std::cout << "[Debug] receive_file_name called, offset=" << offset << ", file_name_len=" << receive_protocol_->file_name_len
+              << ", file_name=" << receive_protocol_->file_name << std::endl;
+
     // 读取 file_name + file_size
     const size_t read_bytes = receive_protocol_->file_name_len + sizeof(receive_protocol_->file_size);
 
@@ -141,6 +151,7 @@ void FileTransportSession::receive_file_name(const std::string& save_dir, const 
     asio::async_read(socket_, asio::buffer(receive_buffer_->data() + offset, read_bytes),
                      [this, save_dir, offset, read_bytes, self](const asio::error_code& error, size_t) {
                          if (error) {
+                             std::cerr << "[Session] receive file name and file size error" << std::endl;
                              report_receive_error_callback(error.message());
                              return;
                          }
@@ -190,8 +201,9 @@ void FileTransportSession::receive_file_truck(size_t offset) {
     asio::async_read(socket_, asio::buffer(receive_buffer_->data() + offset, read_bytes),
                      [this, offset, self](const asio::error_code& error, const size_t bytes_transferred) {
                          if (error) {
+                             std::cerr << "[Session] receive file truck error" << std::endl;
                              report_receive_error_callback(error.message());
-                             if (ofs_.is_open()) ofs_.close();
+                             // if (ofs_.is_open()) ofs_.close();
                              return;
                          }
 
