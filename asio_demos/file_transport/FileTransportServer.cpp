@@ -25,12 +25,12 @@ public:
 
             std::cout << "[Server] Client connected successfully: " << socket.remote_endpoint().address() << ":"
                       << socket.remote_endpoint().port() << std::endl;
-
+            std::cout << "------------------------------------------------------------------" << std::endl;
             const auto session = std::make_shared<FileTransportSession>(std::move(socket));
             set_session_callback(session);
             // interactive_mode(session);
             // 开始接收头部
-            session->receive_header(receive_dir_.string());
+            asio::post(acceptor_.get_executor(), [session, this]() { session->receive_header(receive_dir_.string()); });
 
             start_accept();
         });
@@ -84,7 +84,7 @@ private:
             session->receive_header(receive_dir_.string());
         });
 
-        session->set_file_send_complete_callback([this,session](const bool success) {
+        session->set_file_send_complete_callback([this, session](const bool success) {
             if (success) {
                 std::cout << "\n[Server] File uploaded successfully!" << std::flush << std::endl;
             }

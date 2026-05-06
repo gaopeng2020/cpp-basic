@@ -106,14 +106,15 @@ void FileTransportSession::receive_header(const std::string& save_dir) {
 
                          receive_protocol_->decode_header_len(receive_buffer_->data(), true);
 
-                         // 读取 type 内容 + file_name_len
-                         size_t start_pos = sizeof(receive_protocol_->type_len);
-                         const size_t read_bytes = receive_protocol_->type_len + sizeof(receive_protocol_->file_name_len);
-                         if (read_bytes == 0) { // 空消息，直接报告完成
-                             report_type_receive_complete_callback(true);
+                         if (receive_protocol_->type_len == 0) { // 空消息，直接递归
+                             // report_type_receive_complete_callback(true);
+                             asio::post(socket_.get_executor(), [this, self, save_dir]() { receive_header(save_dir); });
                              return;
                          }
 
+                         // 读取 type 内容 + file_name_len
+                         size_t start_pos = sizeof(receive_protocol_->type_len);
+                         const size_t read_bytes = receive_protocol_->type_len + sizeof(receive_protocol_->file_name_len);
                          asio::async_read(socket_, asio::buffer(receive_buffer_->data() + start_pos, read_bytes),
                                           [this, self, save_dir, start_pos](const asio::error_code& ec, size_t) {
                                               if (ec) {

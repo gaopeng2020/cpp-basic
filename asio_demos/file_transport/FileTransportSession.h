@@ -88,13 +88,13 @@ private:
     // 文件传输进度信息
     std::chrono::steady_clock::time_point send_start_time_; // 开始时间
     std::chrono::steady_clock::time_point send_last_report_time_; // 上次报告时间
-    uint16_t send_last_reported_bytes_ = 0; // 上次报告时的字节数
-    uint16_t send_pending_transferred_ = 0; // 待报告的最新字节数（解耦用）
-    uint16_t send_bytes_ = 0; // 其他业务变量
+    uint64_t send_last_reported_bytes_ = 0; // 上次报告时的字节数
+    uint64_t send_pending_transferred_ = 0; // 待报告的最新字节数（解耦用）
+    uint64_t send_bytes_ = 0; // 其他业务变量
 
     std::chrono::steady_clock::time_point receive_start_time_; // 开始时间
     std::chrono::steady_clock::time_point receive_last_report_time_; // 上次报告时间
-    uint16_t receive_last_reported_bytes_ = 0; // 上次报告时的字节数
-    uint16_t receive_pending_transferred_ = 0; // 待报告的最新字节数（解耦用）
-    uint16_t received_bytes_ = 0; // 其他业务变量
+    uint64_t receive_last_reported_bytes_ = 0; // 上次报告时的字节数
+    uint64_t receive_pending_transferred_ = 0; // 待报告的最新字节数（解耦用）
+    uint64_t received_bytes_ = 0; // 其他业务变量
 };

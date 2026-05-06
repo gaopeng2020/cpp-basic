@@ -16,7 +16,7 @@ public:
 
     void do_connect() {
         asio::ip::tcp::socket socket(io_context_);
-        std::cout<<"-----------------------start connect to server-----------------------"<<std::endl;
+
         asio::async_connect(socket_, endpoints_, [this](const asio::error_code& error, const asio::ip::tcp::endpoint&) {
             if (error) {
                 std::cerr << "[Client] Connect error: " << error.message() << std::endl;
@@ -28,6 +28,7 @@ public:
             std::cout << "[Client] Download directory: " << download_dir_.string() << std::endl;
             std::cout << "[Client] Commands: query, upload <filepath>, download <filename>, or any text for echo" << std::endl;
             std::cout << "[Client] Press Ctrl+C to disconnect..." << std::endl;
+            std::cout<<"------------------------------------------------------------------"<<std::endl;
             session_ = std::make_shared<FileTransportSession>(std::move(socket_));
             set_session_callback();
             interactive_mode();

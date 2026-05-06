@@ -43,6 +43,7 @@ public:
             offset += sizeof(file_name_len);
             memcpy(buffer + offset, file_name.c_str(), file_name_len);
             offset += file_name_len;
+
             const uint64_t file_size_net = htonll(file_size);
             memcpy(buffer + offset, &file_size_net, sizeof(file_size));
         }
@@ -74,7 +75,7 @@ public:
             type_len = ntohs(decoded_type_len);
         } else {
             // offset += sizeof(type_len);
-            offset += type_len;
+            // offset += type_len;
             uint16_t decoded_file_name_len = 0;
             memcpy(&decoded_file_name_len, buffer + offset, sizeof(decoded_file_name_len));
             file_name_len = ntohs(decoded_file_name_len);
