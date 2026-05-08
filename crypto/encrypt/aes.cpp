@@ -1,312 +1,343 @@
-#include <openssl/evp.h>
-#include <openssl/rand.h>
-#include <openssl/err.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <cstring>
-#include <iomanip>
+#include <openssl/core_names.h>
+#include <openssl/evp.h>
+#include <string>
+#include <vector>
+#include "../common.hpp"
 
-// 错误处理辅助函数
-void handle_openssl_error() {
-    ERR_print_errors_fp(stderr);
-    exit(1);
-}
+// AES-GCM 加密
+std::vector<unsigned char> aes_gcm_encrypt(const std::vector<unsigned char>& plaintext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv, std::vector<unsigned char>& tag) {
+    size_t iv_len = iv.size();
+    std::vector<unsigned char> ciphertext(plaintext.size() + iv_len);
+    int ciphertext_len = 0, tmp_len;
 
-// 十六进制打印辅助函数
-void print_hex(const unsigned char* data, size_t len) {
-    for (size_t i = 0; i < len; i++) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0') 
-                  << (int)data[i];
-    }
-    std::cout << std::dec << std::endl;
-}
-
-// ========== 1. AES-128-GCM 加解密 ==========
-
-// 生成随机密钥和IV
-void generate_key_iv(unsigned char* key, unsigned char* iv) {
-    // AES-128 密钥长度 = 16字节 (128位)
-    if (RAND_bytes(key, 16) != 1) {
-        handle_openssl_error();
-    }
-    // GCM推荐IV长度 = 12字节
-    if (RAND_bytes(iv, 12) != 1) {
-        handle_openssl_error();
-    }
-}
-
-// AES-128-GCM 加密
-std::vector<unsigned char> aes_gcm_encrypt(
-    const unsigned char* plaintext, size_t plaintext_len,
-    const unsigned char* key, const unsigned char* iv,
-    unsigned char* tag) {
-    
+    /* Create a context for the encrypt operation */
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx) handle_openssl_error();
-    
-    // 初始化加密操作
-    if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
-        handle_openssl_error();
-    
+
+    // 初始化加密,设置算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-GCM";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
     // 设置IV长度
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL))
+    OSSL_PARAM params[2] = {OSSL_PARAM_construct_size_t(OSSL_CIPHER_PARAM_AEAD_IVLEN, &iv_len), OSSL_PARAM_END};
+
+    // 初始化算法，密钥，IV
+    if (!EVP_EncryptInit_ex2(ctx, cipher, key.data(), iv.data(), params)) handle_openssl_error();
+
+    // 加密明文数据
+    if (!EVP_EncryptUpdate(ctx, ciphertext.data(), &tmp_len, plaintext.data(), static_cast<int>(plaintext.size())))
         handle_openssl_error();
-    
-    // 初始化密钥和IV
-    if (1 != EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
-        handle_openssl_error();
-    
-    // 加密
-    std::vector<unsigned char> ciphertext(plaintext_len + 16);
-    int len;
-    if (1 != EVP_EncryptUpdate(ctx, ciphertext.data(), &len, 
-                                plaintext, plaintext_len))
-        handle_openssl_error();
-    
-    int ciphertext_len = len;
-    
-    // 完成加密
-    if (1 != EVP_EncryptFinal_ex(ctx, ciphertext.data() + len, &len))
-        handle_openssl_error();
-    ciphertext_len += len;
-    
+    ciphertext_len += tmp_len;
+
+    // 处理加密的最后一块数据并完成加密操作
+    if (!EVP_EncryptFinal_ex(ctx, ciphertext.data() + tmp_len, &tmp_len)) handle_openssl_error();
+    ciphertext_len += tmp_len;
+
     // 获取GCM认证标签
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag))
-        handle_openssl_error();
-    
+    // 根据 NIST 标准，Tag 长度通常为 4 到 16 byte, 16 字节是最常用且安全性最高的选择
+    tag.resize(16);
+    params[0] = OSSL_PARAM_construct_octet_string(OSSL_CIPHER_PARAM_AEAD_TAG, tag.data(), 16);
+    if (!EVP_CIPHER_CTX_get_params(ctx, params)) handle_openssl_error();
+
+    EVP_CIPHER_free(cipher);
     EVP_CIPHER_CTX_free(ctx);
-    
+
+    // 加密完成后需要截断掉多余的预分配空间。
     ciphertext.resize(ciphertext_len);
     return ciphertext;
 }
 
-// AES-128-GCM 解密
-std::vector<unsigned char> aes_gcm_decrypt(
-    const unsigned char* ciphertext, size_t ciphertext_len,
-    const unsigned char* key, const unsigned char* iv,
-    const unsigned char* tag) {
-    
+// AES-GCM 解密
+std::vector<unsigned char> aes_gcm_decrypt(const std::vector<unsigned char>& ciphertext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv, const std::vector<unsigned char>& tag) {
+    size_t iv_len = iv.size();
+    int plaintext_len = 0, tmp_len;
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx) handle_openssl_error();
-    
-    // 初始化解密操作
-    if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
-        handle_openssl_error();
-    
+
+    // 设置解密算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-GCM";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
     // 设置IV长度
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL))
-        handle_openssl_error();
-    
-    // 初始化密钥和IV
-    if (1 != EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
-        handle_openssl_error();
-    
+    OSSL_PARAM params[2] = {OSSL_PARAM_construct_size_t(OSSL_CIPHER_PARAM_AEAD_IVLEN, &iv_len), OSSL_PARAM_END};
+
+    // 初始化算法，密钥，IV
+    if (!EVP_DecryptInit_ex2(ctx, cipher, key.data(), iv.data(), params)) handle_openssl_error();
+
     // 解密
-    std::vector<unsigned char> plaintext(ciphertext_len + 1);
-    int len;
-    if (1 != EVP_DecryptUpdate(ctx, plaintext.data(), &len,
-                                ciphertext, ciphertext_len))
+    std::vector<unsigned char> plaintext(ciphertext.size() + 1);
+    if (!EVP_DecryptUpdate(ctx, plaintext.data(), &tmp_len, ciphertext.data(), static_cast<int>(ciphertext.size())))
         handle_openssl_error();
-    
-    int plaintext_len = len;
-    
+    plaintext_len += tmp_len;
+
     // 设置预期的认证标签
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, 16, (void*)tag))
-        handle_openssl_error();
-    
+    params[0] = OSSL_PARAM_construct_octet_string(OSSL_CIPHER_PARAM_AEAD_TAG, (void*)tag.data(), tag.size());
+    if (!EVP_CIPHER_CTX_set_params(ctx, params)) handle_openssl_error();
+
     // 完成解密并验证认证标签
-    int ret = EVP_DecryptFinal_ex(ctx, plaintext.data() + len, &len);
-    EVP_CIPHER_CTX_free(ctx);
-    
+    const int ret = EVP_DecryptFinal_ex(ctx, plaintext.data() + tmp_len, &tmp_len);
+    plaintext_len += tmp_len;
+
     if (ret <= 0) {
         std::cerr << "解密失败：认证标签验证错误" << std::endl;
         return {};
     }
-    
-    plaintext_len += len;
+
+    EVP_CIPHER_free(cipher);
+    EVP_CIPHER_CTX_free(ctx);
+
     plaintext.resize(plaintext_len);
     return plaintext;
 }
 
-// ========== 2. 密钥存储与读取 ==========
+// AES-CTR 加密
+std::vector<unsigned char> aes_ctr_encrypt(const std::vector<unsigned char>& plaintext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv) {
+    std::vector<unsigned char> ciphertext(plaintext.size());
+    int ciphertext_len = 0, tmp_len;
 
-// 保存密钥和IV到文件（二进制格式）
-void save_key_iv(const unsigned char* key, const unsigned char* iv, 
-                 const std::string& filename) {
-    std::ofstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "无法创建文件: " << filename << std::endl;
-        return;
-    }
-    
-    // 写入：密钥(16字节) + IV(12字节)
-    file.write(reinterpret_cast<const char*>(key), 16);
-    file.write(reinterpret_cast<const char*>(iv), 12);
-    
-    std::cout << "密钥和IV已保存到: " << filename << std::endl;
-    std::cout << "  - 密钥(16字节): ";
-    print_hex(key, 16);
-    std::cout << "  - IV(12字节): ";
-    print_hex(iv, 12);
-}
-
-// 从文件读取密钥和IV
-bool load_key_iv(unsigned char* key, unsigned char* iv, 
-                 const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "无法打开文件: " << filename << std::endl;
-        return false;
-    }
-    
-    // 读取：密钥(16字节) + IV(12字节)
-    file.read(reinterpret_cast<char*>(key), 16);
-    file.read(reinterpret_cast<char*>(iv), 12);
-    
-    if (file.gcount() != 28) { // 16+12=28
-        std::cerr << "文件大小不正确" << std::endl;
-        return false;
-    }
-    
-    std::cout << "密钥和IV已从文件加载: " << filename << std::endl;
-    return true;
-}
-
-// ========== 3. 摘要（SHA256和MD5） ==========
-
-// SHA256哈希
-std::vector<unsigned char> sha256(const unsigned char* data, size_t len) {
-    EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+    /* Create a context for the encrypt operation */
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx) handle_openssl_error();
-    
-    std::vector<unsigned char> hash(EVP_MD_size(EVP_sha256()));
-    
-    if (1 != EVP_DigestInit_ex(ctx, EVP_sha256(), NULL))
+
+    // 初始化加密,设置算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-CTR";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
+    // CTR模式不需要特殊参数，直接初始化
+    if (!EVP_EncryptInit_ex2(ctx, cipher, key.data(), iv.data(), nullptr)) handle_openssl_error();
+
+    // 加密明文数据
+    if (!EVP_EncryptUpdate(ctx, ciphertext.data(), &tmp_len, plaintext.data(), static_cast<int>(plaintext.size())))
         handle_openssl_error();
-    if (1 != EVP_DigestUpdate(ctx, data, len))
-        handle_openssl_error();
-    if (1 != EVP_DigestFinal_ex(ctx, hash.data(), NULL))
-        handle_openssl_error();
-    
-    EVP_MD_CTX_free(ctx);
-    return hash;
+    ciphertext_len += tmp_len;
+
+    // 处理加密的最后一块数据并完成加密操作
+    if (!EVP_EncryptFinal_ex(ctx, ciphertext.data() + ciphertext_len, &tmp_len)) handle_openssl_error();
+    ciphertext_len += tmp_len;
+
+    EVP_CIPHER_free(cipher);
+    EVP_CIPHER_CTX_free(ctx);
+
+    // 截断多余空间
+    ciphertext.resize(ciphertext_len);
+    return ciphertext;
 }
 
-// MD5哈希
-std::vector<unsigned char> md5(const unsigned char* data, size_t len) {
-    EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+// AES-CTR 解密（CTR模式加解密相同）
+std::vector<unsigned char> aes_ctr_decrypt(const std::vector<unsigned char>& ciphertext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv) {
+    int plaintext_len = 0, tmp_len;
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx) handle_openssl_error();
-    
-    std::vector<unsigned char> hash(EVP_MD_size(EVP_md5()));
-    
-    if (1 != EVP_DigestInit_ex(ctx, EVP_md5(), NULL))
+
+    // 设置解密算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-CTR";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
+    // 初始化算法，密钥，IV
+    if (!EVP_DecryptInit_ex2(ctx, cipher, key.data(), iv.data(), nullptr)) handle_openssl_error();
+
+    // 解密
+    std::vector<unsigned char> plaintext(ciphertext.size());
+    if (!EVP_DecryptUpdate(ctx, plaintext.data(), &tmp_len, ciphertext.data(), static_cast<int>(ciphertext.size())))
         handle_openssl_error();
-    if (1 != EVP_DigestUpdate(ctx, data, len))
+    plaintext_len += tmp_len;
+
+    // 完成解密
+    if (!EVP_DecryptFinal_ex(ctx, plaintext.data() + plaintext_len, &tmp_len)) handle_openssl_error();
+    plaintext_len += tmp_len;
+
+    EVP_CIPHER_free(cipher);
+    EVP_CIPHER_CTX_free(ctx);
+
+    plaintext.resize(plaintext_len);
+    return plaintext;
+}
+
+// AES-CCM 加密
+std::vector<unsigned char> aes_ccm_encrypt(const std::vector<unsigned char>& plaintext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv, std::vector<unsigned char>& tag,
+                                           const std::vector<unsigned char>& aad = {}) {
+    size_t iv_len = iv.size();
+    size_t tag_len = tag.size();
+    std::vector<unsigned char> ciphertext(plaintext.size());
+    int out_len = 0, tmp_len = 0;
+
+    /* Create a context for the encrypt operation */
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) handle_openssl_error();
+
+    // 初始化加密,设置算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-CCM";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
+    // 设置IV长度和Tag长度参数
+    OSSL_PARAM params[3] = {OSSL_PARAM_END, OSSL_PARAM_END, OSSL_PARAM_END};
+    params[0] = OSSL_PARAM_construct_size_t(OSSL_CIPHER_PARAM_AEAD_IVLEN, &iv_len);
+    params[1] = OSSL_PARAM_construct_octet_string(OSSL_CIPHER_PARAM_AEAD_TAG, nullptr, tag_len);
+
+    // 初始化加密操作，设置参数（不设置密钥和IV）
+    if (!EVP_EncryptInit_ex2(ctx, cipher, nullptr, nullptr, params)) handle_openssl_error();
+
+    // 设置密钥和IV
+    if (!EVP_EncryptInit_ex(ctx, nullptr, nullptr, key.data(), iv.data())) handle_openssl_error();
+
+    // CCM模式需要先设置明文长度
+    if (!EVP_EncryptUpdate(ctx, nullptr, &out_len, nullptr, static_cast<int>(plaintext.size()))) handle_openssl_error();
+
+    // 如果有AAD，先处理AAD（可选）
+    if (!aad.empty()) {
+        if (!EVP_EncryptUpdate(ctx, nullptr, &out_len, aad.data(), static_cast<int>(aad.size()))) handle_openssl_error();
+    }
+
+    // 加密明文数据
+    if (!EVP_EncryptUpdate(ctx, ciphertext.data(), &out_len, plaintext.data(), static_cast<int>(plaintext.size())))
         handle_openssl_error();
-    if (1 != EVP_DigestFinal_ex(ctx, hash.data(), NULL))
-        handle_openssl_error();
-    
-    EVP_MD_CTX_free(ctx);
-    return hash;
+
+    // 完成加密（CCM的Final不输出数据）
+    if (!EVP_EncryptFinal_ex(ctx, nullptr, &tmp_len)) handle_openssl_error();
+
+    // 获取认证标签
+    tag.resize(tag_len);
+    OSSL_PARAM tag_params[2] = {OSSL_PARAM_construct_octet_string(OSSL_CIPHER_PARAM_AEAD_TAG, tag.data(), tag_len),
+                                OSSL_PARAM_END};
+    if (!EVP_CIPHER_CTX_get_params(ctx, tag_params)) handle_openssl_error();
+
+    EVP_CIPHER_free(cipher);
+    EVP_CIPHER_CTX_free(ctx);
+
+    return ciphertext;
+}
+
+// AES-CCM 解密
+std::vector<unsigned char> aes_ccm_decrypt(const std::vector<unsigned char>& ciphertext, const std::vector<unsigned char>& key,
+                                           const std::vector<unsigned char>& iv, const std::vector<unsigned char>& tag,
+                                           const std::vector<unsigned char>& aad = {}) {
+    size_t iv_len = iv.size();
+    const size_t tag_len = tag.size();
+    int out_len = 0;
+
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) handle_openssl_error();
+
+    // 设置解密算法
+    EVP_CIPHER* cipher = nullptr;
+    const std::string cipher_name = "AES-" + std::to_string(key.size() * 8) + "-CCM";
+    if ((cipher = EVP_CIPHER_fetch(nullptr, cipher_name.c_str(), nullptr)) == nullptr) handle_openssl_error();
+
+    // 设置IV长度和预期的Tag
+    OSSL_PARAM params[3] = {OSSL_PARAM_END, OSSL_PARAM_END, OSSL_PARAM_END};
+    params[0] = OSSL_PARAM_construct_size_t(OSSL_CIPHER_PARAM_AEAD_IVLEN, &iv_len);
+    params[1] = OSSL_PARAM_construct_octet_string(OSSL_CIPHER_PARAM_AEAD_TAG, (void*)tag.data(), tag_len);
+
+    // 初始化解密操作，设置参数（不设置密钥和IV）
+    if (!EVP_DecryptInit_ex2(ctx, cipher, nullptr, nullptr, params)) handle_openssl_error();
+
+    // 设置密钥和IV
+    if (!EVP_DecryptInit_ex(ctx, nullptr, nullptr, key.data(), iv.data())) handle_openssl_error();
+
+    // CCM模式需要先设置密文长度
+    if (!EVP_DecryptUpdate(ctx, nullptr, &out_len, nullptr, static_cast<int>(ciphertext.size()))) handle_openssl_error();
+
+    // 如果有AAD，先处理AAD（必须与加密时相同）
+    if (!aad.empty()) {
+        if (!EVP_DecryptUpdate(ctx, nullptr, &out_len, aad.data(), static_cast<int>(aad.size()))) handle_openssl_error();
+    }
+
+    // 解密密文并验证标签
+    std::vector<unsigned char> plaintext(ciphertext.size());
+
+    if (const int ret =
+            EVP_DecryptUpdate(ctx, plaintext.data(), &out_len, ciphertext.data(), static_cast<int>(ciphertext.size()));
+        ret <= 0) {
+        std::cerr << "解密失败：认证标签验证错误" << std::endl;
+        EVP_CIPHER_free(cipher);
+        EVP_CIPHER_CTX_free(ctx);
+        return {};
+    }
+
+    EVP_CIPHER_free(cipher);
+    EVP_CIPHER_CTX_free(ctx);
+
+    plaintext.resize(out_len);
+    return plaintext;
 }
 
 // ========== 主函数演示 ==========
 
 int main() {
-    // 初始化OpenSSL
-    OpenSSL_add_all_algorithms();
-    ERR_load_crypto_strings();
-    
-    std::cout << "========== OpenSSL 加密演示 ==========" << std::endl;
-    
-    // ===== 1. 生成AES-128-GCM密钥和IV =====
+    // ===== 0. 准备测试明文 =====
+    const auto plaintext_str = "Hello, OpenSSL! 这是一个 OpenSSL 加密与认证演示演示。";
+    const std::vector<unsigned char> plaintext(plaintext_str, plaintext_str + strlen(plaintext_str));
+    std::cout << "原始数据: " << plaintext_str << std::endl;
+    std::cout << "原始长度: " << plaintext.size() << " 字节" << std::endl;
+
+    // ===== 1.0 生成密钥(长度128,192,256bits, 需转换成字节)和IV =====
     std::cout << "\n1. 生成AES-128-GCM密钥和IV" << std::endl;
-    unsigned char key[16], iv[12];
+    std::vector<unsigned char> key(16), iv(12);
     generate_key_iv(key, iv);
-    
-    // 保存到文件
+
+    // ===== 1.1 保存到文件=====
     save_key_iv(key, iv, "aes_key.bin");
-    
-    // ===== 2. 加密示例 =====
-    std::cout << "\n2. AES-128-GCM 加密演示" << std::endl;
-    const char* plaintext = "Hello, OpenSSL! 这是一个测试消息。";
-    size_t plaintext_len = strlen(plaintext);
-    
-    std::cout << "原始数据: " << plaintext << std::endl;
-    std::cout << "原始长度: " << plaintext_len << " 字节" << std::endl;
-    
-    unsigned char tag[16];  // GCM认证标签
-    auto ciphertext = aes_gcm_encrypt(
-        reinterpret_cast<const unsigned char*>(plaintext), 
-        plaintext_len, key, iv, tag);
-    
-    std::cout << "密文长度: " << ciphertext.size() << " 字节" << std::endl;
+
+    // 根据 NIST 标准GCM与CCM tag长度均为4-16 字节，16 字节（128 位）提供最强的认证保护
+    std::vector<unsigned char> tag(16); // GCM认证标签
+
+    // ===== 2.1 AES-GCM 加密示例 =====
+    std::cout << "\n2.1 AES-128-GCM 加密演示" << std::endl;
+    const auto gcm_cipher_text = aes_gcm_encrypt(plaintext, key, iv, tag);
+    std::cout << "密文长度: " << gcm_cipher_text.size() << " 字节" << std::endl;
+    print_hex(gcm_cipher_text);
     std::cout << "认证标签: ";
-    print_hex(tag, 16);
-    
-    // ===== 3. 解密示例 =====
-    std::cout << "\n3. AES-128-GCM 解密演示" << std::endl;
-    auto decrypted = aes_gcm_decrypt(
-        ciphertext.data(), ciphertext.size(), key, iv, tag);
-    
-    if (!decrypted.empty()) {
-        std::cout << "解密成功！" << std::endl;
-        std::cout << "解密数据: " << std::string(decrypted.begin(), decrypted.end()) << std::endl;
+    print_hex(tag);
+
+    // ===== 2.2 AES=GCM 解密示例 =====
+    std::cout << "\n2.2  从文件加载密钥后再解密" << std::endl;
+    std::vector<unsigned char> loaded_iv(12), loaded_key(16);
+    if (!load_key_iv(loaded_key, loaded_iv, "aes_key.bin")) {
+        std::cerr << "从文件读取密钥失败" << std::endl;
     }
-    
-    // ===== 4. 从文件加载密钥进行解密 =====
-    std::cout << "\n4. 从文件加载密钥后再解密" << std::endl;
-    unsigned char loaded_key[16], loaded_iv[12];
-    if (load_key_iv(loaded_key, loaded_iv, "aes_key.bin")) {
-        auto decrypted2 = aes_gcm_decrypt(
-            ciphertext.data(), ciphertext.size(), 
-            loaded_key, loaded_iv, tag);
-        
-        if (!decrypted2.empty()) {
-            std::cout << "使用加载的密钥解密成功！" << std::endl;
-            std::cout << "解密数据: " << std::string(decrypted2.begin(), decrypted2.end()) << std::endl;
-        }
+    if (auto gcm_plain_text = aes_gcm_decrypt(gcm_cipher_text, loaded_key, loaded_iv, tag); !gcm_plain_text.empty()) {
+        std::cout << "使用加载的密钥解密成功！" << std::endl;
+        std::cout << "解密后的数据: " << std::string(gcm_plain_text.begin(), gcm_plain_text.end()) << std::endl;
     }
-    
-    // ===== 5. SHA256摘要 =====
-    std::cout << "\n5. SHA256 哈希演示" << std::endl;
-    auto sha256_hash = sha256(
-        reinterpret_cast<const unsigned char*>(plaintext), plaintext_len);
-    
-    std::cout << "原文: " << plaintext << std::endl;
-    std::cout << "SHA256: ";
-    print_hex(sha256_hash.data(), sha256_hash.size());
-    
-    // ===== 6. MD5摘要 =====
-    std::cout << "\n6. MD5 哈希演示" << std::endl;
-    auto md5_hash = md5(
-        reinterpret_cast<const unsigned char*>(plaintext), plaintext_len);
-    
-    std::cout << "原文: " << plaintext << std::endl;
-    std::cout << "MD5: ";
-    print_hex(md5_hash.data(), md5_hash.size());
-    
-    // ===== 7. 演示认证标签的保护作用 =====
-    std::cout << "\n7. 演示GCM的完整性验证" << std::endl;
-    std::cout << "尝试修改密文后解密..." << std::endl;
-    
-    auto corrupted_ciphertext = ciphertext;
-    if (!corrupted_ciphertext.empty()) {
-        corrupted_ciphertext[0] ^= 0x01; // 修改第一个字节
-        
-        auto failed_decrypt = aes_gcm_decrypt(
-            corrupted_ciphertext.data(), corrupted_ciphertext.size(),
-            key, iv, tag);
-        
-        if (failed_decrypt.empty()) {
-            std::cout << "✓ 正确检测到数据被篡改，解密失败！" << std::endl;
-        }
-    }
-    
-    // 清理
-    EVP_cleanup();
-    ERR_free_strings();
-    
+
+    // ===== 3.1 AES-CTR 加密示例 =====
+    std::cout << "\n3.1 AES-128-CRT 加密演示" << std::endl;
+    const auto ctr_cipher_text = aes_ctr_encrypt(plaintext, key, iv);
+    std::cout << "密文长度: " << ctr_cipher_text.size() << " 字节" << std::endl;
+    print_hex(ctr_cipher_text);
+
+    // ===== 3.2 AES-CTR 解密示例 =====
+    std::cout << "\n3.2 AES-128-CRT 解密演示" << std::endl;
+    const auto ctr_plain_text = aes_ctr_decrypt(ctr_cipher_text, key, iv);
+    std::cout << "解密后长度: " << ctr_plain_text.size() << " 字节" << std::endl;
+    std::cout << "解密后的数据: " << std::string(ctr_plain_text.begin(), ctr_plain_text.end()) << std::endl;
+
+    // ===== 4.1 AES-CCM 加密示例 =====
+    std::cout << "\n4.1 AES-128-CCM 加密演示" << std::endl;
+    tag.clear();
+    tag.resize(16);
+    const auto ccm_cipher_text = aes_ccm_encrypt(plaintext, key, iv, tag);
+    std::cout << "密文长度: " << ccm_cipher_text.size() << " 字节" << std::endl;
+    print_hex(ccm_cipher_text);
+    std::cout << "认证标签: ";
+    print_hex(tag);
+
+    // ===== 4.2 AES-CCM 解密示例 =====
+    std::cout << "\n4.2 AES-128-CCM 解密演示" << std::endl;
+    const auto ccm_plain_text = aes_ccm_decrypt(ccm_cipher_text, key, iv, tag);
+    std::cout << "解密后长度: " << ccm_plain_text.size() << " 字节" << std::endl;
+    std::cout << "解密后的数据: " << std::string(ccm_plain_text.begin(), ccm_plain_text.end()) << std::endl;
+
     return 0;
 }

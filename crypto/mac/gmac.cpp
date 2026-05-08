@@ -29,8 +29,8 @@ void print_hex(const unsigned char* data, size_t len, const std::string& label =
  * @param tag 输出的认证标签（通常16字节）
  * @return 成功返回true
  */
-bool gmac_generate_tag(const unsigned char* key, int key_len, const unsigned char* iv, size_t iv_len, const unsigned char* data,
-                       size_t data_len, unsigned char* tag) {
+bool gmac_generate_tag(const unsigned char* key, const int key_len, const unsigned char* iv, const size_t iv_len,
+                       const unsigned char* data, const size_t data_len, unsigned char* tag) {
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx) return false;
 
@@ -51,24 +51,24 @@ bool gmac_generate_tag(const unsigned char* key, int key_len, const unsigned cha
     }
 
     // 初始化加密操作（GMAC是GCM模式没有明文数据）
-    if (1 != EVP_EncryptInit_ex(ctx, cipher, nullptr, nullptr, nullptr)) return false;
+    if (!EVP_EncryptInit_ex(ctx, cipher, nullptr, nullptr, nullptr)) return false;
 
     // 设置IV长度
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, nullptr)) return false;
+    if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, nullptr)) return false;
 
     // 初始化密钥和IV
-    if (1 != EVP_EncryptInit_ex(ctx, nullptr, nullptr, key, iv)) return false;
+    if (!EVP_EncryptInit_ex(ctx, nullptr, nullptr, key, iv)) return false;
 
     // 提供需要认证的数据（AAD - Additional Authenticated Data）
     int len;
     if (data_len > 0) {
-        if (1 != EVP_EncryptUpdate(ctx, nullptr, &len, data, data_len)) return false;
+        if (!EVP_EncryptUpdate(ctx, nullptr, &len, data, data_len)) return false;
     }
 
     // 完成并获取标签
-    if (1 != EVP_EncryptFinal_ex(ctx, nullptr, &len)) return false;
+    if (!EVP_EncryptFinal_ex(ctx, nullptr, &len)) return false;
 
-    if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag)) return false;
+    if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag)) return false;
 
     EVP_CIPHER_CTX_free(ctx);
     return true;
@@ -128,79 +128,6 @@ void random_nonce_strategy() {
 
     std::cout << "✓ 优点：简单，无需状态管理" << std::endl;
     std::cout << "✗ 缺点：每次需要12字节随机数，碰撞概率与生日攻击相关" << std::endl;
-}
-
-/**
- * 策略2：计数器方式（推荐用于高频操作）
- */
-class CounterNonceManager {
-private:
-    unsigned char base_nonce[12]; // 基础Nonce（固定前缀）
-    uint32_t counter; // 计数器
-    std::map<uint32_t, bool> used_counters; // 记录已使用的计数器（演示用）
-
-public:
-    CounterNonceManager(const unsigned char* prefix, size_t prefix_len) {
-        // 基础Nonce：前(12-4)=8字节固定，后4字节留给计数器
-        memset(base_nonce, 0, sizeof(base_nonce));
-        memcpy(base_nonce, prefix, std::min(prefix_len, sizeof(base_nonce) - 4));
-        counter = 0;
-    }
-
-    // 获取下一个Nonce（线程安全版本需要加锁）
-    void get_next_nonce(unsigned char* output) {
-        memcpy(output, base_nonce, sizeof(base_nonce));
-
-        // 将计数器写入最后4字节（大端序）
-        uint32_t counter_val = counter++;
-        output[8] = (counter_val >> 24) & 0xFF;
-        output[9] = (counter_val >> 16) & 0xFF;
-        output[10] = (counter_val >> 8) & 0xFF;
-        output[11] = counter_val & 0xFF;
-
-        // 记录已使用（演示用）
-        used_counters[counter_val] = true;
-    }
-
-    void print_stats() {
-        std::cout << "已分配的Nonce数量: " << used_counters.size() << std::endl;
-        std::cout << "下一个计数器值: " << counter << std::endl;
-    }
-
-    bool is_counter_used(uint32_t c) { return used_counters.find(c) != used_counters.end(); }
-};
-
-void counter_nonce_strategy() {
-    std::cout << "\n=== 策略2: 计数器Nonce（推荐） ===" << std::endl;
-
-    unsigned char key[16];
-    unsigned char nonce[12];
-    unsigned char tag[16];
-    const char* message = "Important data";
-
-    // 生成随机密钥和基础前缀
-    RAND_bytes(key, sizeof(key));
-    unsigned char prefix[8];
-    RAND_bytes(prefix, sizeof(prefix));
-
-    CounterNonceManager nonce_mgr(prefix, sizeof(prefix));
-
-    // 模拟多次操作
-    for (int i = 0; i < 5; i++) {
-        nonce_mgr.get_next_nonce(nonce);
-
-        std::cout << "\n操作 #" << (i + 1) << " Nonce: ";
-        print_hex(nonce, sizeof(nonce));
-
-        if (gmac_generate_tag(key, sizeof(key), nonce, sizeof(nonce), (const unsigned char*)message, strlen(message), tag)) {
-            std::cout << "Tag: ";
-            print_hex(tag, 16);
-        }
-    }
-
-    nonce_mgr.print_stats();
-    std::cout << "✓ 优点：保证唯一性，性能好，适合高频操作" << std::endl;
-    std::cout << "✗ 缺点：需要维护状态，多线程需要同步" << std::endl;
 }
 
 /**
@@ -343,10 +270,6 @@ void practical_usage_example() {
 
 // ========== 主函数 ==========
 int main() {
-    // 初始化OpenSSL
-    OpenSSL_add_all_algorithms();
-    ERR_load_crypto_strings();
-
     std::cout << "========== GMAC (AES-GMAC) 演示 ==========" << std::endl;
     std::cout << "GMAC = AES-GCM 模式用于消息认证（无加密数据）" << std::endl;
 
@@ -383,15 +306,9 @@ int main() {
 
     // Nonce管理策略
     random_nonce_strategy();
-    counter_nonce_strategy();
     timestamp_counter_strategy();
 
     // 实际应用示例
     practical_usage_example();
-
-    // 清理
-    EVP_cleanup();
-    ERR_free_strings();
-
     return 0;
 }
