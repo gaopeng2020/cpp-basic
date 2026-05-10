@@ -11,8 +11,7 @@ using asio::ip::udp;
 void get_daytime(asio::io_context& io_context, const char* hostname) {
     try {
         udp::resolver resolver(io_context);
-
-        //daytime是服务名称，端口号默认13
+        // daytime是服务名称，端口号默认13
         std::future<udp::resolver::results_type> endpoints =
             resolver.async_resolve(udp::v4(), hostname, "daytime", asio::use_future);
 
@@ -20,12 +19,12 @@ void get_daytime(asio::io_context& io_context, const char* hostname) {
         // value that is not retrieved ...
 
         udp::socket socket(io_context, udp::v4());
-
         std::array<char, 1> send_buf = {{0}};
         std::future<std::size_t> send_length =
             socket.async_send_to(asio::buffer(send_buf),
                                  *endpoints.get().begin(), // ... until here. This call may block.
                                  asio::use_future);
+        std::cout << "local endpoint: " << socket.local_endpoint() << std::endl;
 
         // Do other things here while the send completes.
 
@@ -37,9 +36,13 @@ void get_daytime(asio::io_context& io_context, const char* hostname) {
             socket.async_receive_from(asio::buffer(recv_buf), sender_endpoint, asio::use_future);
 
         // Do other things here while the receive completes.
+        std::size_t received_bytes = recv_length.get();
 
-        std::cout.write(recv_buf.data(),
-                        recv_length.get()); // Blocks until receive is complete.
+        std::cout << "[Client] Received " << received_bytes << " byte(s) from server" << std::endl;
+        std::cout << "[Client] Server responded from: " << sender_endpoint << std::endl;
+        std::cout << "[Client] Response data: ";
+        std::cout.write(recv_buf.data(), received_bytes);
+
     } catch (std::system_error& e) {
         std::cerr << e.what() << std::endl;
     }

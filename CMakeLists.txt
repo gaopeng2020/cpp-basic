@@ -11,6 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 #add_subdirectory(common-utils)
 #add_subdirectory(qt_demos)
 #add_subdirectory(dds-demos)
-#add_subdirectory(asio_demos)
-add_subdirectory(crypto)
+add_subdirectory(asio_demos)
+#add_subdirectory(crypto)
 
