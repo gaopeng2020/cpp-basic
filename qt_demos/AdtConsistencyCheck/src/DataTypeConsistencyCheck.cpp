@@ -375,7 +375,7 @@ void DataTypeConsistencyCheck::checkDataType(const OpenXLSX::XLWorksheet& sheet)
     }
     errors.emplace_back("[Info] 请确保conf目录下的excel文件是最新的，否则无法准确识别数据类型是否与库中已有的Adt重复");
     errors.emplace_back("-----------------------------------------------------------------------------------------------");
-    std::set<std::string> adtLib;
+
     if (OpenXLSX::XLDocument doc; Xlsx::openXlDocument(doc, libXlsx)) {
         log_error("Adt", "Failed to open lib xlsx file: " + libXlsx);
         const auto libSheet = doc.workbook().worksheet(1);
@@ -386,7 +386,7 @@ void DataTypeConsistencyCheck::checkDataType(const OpenXLSX::XLWorksheet& sheet)
             adtLib.emplace(Xlsx::getCellValue(libSheet.cell(i, 1)));
         }
     }
-    //开始数据类型的检查
+    // 开始数据类型的检查
     int row = 2;
     log_debug("Adt", "[Info] sheet.rowCount()..." << sheet.rowCount());
     while (row <= sheet.rowCount()) {
@@ -411,6 +411,8 @@ void DataTypeConsistencyCheck::checkDataType(const OpenXLSX::XLWorksheet& sheet)
         if (adtLib.contains(name)) {
             errors.emplace_back("[Error] " + Core::numToCellAddress(row, dataTypeNameCol) + ": " + name +
                                 " 在X平台存在与该数据类型重名的Adt");
+            row = endRow + 1;
+            continue;
         }
         // 检查是否填写了category，以及category的类别是否为Struct, Array, 以及value
         if (auto category = Xlsx::getCellValue(sheet.cell(row, categoryCol)); category == "Value") {
@@ -752,7 +754,7 @@ void DataTypeConsistencyCheck::checkSignalLength(int64_t maxValue, const int len
     }
     if (optimalLen < length) {
         errors.emplace_back(std::format("[Warning] {}: 当前信号长度太长[{}], 有点浪费总线带宽，建议修改为：{}",
-                                        Core::numToCellAddress(row, sigLenCol),length, optimalLen));
+                                        Core::numToCellAddress(row, sigLenCol), length, optimalLen));
     }
 
     // 类型定义...
@@ -836,12 +838,19 @@ void DataTypeConsistencyCheck::recordConsistencyCheck(const OpenXLSX::XLWorkshee
 
         } else { // 引用数据类型
             // 检查引用是否有定义
-            const std::string memTypeRef = Core::stringTrim(Xlsx::getCellValue(sheet.cell(row, memTypeRefCol)));
-            if (memTypeRef.find("CRC") == std::string::npos ||
-                memTypeRef.find("RollgCntr") == std::string::npos && !dataTypeNames.contains(memTypeRef))
-                errors.emplace_back("[Error] " + Core::numToCellAddress(row, memTypeRefCol) + ": " + memTypeRef +
-                                    " 结构体成员引用数据类型未在表格中定义");
-            //检查primitive type不使用的单元格
+            if (const std::string memTypeRef = Core::stringTrim(Xlsx::getCellValue(sheet.cell(row, memTypeRefCol)));
+                !dataTypeNames.contains(memTypeRef) &&
+                (memTypeRef.find("CRC") == std::string::npos || memTypeRef.find("RollgCntr") == std::string::npos)) {
+                if (!adtLib.contains(memTypeRef)) {
+                    errors.emplace_back("[Error] " + Core::numToCellAddress(row, memTypeRefCol) + ": " + memTypeRef +
+                                        " 结构体成员引用数据类型未在表格以及库中定义");
+                } else {
+                    errors.emplace_back("[Info] " + Core::numToCellAddress(row, memTypeRefCol) + ": " + memTypeRef +
+                                        " 结构体成员引用数据类型未在表格中定义，但在库中定义了");
+                }
+            }
+
+            // 检查primitive type不使用的单元格
             unusedCellForRefType(sheet, row);
         }
     }

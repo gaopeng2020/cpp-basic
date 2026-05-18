@@ -54,12 +54,11 @@ public:
 
 private:
     std::set<std::string> dataTypeNames;
+    std::set<std::string> adtLib;
+
     void recordConsistencyCheck(const OpenXLSX::XLWorksheet& sheet, int startRow, int endRow);
-
     void arrayConsistencyCheck(const OpenXLSX::XLWorksheet& sheet, int row);
-
     void unusedCellForRefType(const OpenXLSX::XLWorksheet& sheet, int row);
-
     void checkDataType(const OpenXLSX::XLWorksheet& sheet);
     void valueConsistencyCheck(const OpenXLSX::XLWorksheet& sheet, int row);
     void checkMustDefinedCell(const OpenXLSX::XLWorksheet& sheet, int row);
