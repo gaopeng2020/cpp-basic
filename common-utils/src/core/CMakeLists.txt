@@ -2,7 +2,7 @@
 add_library(common-utils-core OBJECT)
 
 target_sources(common-utils-core PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/Core.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
 )
 
 target_include_directories(common-utils-core PRIVATE

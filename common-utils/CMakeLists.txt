@@ -4,15 +4,20 @@ cmake_minimum_required(VERSION 3.20)
 
 # 1. 库的名称前缀（例如 Calculator -> Calculator）
 set(LIB_NAME common-utils)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # 2. 库类型：SHARED（ON）或 STATIC（OFF）
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # 3. vcpkg 的 triplet 设置（根据您的工具链选择）
 #  常用值：x64-windows、x64-linux 、x64-mingw-dynamic、x64-mingw-static
-#set(VCPKG_TARGET_TRIPLET "x64-windows")
+set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
 #set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic")
 message(STATUS "Auto-detected VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
+list(PREPEND CMAKE_PREFIX_PATH "/home/gaopeng/vcpkg/installed/x64-linux-dynamic")
+if (DEFINED ENV{VCPKG_ROOT})
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain file")
+endif ()
 
 project(${LIB_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 #强制要求 C++20 支持，如果编译器不支持，CMake会报错并停止配置
